@@ -1,0 +1,27 @@
+## Datacard for cut file bins/2lss_em.txt
+shapes *        * 2lss_em_nJet_neg.input.root x_$PROCESS x_$PROCESS_$SYSTEMATIC
+##----------------------------------
+bin         2lss_em_nJet_neg
+observation 162.454387665
+##----------------------------------
+##----------------------------------
+bin              2lss_em_nJet_neg   2lss_em_nJet_neg   2lss_em_nJet_neg   2lss_em_nJet_neg   2lss_em_nJet_neg   2lss_em_nJet_neg   2lss_em_nJet_neg   2lss_em_nJet_neg   2lss_em_nJet_neg   2lss_em_nJet_neg   2lss_em_nJet_neg   2lss_em_nJet_neg 
+process                       ttH              QF_tt              QF_dy              FR_dy              FR_wj             FR_ttg              FR_tt                 ZZ                 WZ                VVV                TTZ                TTW 
+process                         0                  1                  2                  3                  4                  5                  6                  7                  8                  9                 10                 11 
+rate                        6.128             56.073              0.579              1.960              5.359              4.973             43.687              0.823              7.772              1.050              5.610             28.440 
+##----------------------------------
+Mistag       lnN                -                  -                  -                  -                  -                  -                  -                1.2                1.2                1.2                  -                  - 
+norm         lnN              1.1                  -                  -                  -                  -                  -                  -                  -                  -                  -                  -                  - 
+QF           lnN                -                1.1                1.1                  -                  -                  -                  -                  -                  -                  -                  -                  - 
+TTZ0       shape                -                  -                  -                  -                  -                  -                  -                  -                  -                  -                  1                  - 
+TTZ1       shape                -                  -                  -                  -                  -                  -                  -                  -                  -                  -                  1                  - 
+TTZ2       shape                -                  -                  -                  -                  -                  -                  -                  -                  -                  -                  1                  - 
+shape0     shape                1                  -                  -                  -                  -                  -                  -                  -                  -                  -                  -                  - 
+shape1     shape                1                  -                  -                  -                  -                  -                  -                  -                  -                  -                  -                  - 
+shape2     shape                1                  -                  -                  -                  -                  -                  -                  -                  -                  -                  -                  - 
+TTW0       shape                -                  -                  -                  -                  -                  -                  -                  -                  -                  -                  -                  1 
+TTW1       shape                -                  -                  -                  -                  -                  -                  -                  -                  -                  -                  -                  1 
+TTW2       shape                -                  -                  -                  -                  -                  -                  -                  -                  -                  -                  -                  1 
+FR0        shape                -                  -                  -                  1                  1                  1                  1                  -                  -                  -                  -                  - 
+FR1        shape                -                  -                  -                  1                  1                  1                  1                  -                  -                  -                  -                  - 
+FR2        shape                -                  -                  -                  1                  1                  1                  1                  -                  -                  -                  -                  - 

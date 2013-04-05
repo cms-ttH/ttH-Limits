@@ -1,0 +1,27 @@
+## Datacard for cut file bins/3l_auto.txt
+shapes *        * 3l_nJet.input.root x_$PROCESS x_$PROCESS_$SYSTEMATIC
+##----------------------------------
+bin         3l_nJet
+observation 62.3657646179
+##----------------------------------
+##----------------------------------
+bin              3l_nJet   3l_nJet   3l_nJet   3l_nJet   3l_nJet   3l_nJet   3l_nJet   3l_nJet   3l_nJet   3l_nJet 
+process              ttH     FR_dy     FR_tt        ZZ        WZ        WW       VVV      TTWW       TTZ       TTW 
+process                0         1         2         5         6         7         8         9        10        11 
+rate               5.761     1.244    29.238     0.539     3.978     0.114     0.268     0.394     9.348    11.482 
+##----------------------------------
+Mistag       lnN       -         -         -       1.2       1.2         -       1.2         -         -         - 
+norm         lnN     1.1         -         -         -         -         -         -         -         -         - 
+QF           lnN       -         -         -         -         -         -         -         -         -         - 
+TTZ0       shape       -         -         -         -         -         -         -         -         1         - 
+TTZ1       shape       -         -         -         -         -         -         -         -         1         - 
+TTZ2       shape       -         -         -         -         -         -         -         -         1         - 
+shape0     shape       1         -         -         -         -         -         -         -         -         - 
+shape1     shape       1         -         -         -         -         -         -         -         -         - 
+shape2     shape       1         -         -         -         -         -         -         -         -         - 
+TTW0       shape       -         -         -         -         -         -         -         1         -         1 
+TTW1       shape       -         -         -         -         -         -         -         1         -         1 
+TTW2       shape       -         -         -         -         -         -         -         1         -         1 
+FR0        shape       -         1         1         -         -         -         -         -         -         - 
+FR1        shape       -         1         1         -         -         -         -         -         -         - 
+FR2        shape       -         1         1         -         -         -         -         -         -         - 
