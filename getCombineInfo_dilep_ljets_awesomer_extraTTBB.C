@@ -41,7 +41,9 @@
 void getCombineInfo_dilep_ljets_awesomer_extraTTBB(TString hmass="ttH125",TString outputTextFileName="dataCardOutput_ttH_ljets_dilep_120",
 						   TString histName = "result_combined.root",
 						   int ljets4cat=7,int ljets5cat=7,int ljets6cat=7,
-						   int dilepCat1 = 1, int dilepCat2 = 7,int SS1tCat = 3, int SS2tCat = 3, bool is8TeV = true, TString ttbb_unc="1.5", bool noNorm = true,
+                                                   int dilepCat1 = 1, int dilepCat2 = 7,int SS1tCat = 3, int SS2tCat = 3, bool is8TeV = true, TString ttbb_unc="1.5",
+                                                   TString NPSFValueString  = "1.5",
+                                                   bool noNorm = true,
 						   int systFlagEnable = 0x3FFFFF)
 {
 //
@@ -285,7 +287,7 @@ void getCombineInfo_dilep_ljets_awesomer_extraTTBB(TString hmass="ttH125",TStrin
 //
 // Loop over the channels for each sample
 
-	int numSysts = 52;//21;
+	int numSysts = 55;//21;
 	TString systNames[] = {
 	  "lumi",
 	  "QCDscale_ttH",
@@ -338,7 +340,10 @@ void getCombineInfo_dilep_ljets_awesomer_extraTTBB(TString hmass="ttH125",TStrin
 	  "SS_ge4jge2t_eff_bShape",
 	  "Q2scale_ttH_ttbar1p",
 	  "Q2scale_ttH_ttbar2p",
-	  "CMS_ttH_QCDscale_ttbb"
+	  "CMS_ttH_QCDscale_ttbb",
+      "SS_NPSF_4j1t",
+      "SS_NPSF_3j2t",
+      "SS_NPSF_4j2t"
 	};
 
 	TString sysTypes[] = {
@@ -393,10 +398,14 @@ void getCombineInfo_dilep_ljets_awesomer_extraTTBB(TString hmass="ttH125",TStrin
 										"shape",			 //	"CMS_eff_bShape",
 										"shape",              // 1p
 										"shape",              // 2p
-										"lnN"			 //	"CMS_ttH_QCDscale_ttbb"
+										"lnN",			 //	"CMS_ttH_QCDscale_ttbb"
+                                        "lnN",          // NPSF 4j1t
+                                        "lnN",          // NPSF 3j2t
+                                        "lnN"          //  NPSF 4j2t
         };									
 
 
+    
 	TString lumi_unc = ( is8TeV ) ? "1.044" : "1.022";
 	TString eff_lep_unc = ( is8TeV ) ? "1.04" : "1.018";
 
@@ -454,6 +463,9 @@ void getCombineInfo_dilep_ljets_awesomer_extraTTBB(TString hmass="ttH125",TStrin
 	  "-",      "1",   	 "-", 		 "-", 	 	 	  "-",		  "-",   	"-", 	   "-", 	   "-",  	  "-",     // "Q2scale_ttH_ttbar1p",
 	  "-",      "1",   	 "-", 		 "-", 	 	 	  "-",		  "-",   	"-", 	   "-", 	   "-",  	  "-",     // "Q2scale_ttH_ttbar2p",
 	  "-",      "-",   	 ttbb_unc, 	 "-", 	 	 	  "-",		  "-",   	"-", 	   "-", 	   "-",  	  "-",     // "CMS_ttH_QCDscale_ttbb",
+      "-",      NPSFValueString,   	 NPSFValueString, 	 NPSFValueString,   NPSFValueString,		  NPSFValueString,   	NPSFValueString, 	   "-", 	   "-",  	  "-",     // NPSF 4j1t
+      "-",      NPSFValueString,   	 NPSFValueString, 	 NPSFValueString, 	NPSFValueString,		  NPSFValueString,   	NPSFValueString, 	   "-", 	   "-",  	  "-",     // NPSF 3j2t
+      "-",      NPSFValueString,   	 NPSFValueString, 	 NPSFValueString, 	NPSFValueString,		  NPSFValueString,   	NPSFValueString, 	   "-", 	   "-",  	  "-"     //  NPSF 4j2t
         };
 	
         
@@ -509,7 +521,10 @@ void getCombineInfo_dilep_ljets_awesomer_extraTTBB(TString hmass="ttH125",TStrin
 								true,   //  "CMS_eff_bShape",
 								true,   // 1p
 								true,   // 2p
-								true     // "CMS_ttH_QCDscale_ttbb"
+								true,     // "CMS_ttH_QCDscale_ttbb"
+                                true,   // NPSF 4j1t
+                                true,   // NPSF 3j2t
+                                true   // NPSF 4j2t 
 								}; 			
 								
 
@@ -590,8 +605,34 @@ void getCombineInfo_dilep_ljets_awesomer_extraTTBB(TString hmass="ttH125",TStrin
                 }
               }
 
+              if (systNames[n] == "SS_NPSF_4j1t"){
+                // if you're not any of these, then skip
+                if (   !channelNames[j].Contains("SS_ge4je1t") ) {                      
+                  syst = Form("-");
+                } else {
+                  cout << systNames[n] << ": using channel " << channelNames[j]  << "  sample name  " << sampleNames[i] << " value " << syst  <<  endl;
+                }
+              }
 
           
+              if (systNames[n] == "SS_NPSF_3j2t"){
+                // if you're not any of these, then skip
+                if (   !channelNames[j].Contains("SS_e3jge2t") ) {                      
+                  syst = Form("-");
+                } else {
+                  cout << systNames[n] << ": using channel " << channelNames[j]  << "  sample name  " << sampleNames[i] << " value " << syst  <<  endl;
+                }
+              }
+
+              if (systNames[n] == "SS_NPSF_4j2t"){
+                // if you're not any of these, then skip
+                if (   !channelNames[j].Contains("SS_ge4jge2t") ) {                      
+                  syst = Form("-");
+                } else {
+                  cout << systNames[n] << ": using channel " << channelNames[j]  << "  sample name  " << sampleNames[i] << " value " << syst  <<  endl;
+                }
+              }
+
 
 
           
