@@ -480,6 +480,10 @@ def create_datacard(ifile, ofile, disc, all_categories,
     systematics += split_systematics(ifile, disc, cats, btag_mode)
     systematics += get_ann_systematics(ifile, disc, all_categories, cats, is_8_tev=is_8_tev)
 
+    # Filter out b-tag rate uncertainties
+    if btag_mode == B_OFF:
+        systematics = filter(lambda (u, t, vs): "bRate" not in u, systematics)
+
     new_cats = set()
     for (s, cs) in cats.items():
         for c in cs:
