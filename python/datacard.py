@@ -15,19 +15,19 @@ B_CAT_SHAPE = 4 # Split into shape by category and rate
 # part of the former expression is a negative look-ahead making sure that
 # systematics are not caught by the category definition.
 
-
 # the sample string identifies things like this
 # part1_part2_part3
 # part1 = anything without an '_', may end in _obs
 # part2 = anything without an '_'
 # part3 = anything that is not followed by Up|Down,
-#         this makes the sample counting focus on the non-systematic
+#         this makes the sample extraction focus on the non-systematic
 #         histograms
 sample_re = re.compile(r'([^_]+(?:_obs)?)_([^_]+)_(.*)(?!(?:Up|Down)$)')
 signal_re = re.compile(r'(ttH).*')
 
-# This expression splits into 3 groups
-# part1:part2:part3
+# This expression splits into 3 groups:
+#   category_name:jet_multiplicity:parton_count
+# The latter two are optional.
 category_re = re.compile(r'(.*?)(?::(\d+)(?::(\d+))?)?$')
 
 # This is the default logging instance (open file or stream)
@@ -170,13 +170,13 @@ def get_systematics(file, overrides={}, rename=lambda u: u, samples=False):
 
     sys = []
     # create a list whose elements are the tuples
-    # (uncertainty, type, {sample:value})    
+    # (uncertainty, type, {sample:value})
     # row is a list of the items in the row
     for row in reader:
         unc = row.pop("Uncertainty").strip()
         type = row.pop("Type").strip()
-        # redefine row to be a dictionary
-        # fold in sample names here
+        # `row` is a dictionary with sample names as keys.  Strip spaces
+        # from the actual value
         row = dict(map(lambda (k,v): (k, v.strip()), row.items()))
         if unc in overrides:
             row = dict(
@@ -363,11 +363,9 @@ rate {rs}
                     # Here is how you add an uncertainty that is applied to only one
                     # category
 
-                    
                     # Q2 scale for wjets/zjets
                     # This uncertainty depends on the jet multiplicty
                     # or parton multiplicity you are considering
-                    #
                     if unc == "Q2scale_ttH_V" and s in ("wjets", "zjets"):
                         try:
                             # If this category is in your list of categories
