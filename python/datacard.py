@@ -337,6 +337,7 @@ rate {rs}
 
     active_unc = []
     debugUncert = False
+    fail = False
     for (unc, type, vals) in systematics:
         if debugUncert: log.write("-----------------------------------------------")
         if debugUncert: log.write("Considering uncert %s\n   type = %s\n   vals = %s\n" % (unc, type, vals))
@@ -366,9 +367,29 @@ rate {rs}
                                     "systematics\n".format(s=s, c=c, u=unc))
                     except:
                         ofile.write(" -")
-                        if not (not unc.startswith(c) and ("bShape" in unc or "ANNbin" in unc)):
+
+                        barf = True
+                        try:
+                            # Find parton count for current category
+                            parton = filter(lambda (cat, j, p): cat == c, categories)[0][2]
+                            m = re.match(r'Q2scale_ttH_ttbar(\d)p$', unc)
+                            if m:
+                                # Don't complain if we have the wrong
+                                # parton count
+                                if int(m.group(1)) != parton:
+                                    barf = False
+                        except:
+                            pass
+
+                        # Don't complain if we consider category-specific
+                        # uncertainties and are in the wrong category
+                        if ("bShape" in unc or "ANNbin" in unc) and not unc.startswith(c):
+                            barf = False
+
+                        if barf:
                             log.write("Integral not available for {s}, {c}, {u}: disabling "
                                     "systematics\n".format(s=s, c=c, u=unc))
+                            fail = True
                 elif vals[s] in ["-", "1"] and not \
                         (unc == "Q2scale_ttH_V" and s in ("wjets", "zjets")):
                     ofile.write(" " + vals[s])
@@ -390,9 +411,8 @@ rate {rs}
 
                             # The uncertainty will be 10% per jet
                             vals[s] = str(1 + .1 * mult)
-
-                        # exception will occur if this category is not in the list of catgories?
-                        # not sure how we get here
+                        # This will be triggered if the jet-multiplicity is
+                        # not defined (`None`)
                         except:
                             ofile.write(" -")
                             continue
@@ -405,6 +425,11 @@ rate {rs}
             active_unc.append(unc)
 
     ofile.write("---------------\n")
+
+    if fail:
+        raise Exception("FAILED TO FIND ALL UNCERTAINTIES! "
+                "INCOMPLETE DATACARD PRODUCED!")
+
     return active_unc
 
 def create_datacard(ifile, ofile, disc, all_categories,
@@ -465,7 +490,7 @@ def create_datacard(ifile, ofile, disc, all_categories,
     # keep only essential samples
     samples = filter(lambda (n, s): s in cats, samples)
 
-    split_q2(ifile, disc, all_categories)
+    split_q2(ifile, disc, categories)
 
     active_unc = write_datacard(ifile, disc, categories, cats, samples,
             systematics, limited_systematics, ofile=ofile)
