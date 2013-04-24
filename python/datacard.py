@@ -285,7 +285,8 @@ def split_systematics(file, disc, samples, btag_mode=B_CAT_SHAPE):
             done.add(c)
     return new_sys
 
-def write_datacard(file, discriminant, categories, cats, samples, systematics, ofile=log):
+def write_datacard(file, discriminant, categories, cats, samples, systematics,
+        limited_systematics={}, ofile=log):
     """
     """
     filename = file.GetName()
@@ -347,7 +348,10 @@ rate {rs}
             file_s = s + "125" if s == "ttH" else s
             for c in cats[s]:
                 if debugUncert: log.write("This is category %s\n" %c)
-                if type == "shape" and vals[s] != "-":
+
+                if unc in limited_systematics and not limited_systematics[unc](c):
+                    ofile.write(" -")
+                elif type == "shape" and vals[s] != "-":
                     try:
                         get_integral(file, discriminant, c, file_s, unc + "Up", throw=True)
                         get_integral(file, discriminant, c, file_s, unc + "Down", throw=True)
@@ -371,12 +375,8 @@ rate {rs}
                     if vals[s] == "1":
                         active = True
                 else:
-                    # Here is how you add an uncertainty that is applied to only one
-                    # category
-
                     # Q2 scale for wjets/zjets
                     # This uncertainty depends on the jet multiplicty
-                    # or parton multiplicity you are considering
                     if unc == "Q2scale_ttH_V" and s in ("wjets", "zjets"):
                         try:
                             # If this category is in your list of categories
@@ -396,27 +396,6 @@ rate {rs}
                         except:
                             ofile.write(" -")
                             continue
-                    # end if unc
-                    # if you are doing the NPSF
-                    if unc == "NPSF_4j1t":
-                        # if you are not in the right category
-                        if c != "SS_ge4je1t":
-                            # this is not the right category
-                            # print a blank
-                            ofile.write(" -")
-                            continue
-                        # end if not in right category
-                    # end if NPSF
-                    if unc == "NPSF_4j2t":
-                        if c != "SS_ge4jge2t":
-                            ofile.write(" -")
-                            continue
-                        # end if
-                    # end if
-                    if unc == "NPSF_3j2t":
-                        if c != "SS_e3jge2t":
-                            ofile.write(" -")
-                            continue
                     active = True
                     new_val = math.e ** (math.sqrt(math.log(1 + (float(vals[s]) - 1)**2)))
                     ofile.write(" {n:.3f}".format(n=new_val))
@@ -429,8 +408,8 @@ rate {rs}
     return active_unc
 
 def create_datacard(ifile, ofile, disc, all_categories,
-        disabled_systematics=[], btag_mode=B_CAT_SHAPE,
-        print_summary=False):
+        disabled_systematics=[], limited_systematics={},
+        btag_mode=B_CAT_SHAPE, print_summary=False):
     """Create a datacard for `ifile` (an open ROOT file) using the
     discriminant `disc` and categories, jet multiplicities, parton counts
     defined in `all_categories`.
@@ -488,8 +467,8 @@ def create_datacard(ifile, ofile, disc, all_categories,
 
     split_q2(ifile, disc, all_categories)
 
-    active_unc = write_datacard(ifile, disc, categories, cats, samples, systematics,
-            ofile=ofile)
+    active_unc = write_datacard(ifile, disc, categories, cats, samples,
+            systematics, limited_systematics, ofile=ofile)
 
     if not print_summary:
         return

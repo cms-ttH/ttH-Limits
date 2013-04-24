@@ -73,6 +73,19 @@ all_categories = map(split_category_string,
         "TTL_j2_t1:2 TTL_j2_t2:2 TTL_j3_t1:3 " \
         "TTL_jge4_t1 TTL_j3_t2 TTL_jge4_t2".split())
 
+# Indicate systematics that concern only certain categories.  This is a
+# dictionary with the uncertainty as key and an anonymous function as
+# value, that returns `True` when the category passed should be considered.
+# E.g., `eTauFake` is only activated for categories starting with `TTL_`.
+limited_systematics = {
+        'NPSF_4j1t': lambda c: c == "SS_ge4je1t",
+        'NPSF_4j2t': lambda c: c == "SS_ge4jge2t",
+        'NPSF_3j2t': lambda c: c == "SS_e3jge2t",
+        'TES': lambda c: c.startswith("TTL_"),
+        'eTauFake': lambda c: c.startswith("TTL_"),
+        'jetTauFake': lambda c: c.startswith("TTL_"),
+        'tauIdEff': lambda c: c.startswith("TTL_")}
+
 parser = optparse.OptionParser(usage="%prog [options] file")
 parser.add_option("-d", "--discriminant", dest="disc",
         help="use DISC as discriminant", metavar="DISC",
@@ -121,4 +134,5 @@ else:
 f = r.TFile(args[0], "UPDATE")
 create_datacard(f, ofile, opts.disc, categories,
         disabled_systematics=opts.nosys.split(),
+        limited_systematics=limited_systematics,
         btag_mode=btag_mode, print_summary=True)
