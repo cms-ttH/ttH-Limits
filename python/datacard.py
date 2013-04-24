@@ -324,7 +324,7 @@ rate {rs}
         rs=" ".join(rates)))
 
     active_unc = []
-    debugUncert = True
+    debugUncert = False
     for (unc, type, vals) in systematics:
         if debugUncert: log.write("-----------------------------------------------")
         if debugUncert: log.write("Considering uncert %s\n   type = %s\n   vals = %s\n" % (unc, type, vals))
