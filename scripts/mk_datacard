@@ -56,71 +56,69 @@ Recently Tested
 * `statUncertainties.C`
 """
 
+import optparse
 import ROOT as r
 
 from BEAN.DatacardMaker.datacard import *
 
-if __name__ == '__main__':
-    r.gROOT.SetBatch()
+r.gROOT.SetBatch()
 
-    import optparse
+# This has the format "category:jet_multiplicity:partons" where the
+# latter two are optional.
+all_categories = map(split_category_string,
+        "ljets_j4_t3:4:0 ljets_j4_t4:4:0 ljets_j5_t3:5:1 ljets_j5_tge4:5:1 " \
+        "ljets_jge6_t2:6:2 ljets_jge6_t3:6:2 ljets_jge6_tge4:6:2 " \
+        "ge3t:3:1 e3je2t:3:1 ge4je2t:4:2 " \
+        "SS_ge4je1t:4:1 SS_e3jge2t:3:0 SS_ge4jge2t:3:1 " \
+        "TTL_j2_t1:2 TTL_j2_t2:2 TTL_j3_t1:3 " \
+        "TTL_jge4_t1 TTL_j3_t2 TTL_jge4_t2".split())
 
-    # This has the format "category:jet_multiplicity:partons" where the
-    # latter two are optional.
-    all_categories = map(split_category_string,
-            "ljets_j4_t3:4:0 ljets_j4_t4:4:0 ljets_j5_t3:5:1 ljets_j5_tge4:5:1 " \
-            "ljets_jge6_t2:6:2 ljets_jge6_t3:6:2 ljets_jge6_tge4:6:2 " \
-            "ge3t:3:1 e3je2t:3:1 ge4je2t:4:2 " \
-            "SS_ge4je1t:4:1 SS_e3jge2t:3:0 SS_ge4jge2t:3:1 " \
-            "TTL_j2_t1:2 TTL_j2_t2:2 TTL_j3_t1:3 " \
-            "TTL_jge4_t1 TTL_j3_t2 TTL_jge4_t2".split())
+parser = optparse.OptionParser(usage="%prog [options] file")
+parser.add_option("-d", "--discriminant", dest="disc",
+        help="use DISC as discriminant", metavar="DISC",
+        default="CFMlpANN")
+parser.add_option("-o", "--outfile", dest="ofile",
+        help="write datacard to FILE", metavar="FILE")
+parser.add_option("-c", "--categories", dest="categories",
+        help="use CATS for possible categories (separated by whitespace).  "
+        "A leading `+` adds to the default, a leading `-` removes.",
+        metavar="CATS")
+parser.add_option("-s", "--disable-systematic", dest="nosys",
+        help="disable uncertainties in SYS (separated by whitespace).",
+        metavar="SYS", default="")
+parser.add_option("-b", "--btag-mode", dest="btag",
+        help="set b-tag uncertainty treatment to MODE.  (Allowed "
+        "values: off, rate, shape, category)", metavar="MODE",
+        default="category")
 
-    parser = optparse.OptionParser(usage="%prog [options] file")
-    parser.add_option("-d", "--discriminant", dest="disc",
-            help="use DISC as discriminant", metavar="DISC",
-            default="CFMlpANN")
-    parser.add_option("-o", "--outfile", dest="ofile",
-            help="write datacard to FILE", metavar="FILE")
-    parser.add_option("-c", "--categories", dest="categories",
-            help="use CATS for possible categories (separated by whitespace).  "
-            "A leading `+` adds to the default, a leading `-` removes.",
-            metavar="CATS")
-    parser.add_option("-s", "--disable-systematic", dest="nosys",
-            help="disable uncertainties in SYS (separated by whitespace).",
-            metavar="SYS", default="")
-    parser.add_option("-b", "--btag-mode", dest="btag",
-            help="set b-tag uncertainty treatment to MODE.  (Allowed "
-            "values: off, rate, shape, category)", metavar="MODE",
-            default="category")
+(opts, args) = parser.parse_args()
 
-    (opts, args) = parser.parse_args()
+if len(args) != 1:
+    parser.error("need to specify input file")
 
-    if len(args) != 1:
-        parser.error("need to specify input file")
+try:
+    btag_mode = parse_btag_mode(opts.btag)
+except:
+    parser.error("invalid b-tag mode: " + opts.btag)
 
-    try:
-        btag_mode = parse_btag_mode(opts.btag)
-    except:
-        parser.error("invalid b-tag mode: " + opts.btag)
+if not opts.ofile:
+    ofile = sys.stdout
+else:
+    ofile = open(opts.ofile, 'w')
 
-    if not opts.ofile:
-        ofile = sys.stdout
-    else:
-        ofile = open(opts.ofile, 'w')
-
-    if opts.categories:
-        if opts.categories.startswith("+"):
-            categories = all_categories + map(split_category_string, opts.categories[1:].split())
-        elif opts.categories.startswith("-"):
-            categories = all_categories
-            disabled = map(lambda (c, j, p): c, map(split_category_string, opts.categories[1:].split()))
-            categories = filter(lambda (c, j, p): c not in disabled, categories)
-        else:
-            categories = map(split_category_string, opts.categories.split())
-    else:
+if opts.categories:
+    if opts.categories.startswith("+"):
+        categories = all_categories + map(split_category_string, opts.categories[1:].split())
+    elif opts.categories.startswith("-"):
         categories = all_categories
+        disabled = map(lambda (c, j, p): c, map(split_category_string, opts.categories[1:].split()))
+        categories = filter(lambda (c, j, p): c not in disabled, categories)
+    else:
+        categories = map(split_category_string, opts.categories.split())
+else:
+    categories = all_categories
 
-    f = r.TFile(args[0], "UPDATE")
-    create_datacard(f, ofile, opts.disc, categories,
-            disabled_systematics=opts.nosys.split(),
-            btag_mode=btag_mode, print_summary=True)
+f = r.TFile(args[0], "UPDATE")
+create_datacard(f, ofile, opts.disc, categories,
+        disabled_systematics=opts.nosys.split(),
+        btag_mode=btag_mode, print_summary=True)
