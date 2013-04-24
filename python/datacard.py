@@ -186,6 +186,17 @@ def get_systematics(file, overrides={}, rename=lambda u: u, samples=False):
         sys.append((rename(unc), type, row))
     return sys
 
+def parse_btag_mode(s):
+    if s == "off":
+        return B_OFF
+    elif s == "rate":
+        return B_RATE
+    elif s == "shape":
+        return B_SHAPE
+    elif s == "category":
+        return B_CAT_SHAPE
+    raise Exception("Invalid b-tag mode '{m}'".format(m=s))
+
 def split_category_string(s):
     """Split a string of form "category:jets:partons" into components.
     Returns a list of a string and two integers.

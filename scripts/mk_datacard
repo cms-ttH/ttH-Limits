@@ -98,15 +98,9 @@ if __name__ == '__main__':
     if len(args) != 1:
         parser.error("need to specify input file")
 
-    if opts.btag == "off":
-        btag_mode = B_OFF
-    elif opts.btag == "rate":
-        btag_mode = B_RATE
-    elif opts.btag == "shape":
-        btag_mode = B_SHAPE
-    elif opts.btag == "category":
-        btag_mode = B_CAT_SHAPE
-    else:
+    try:
+        btag_mode = parse_btag_mode(opts.btag)
+    except:
         parser.error("invalid b-tag mode: " + opts.btag)
 
     if not opts.ofile:
