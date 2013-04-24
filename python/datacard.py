@@ -14,9 +14,20 @@ B_CAT_SHAPE = 4 # Split into shape by category and rate
 # Define some regular expressions to match samples and signal.  The last
 # part of the former expression is a negative look-ahead making sure that
 # systematics are not caught by the category definition.
+
+
+# the sample string identifies things like this
+# part1_part2_part3
+# part1 = anything without an '_', may end in _obs
+# part2 = anything without an '_'
+# part3 = anything that is not followed by Up|Down,
+#         this makes the sample counting focus on the non-systematic
+#         histograms
 sample_re = re.compile(r'([^_]+(?:_obs)?)_([^_]+)_(.*)(?!(?:Up|Down)$)')
 signal_re = re.compile(r'(ttH).*')
 
+# This expression splits into 3 groups
+# part1:part2:part3
 category_re = re.compile(r'(.*?)(?::(\d+)(?::(\d+))?)?$')
 
 # This is the default logging instance (open file or stream)
@@ -158,9 +169,14 @@ def get_systematics(file, overrides={}, rename=lambda u: u, samples=False):
         return sys_samples
 
     sys = []
+    # create a list whose elements are the tuples
+    # (uncertainty, type, {sample:value})    
+    # row is a list of the items in the row
     for row in reader:
         unc = row.pop("Uncertainty").strip()
         type = row.pop("Type").strip()
+        # redefine row to be a dictionary
+        # fold in sample names here
         row = dict(map(lambda (k,v): (k, v.strip()), row.items()))
         if unc in overrides:
             row = dict(
@@ -308,13 +324,18 @@ rate {rs}
         rs=" ".join(rates)))
 
     active_unc = []
+    debugUncert = True
     for (unc, type, vals) in systematics:
+        if debugUncert: log.write("-----------------------------------------------")
+        if debugUncert: log.write("Considering uncert %s\n   type = %s\n   vals = %s\n" % (unc, type, vals))
         active = False
 
         ofile.write("{u} {t}".format(u=unc, t=type))
         for (n, s) in samples:
+            if debugUncert: log.write("This is sample %s (also %s) \n" % (s,n))
             file_s = s + "125" if s == "ttH" else s
             for c in cats[s]:
+                if debugUncert: log.write("This is category %s\n" %c)
                 if type == "shape" and vals[s] != "-":
                     try:
                         get_integral(file, discriminant, c, file_s, unc + "Up", throw=True)
@@ -339,14 +360,54 @@ rate {rs}
                     if vals[s] == "1":
                         active = True
                 else:
+                    # Here is how you add an uncertainty that is applied to only one
+                    # category
+
+                    
+                    # Q2 scale for wjets/zjets
+                    # This uncertainty depends on the jet multiplicty
+                    # or parton multiplicity you are considering
+                    #
                     if unc == "Q2scale_ttH_V" and s in ("wjets", "zjets"):
                         try:
+                            # If this category is in your list of categories
+                            # find out the parton multiplicty
+                            # This pulls out the first entry in the list returned
+                            # by the filter
+                            # Then pullos out the first entry in the list, then
+                            # gets the first value associated with it, which is
+                            # the number of jets
                             mult = filter(lambda (cat, j, p): cat == c, categories)[0][1]
+
+                            # The uncertainty will be 10% per jet
                             vals[s] = str(1 + .1 * mult)
+
+                        # exception will occur if this category is not in the list of catgories?
+                        # not sure how we get here
                         except:
                             ofile.write(" -")
                             continue
-
+                    # end if unc
+                    # if you are doing the NPSF
+                    if unc == "NPSF_4j1t":
+                        # if you are not in the right category
+                        if c != "SS_ge4je1t":
+                            # this is not the right category
+                            # print a blank
+                            ofile.write(" -")
+                            continue
+                        # end if not in right category
+                    # end if NPSF
+                    if unc == "NPSF_4j2t":
+                        if c != "SS_ge4jge2t":
+                            ofile.write(" -")
+                            continue
+                        # end if
+                    # end if
+                    if unc == "NPSF_3j2t":
+                        if c != "SS_e3jge2t":
+                            ofile.write(" -")
+                            continue
                     active = True
                     new_val = math.e ** (math.sqrt(math.log(1 + (float(vals[s]) - 1)**2)))
                     ofile.write(" {n:.3f}".format(n=new_val))
