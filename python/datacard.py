@@ -173,6 +173,15 @@ def get_systematics(file, overrides={}, rename=lambda u: u, samples=False):
     # (uncertainty, type, {sample:value})
     # row is a list of the items in the row
     for row in reader:
+        # comment character
+        # if the line is not empty
+        if len(row) >0:            
+            # print row
+            # if the row starts with comment #
+            if re.match("^#", row["Uncertainty"]):
+                continue
+            # end if re.match
+        # end if len
         unc = row.pop("Uncertainty").strip()
         type = row.pop("Type").strip()
         # `row` is a dictionary with sample names as keys.  Strip spaces
@@ -223,6 +232,101 @@ def split_q2(file, disc, categories):
                 file.WriteObject(hnew, newname)
             except:
                 log.write("Can't create Q^2 scale shifts for '{c}'\n".format(c=c))
+
+def splitNPSF_forSS ( file, disc, categories, allSamples, systematicsToProcess):
+    """ Non-prompt scale factor uncertainties
+        Should be non-correlated across jet-tag categories
+        Make some histograms so they can be non-correlated
+        ***Inputs***
+           file: a root file with input histograms
+           disc: the name of the disciminant histograms to use
+           categories: a list of tuples in the format
+             (categoryName, numjets, numpartons)
+       ***Outputs***
+           returns a list of systematics to be added
+    """
+
+    debugSplitNPSF = False
+
+    # list of things that are prompt in your systematics input
+    promptSystematics = []
+    itemsToRemove = []
+    for (sysName, sysType, sysSamples) in systematicsToProcess:
+        if debugSplitNPSF: log.write("SYST: Name is {s}\n".format(s=sysName))
+        if "Prompt" in sysName:            
+            promptSystematics.append(sysName)
+            if debugSplitNPSF: log.write("--->Removing {s}, adding it to prompt list\n".format(s=sysName))
+            itemsToRemove.append((sysName, sysType, sysSamples))
+
+    if len(promptSystematics) < 1:
+        return
+    
+    for iThing in itemsToRemove:
+        systematicsToProcess.remove(iThing)
+
+    
+    bkgsEffectedByNPSF = ["ttbar", "ttbarPlusBBbar", "ttbarPlusCCbar", "wjets"]
+    listOfSystematicsToReturn = systematicsToProcess
+    for (iCategoryName, iNumJets, iNumPartons) in categories:
+        # if this isn't a SS dil category, skip it.
+        if iCategoryName != "SS_ge4je1t" \
+               and iCategoryName != "SS_e3jge2t" \
+               and iCategoryName != "SS_ge4jge2t":
+            continue
+        
+        shortCatName = iCategoryName.replace('_', '')        
+        for iSystematic in promptSystematics:
+            for iSample in bkgsEffectedByNPSF:
+                for iShape in ["Up","Down"]:                    
+                    oldName = "{s}_{d}_{c}_{sys}{shape}".format(s=iSample,
+                                                                d=disc,
+                                                                c=iCategoryName,
+                                                                sys=iSystematic,
+                                                                shape=iShape)
+                    newName = "{s}_{d}_{c}_{sys}{short}{shape}".format(s=iSample,
+                                                                d=disc,
+                                                                c=iCategoryName,
+                                                                short=shortCatName,
+                                                                sys=iSystematic,
+                                                                shape=iShape)
+                    if debugSplitNPSF:
+                        log.write("\n#####\nTrying to copy histo {0} to {1}\n".format(oldName,
+                                                                                     newName))
+                    
+                    originalHisto = file.Get(oldName)
+                    hist_new = originalHisto.Clone(newName)
+                    file.WriteObject(hist_new, newName)
+
+            
+            # end for each sample
+            # create a new systematic entry to return
+            # this is a tuple with
+            # (a,b,c)
+            # a = systematic name
+            # b = systematic type (shape, lnN)
+            # c = dictionary of sample names and value like '1','-'
+            returnDict = {}
+            
+            for (sampleNumber, sampleName) in allSamples:
+                if sampleName in bkgsEffectedByNPSF:
+                    returnDict[sampleName] = '1'
+                else:
+                    returnDict[sampleName] = '-'
+            returnVal = ("{sys}{short}".format(short=shortCatName, sys=iSystematic),
+                         "shape",
+                         returnDict)
+            listOfSystematicsToReturn.append(returnVal)
+        # end for each sys
+
+    # end for each category
+
+    if debugSplitNPSF: log.write("DEBUG: Returning these systematics\n\n")
+    for (a,b,c) in listOfSystematicsToReturn:
+        if debugSplitNPSF: log.write("{a}, {b}, {c}\n".format(a=a, b=b, c=c))
+    return listOfSystematicsToReturn
+# end function
+
+                    
 
 def split_systematics(file, disc, samples, btag_mode=B_CAT_SHAPE):
     """Split b-tag uncertainties:  copy category histogram w/o systematics
@@ -283,6 +387,11 @@ def split_systematics(file, disc, samples, btag_mode=B_CAT_SHAPE):
                         dict([(sam, "1") for sam in samples.keys()])))
             done.add('all')
             done.add(c)
+    # For debugging
+    #log.write("DEBUG: We are appending these systematics\n")
+    #for (a,b,c) in new_sys:
+    #    log.write("{a}, {b}, {c}\n".format(a=a, b=b, c=c))
+    #log.write("\n\n")
     return new_sys
 
 def write_datacard(file, discriminant, categories, cats, samples, systematics,
@@ -338,6 +447,7 @@ rate {rs}
     active_unc = []
     debugUncert = False
     fail = False
+    listOfFailures = []
     for (unc, type, vals) in systematics:
         if debugUncert: log.write("-----------------------------------------------")
         if debugUncert: log.write("Considering uncert %s\n   type = %s\n   vals = %s\n" % (unc, type, vals))
@@ -383,13 +493,16 @@ rate {rs}
 
                         # Don't complain if we consider category-specific
                         # uncertainties and are in the wrong category
-                        if ("bShape" in unc or "ANNbin" in unc) and not unc.startswith(c):
+                        if ("bShape" in unc or "ANNbin" in unc or "Prompt" in unc) and not unc.startswith(c):
                             barf = False
 
                         if barf:
                             log.write("Integral not available for {s}, {c}, {u}: disabling "
                                     "systematics\n".format(s=s, c=c, u=unc))
+
+                            log.write("DEBUG: Failure caused by this uncertainty {s} {c} {u}\n\n".format(s=s,c=c,u=unc)) 
                             fail = True
+                            listOfFailures.append((s,c,unc))
                 elif vals[s] in ["-", "1"] and not \
                         (unc == "Q2scale_ttH_V" and s in ("wjets", "zjets")):
                     ofile.write(" " + vals[s])
@@ -427,6 +540,10 @@ rate {rs}
     ofile.write("---------------\n")
 
     if fail:
+        log.write("Crashing because the following uncertainties\n"
+                  +"Are missing histograms")
+        for (iSample, iCategory, iUncertainty) in listOfFailures:
+            log.write("DEBUG: {s} {c} {u}".format(s=iSample, c=iCategory, u=iUncertainty))
         raise Exception("FAILED TO FIND ALL UNCERTAINTIES! "
                 "INCOMPLETE DATACARD PRODUCED!")
 
@@ -496,6 +613,15 @@ def create_datacard(ifile, ofile, disc, all_categories,
 
     split_q2(ifile, disc, categories)
 
+
+    # split up the non-prompt scale factor uncertainties
+    # remove baseline NPSF uncertainties
+    systematics = splitNPSF_forSS (ifile, disc, all_categories, samples, systematics)
+
+    #log.write ("\n>>>>>>>>>>>>>>>>>>>>>>AFTER SPLIT<<<<<<<<<<<<<<<<<<<\n")
+    #for (sysName, sysType, sysSamples) in systematics:
+    #    log.write("SYST: Name is {s}\n".format(s=sysName))
+ 
     active_unc = write_datacard(ifile, disc, categories, cats, samples,
             systematics, limited_systematics, ofile=ofile)
 
