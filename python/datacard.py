@@ -258,8 +258,12 @@ def splitNPSF_forSS ( file, disc, categories, allSamples, systematicsToProcess):
             if debugSplitNPSF: log.write("--->Removing {s}, adding it to prompt list\n".format(s=sysName))
             itemsToRemove.append((sysName, sysType, sysSamples))
 
+    # If there are no prompt systematics to handle
+    # then just return. 
+    # Return value is a list of systematics.
+    # It is the same as the input list.
     if len(promptSystematics) < 1:
-        return
+        return systematicsToProcess
     
     for iThing in itemsToRemove:
         systematicsToProcess.remove(iThing)
