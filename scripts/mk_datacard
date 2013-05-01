@@ -70,8 +70,8 @@ all_categories = map(split_category_string,
         "ljets_jge6_t2:6:2 ljets_jge6_t3:6:2 ljets_jge6_tge4:6:2 " \
         "ge3t:3:1 e3je2t:3:1 ge4je2t:4:2 " \
         "SS_ge4je1t:4:1 SS_e3jge2t:3:0 SS_ge4jge2t:3:1 " \
-        "TTL_j2_t1:2 TTL_j2_t2:2 TTL_j3_t1:3 " \
-        "TTL_jge4_t1 TTL_j3_t2 TTL_jge4_t2".split())
+        "TTL_1b_1nb:4:0 TTL_1b_2nb:5:1 TTL_1b_3+nb:6:2" \
+        "TTL_2b_0nb:4:0 TTL_2b_1nb:5:1 TTL_2b_2+nb:6:2".split())
 
 # Indicate systematics that concern only certain categories.  This is a
 # dictionary with the uncertainty as key and an anonymous function as
