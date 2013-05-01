@@ -102,7 +102,7 @@ parser.add_option("-s", "--disable-systematic", dest="nosys",
 parser.add_option("-b", "--btag-mode", dest="btag",
         help="set b-tag uncertainty treatment to MODE.  (Allowed "
         "values: off, rate, shape, category)", metavar="MODE",
-        default="category")
+        default="off")
 
 (opts, args) = parser.parse_args()
 
