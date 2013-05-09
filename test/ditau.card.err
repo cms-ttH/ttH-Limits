@@ -1,0 +1,47 @@
+Integral zero for wjets, TTL_2b_1nb, CMS_ttH_CSVLF: disabling systematics
+Integral zero for wjets, TTL_2b_2+nb, CMS_ttH_CSVLF: disabling systematics
+Integral zero for diboson, TTL_2b_2+nb, CMS_ttH_CSVLF: disabling systematics
+Integral zero for wjets, TTL_2b_1nb, CMS_ttH_CSVHF: disabling systematics
+Integral zero for wjets, TTL_2b_2+nb, CMS_ttH_CSVHF: disabling systematics
+Integral zero for diboson, TTL_2b_2+nb, CMS_ttH_CSVHF: disabling systematics
+Integral zero for wjets, TTL_2b_1nb, CMS_ttH_CSVHFStats1: disabling systematics
+Integral zero for wjets, TTL_2b_2+nb, CMS_ttH_CSVHFStats1: disabling systematics
+Integral zero for diboson, TTL_2b_2+nb, CMS_ttH_CSVHFStats1: disabling systematics
+Integral zero for wjets, TTL_2b_1nb, CMS_ttH_CSVLFStats1: disabling systematics
+Integral zero for wjets, TTL_2b_2+nb, CMS_ttH_CSVLFStats1: disabling systematics
+Integral zero for diboson, TTL_2b_2+nb, CMS_ttH_CSVLFStats1: disabling systematics
+Integral zero for wjets, TTL_2b_1nb, CMS_ttH_CSVHFStats2: disabling systematics
+Integral zero for wjets, TTL_2b_2+nb, CMS_ttH_CSVHFStats2: disabling systematics
+Integral zero for diboson, TTL_2b_2+nb, CMS_ttH_CSVHFStats2: disabling systematics
+Integral zero for wjets, TTL_2b_1nb, CMS_ttH_CSVLFStats2: disabling systematics
+Integral zero for wjets, TTL_2b_2+nb, CMS_ttH_CSVLFStats2: disabling systematics
+Integral zero for diboson, TTL_2b_2+nb, CMS_ttH_CSVLFStats2: disabling systematics
+Integral zero for wjets, TTL_2b_1nb, CMS_scale_j: disabling systematics
+Integral zero for wjets, TTL_2b_2+nb, CMS_scale_j: disabling systematics
+Integral zero for diboson, TTL_2b_2+nb, CMS_scale_j: disabling systematics
+Integral zero for wjets, TTL_2b_1nb, CMS_ttH_topPtcorr: disabling systematics
+Integral zero for wjets, TTL_2b_2+nb, CMS_ttH_topPtcorr: disabling systematics
+Integral zero for diboson, TTL_2b_2+nb, CMS_ttH_topPtcorr: disabling systematics
+Integral zero for wjets, TTL_2b_1nb, TES: disabling systematics
+Integral zero for wjets, TTL_2b_2+nb, TES: disabling systematics
+Integral zero for diboson, TTL_2b_2+nb, TES: disabling systematics
+Integral zero for wjets, TTL_2b_1nb, jetTauFake: disabling systematics
+Integral zero for wjets, TTL_2b_2+nb, jetTauFake: disabling systematics
+Integral zero for diboson, TTL_2b_2+nb, jetTauFake: disabling systematics
+Integral zero for wjets, TTL_2b_1nb, eTauFake: disabling systematics
+Integral zero for wjets, TTL_2b_2+nb, eTauFake: disabling systematics
+Integral zero for diboson, TTL_2b_2+nb, eTauFake: disabling systematics
+Integral zero for wjets, TTL_2b_1nb, tauIdEff: disabling systematics
+Integral zero for wjets, TTL_2b_2+nb, tauIdEff: disabling systematics
+Integral zero for diboson, TTL_2b_2+nb, tauIdEff: disabling systematics
+
+Executive Summary
+=================
+
+Included in Datacard
+--------------------
+Categories:    [ljets_j4_t3 ljets_j4_t4 ljets_j5_t3 ljets_j5_tge4 ljets_jge6_t2 ljets_jge6_t3 ljets_jge6_tge4 ge3t e3je2t ge4je2t SS_ge4je1t SS_e3jge2t SS_ge4jge2t] TTL_1b_1nb TTL_1b_2nb TTL_1b_3+nb TTL_2b_0nb TTL_2b_1nb TTL_2b_2+nb
+Samples:       ttH ttbar singlet wjets zjets diboson
+Uncertainties: lumi_8TeV QCDscale_ttH QCDscale_ttbar pdf_gg pdf_qqbar pdf_qg QCDscale_V QCDscale_VV CMS_ttH_pu CMS_res_j CMS_ttH_eff_lep Q2scale_ttH_ttbar0p Q2scale_ttH_ttbar1p Q2scale_ttH_ttbar2p [Q2scale_ttH_ttbar_bb Q2scale_ttH_ttbar_cc] Q2scale_ttH_V CMS_ttH_CSVLF CMS_ttH_CSVHF CMS_ttH_CSVHFStats1 CMS_ttH_CSVLFStats1 CMS_ttH_CSVHFStats2 CMS_ttH_CSVLFStats2 CMS_scale_j CMS_ttH_topPtcorr [CMS_ttH_QCDscale_ttbb] TES jetTauFake eTauFake tauIdEff
+~~~
+Disabled objects present within []s
