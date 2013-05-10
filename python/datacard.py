@@ -253,7 +253,7 @@ def splitNPSF_forSS ( file, disc, categories, allSamples, systematicsToProcess):
     itemsToRemove = []
     for (sysName, sysType, sysSamples) in systematicsToProcess:
         if debugSplitNPSF: log.write("SYST: Name is {s}\n".format(s=sysName))
-        if "Prompt" in sysName:            
+        if "Prompt" in sysName :            
             promptSystematics.append(sysName)
             if debugSplitNPSF: log.write("--->Removing {s}, adding it to prompt list\n".format(s=sysName))
             itemsToRemove.append((sysName, sysType, sysSamples))
@@ -272,12 +272,14 @@ def splitNPSF_forSS ( file, disc, categories, allSamples, systematicsToProcess):
     bkgsEffectedByNPSF = ["ttbar", "ttbarPlusBBbar", "ttbarPlusCCbar", "wjets"]
     listOfSystematicsToReturn = systematicsToProcess
     for (iCategoryName, iNumJets, iNumPartons) in categories:
+        if debugSplitNPSF: log.write("What category is this? = {s}".format(s=iCategoryName))
         # if this isn't a SS dil category, skip it.
         if iCategoryName != "SS_ge4je1t" \
                and iCategoryName != "SS_e3jge2t" \
                and iCategoryName != "SS_ge4jge2t":
             continue
-        
+
+                
         shortCatName = iCategoryName.replace('_', '')        
         for iSystematic in promptSystematics:
             for iSample in bkgsEffectedByNPSF:
@@ -497,7 +499,7 @@ rate {rs}
 
                         # Don't complain if we consider category-specific
                         # uncertainties and are in the wrong category
-                        if ("bShape" in unc or "ANNbin" in unc or "Prompt" in unc) and not unc.startswith(c):
+                        if ("bShape" in unc or "ANNbin" in unc or "Prompt" in unc or "Flip" in unc) and not unc.startswith(c):
                             barf = False
 
                         if barf:
@@ -620,7 +622,7 @@ def create_datacard(ifile, ofile, disc, all_categories,
 
     # split up the non-prompt scale factor uncertainties
     # remove baseline NPSF uncertainties
-    systematics = splitNPSF_forSS (ifile, disc, all_categories, samples, systematics)
+    systematics = splitNPSF_forSS (ifile, disc, categories, samples, systematics)
 
     #log.write ("\n>>>>>>>>>>>>>>>>>>>>>>AFTER SPLIT<<<<<<<<<<<<<<<<<<<\n")
     #for (sysName, sysType, sysSamples) in systematics:

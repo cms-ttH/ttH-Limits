@@ -31,3 +31,8 @@ TES                   , shape , 1     , 1     , -              , -              
 jetTauFake            , shape , 1     , 1     , -              , -              , 1       , 1     , 1     , -      , -      , 1
 eTauFake              , shape , 1     , 1     , -              , -              , 1       , 1     , 1     , -      , -      , 1
 tauIdEff              , shape , 1     , 1     , -              , -              , 1       , 1     , 1     , -      , -      , 1
+MuRatePromptSF        , shape , -     , 1     , 1              , 1              , -       , 1     , -     , -      , -      , -
+MuShapePromptSF       , shape , -     , 1     , 1              , 1              , -       , 1     , -     , -      , -      , -
+EleRatePromptSF       , shape , -     , 1     , 1              , 1              , -       , 1     , -     , -      , -      , -
+EleShapePromptSF      , shape , -     , 1     , 1              , 1              , -       , 1     , -     , -      , -      , -
+FlipSF                , shape , -     , 1     , 1              , 1              , -       , -     , -     , -      , -      , -
