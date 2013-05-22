@@ -40,7 +40,7 @@ class IntegralException(Exception):
     pass
 
 def get_ann_systematics(file, discriminant, categories, samples, data_sample="data_obs",
-        signal_sample="ttH", is_8_tev=True):
+        signal_sample="ttH", signal_mass="125", is_8_tev=True):
     """For all samples and categories, this functions produces single bin
     systematics, shifts present in only one bin.  These shift will be
     produced when a process has significant expectation and the systematic
@@ -50,16 +50,20 @@ def get_ann_systematics(file, discriminant, categories, samples, data_sample="da
 
     for (c, j, p) in categories:
         data_hist = file.Get("{s}_{d}_{c}".format(s=data_sample, d=discriminant, c=c))
-        sig_hist = file.Get("{s}_{d}_{c}".format(s=signal_sample + "125", d=discriminant, c=c))
+        sig_hist = file.Get("{s}_{d}_{c}".format(s=signal_sample + signal_mass, d=discriminant, c=c))
         bkg_hist = None
 
         # Build background sum
         for (s, cats) in samples.items():
-            s = s + "125" if s == "ttH" else s
+            s = s + signal_mass if s == "ttH" else s
             if s in (data_sample, signal_sample) or c not in cats:
                 continue
 
             hist = file.Get("{s}_{d}_{c}".format(s=s, d=discriminant, c=c))
+            if not hist:
+                sys.stderr.write("{s}_{d}_{c} cannot find\n".format(s=s, d=discriminant, c=c))
+                continue
+
             if bkg_hist:
                 bkg_hist.Add(hist)
             else:
@@ -67,7 +71,7 @@ def get_ann_systematics(file, discriminant, categories, samples, data_sample="da
 
         # Loop over samples for category and find low stats bins
         for (s, cats) in samples.items():
-            file_s = s + "125" if s == "ttH" else s
+            file_s = s + signal_mass if s == "ttH" else s
 
             if c not in cats:
                 continue
@@ -175,7 +179,7 @@ def get_systematics(file, overrides={}, rename=lambda u: u, samples=False):
     for row in reader:
         # comment character
         # if the line is not empty
-        if len(row) >0:            
+        if len(row) >0:
             # print row
             # if the row starts with comment #
             if re.match("^#", row["Uncertainty"]):
@@ -252,10 +256,12 @@ def splitNPSF_forSS ( file, disc, categories, allSamples, systematicsToProcess):
     promptSystematics = []
     itemsToRemove = []
     for (sysName, sysType, sysSamples) in systematicsToProcess:
-        if debugSplitNPSF: log.write("SYST: Name is {s}\n".format(s=sysName))
-        if "Prompt" in sysName :            
+        if debugSplitNPSF:
+            log.write("SYST: Name is {s}\n".format(s=sysName))
+        if "Prompt" in sysName:
             promptSystematics.append(sysName)
-            if debugSplitNPSF: log.write("--->Removing {s}, adding it to prompt list\n".format(s=sysName))
+            if debugSplitNPSF:
+                log.write("--->Removing {s}, adding it to prompt list\n".format(s=sysName))
             itemsToRemove.append((sysName, sysType, sysSamples))
 
     # If there are no prompt systematics to handle
@@ -268,18 +274,17 @@ def splitNPSF_forSS ( file, disc, categories, allSamples, systematicsToProcess):
     for iThing in itemsToRemove:
         systematicsToProcess.remove(iThing)
 
-    
     bkgsEffectedByNPSF = ["ttbar", "ttbarPlusBBbar", "ttbarPlusCCbar", "wjets"]
     listOfSystematicsToReturn = systematicsToProcess
     for (iCategoryName, iNumJets, iNumPartons) in categories:
-        if debugSplitNPSF: log.write("What category is this? = {s}".format(s=iCategoryName))
+        if debugSplitNPSF:
+            log.write("What category is this? = {s}".format(s=iCategoryName))
         # if this isn't a SS dil category, skip it.
         if iCategoryName != "SS_ge4je1t" \
                and iCategoryName != "SS_e3jge2t" \
                and iCategoryName != "SS_ge4jge2t":
             continue
 
-                
         shortCatName = iCategoryName.replace('_', '')        
         for iSystematic in promptSystematics:
             for iSample in bkgsEffectedByNPSF:
@@ -312,7 +317,7 @@ def splitNPSF_forSS ( file, disc, categories, allSamples, systematicsToProcess):
             # b = systematic type (shape, lnN)
             # c = dictionary of sample names and value like '1','-'
             returnDict = {}
-            
+
             for (sampleNumber, sampleName) in allSamples:
                 if sampleName in bkgsEffectedByNPSF:
                     returnDict[sampleName] = '1'
@@ -326,15 +331,13 @@ def splitNPSF_forSS ( file, disc, categories, allSamples, systematicsToProcess):
 
     # end for each category
 
-    if debugSplitNPSF: log.write("DEBUG: Returning these systematics\n\n")
-    for (a,b,c) in listOfSystematicsToReturn:
-        if debugSplitNPSF: log.write("{a}, {b}, {c}\n".format(a=a, b=b, c=c))
+    if debugSplitNPSF:
+        log.write("DEBUG: Returning these systematics\n\n")
+        for (a,b,c) in listOfSystematicsToReturn:
+            log.write("{a}, {b}, {c}\n".format(a=a, b=b, c=c))
     return listOfSystematicsToReturn
-# end function
 
-                    
-
-def split_systematics(file, disc, samples, btag_mode=B_CAT_SHAPE):
+def split_systematics(file, disc, samples, btag_mode=B_CAT_SHAPE, signal_mass="125"):
     """Split b-tag uncertainties:  copy category histogram w/o systematics
     for rates, systematics of form "CMS_eff_bUp" to a shape uncertainty.
 
@@ -351,7 +354,7 @@ def split_systematics(file, disc, samples, btag_mode=B_CAT_SHAPE):
         return new_sys
 
     for (s, cats) in samples.items():
-        s = s + "125" if s == "ttH" else s
+        s = s + signal_mass if s == "ttH" else s
         for c in cats:
             stub = "_".join((s, disc, c))
             orig = file.Get(stub)
@@ -401,7 +404,7 @@ def split_systematics(file, disc, samples, btag_mode=B_CAT_SHAPE):
     return new_sys
 
 def write_datacard(file, discriminant, categories, cats, samples, systematics,
-        limited_systematics={}, ofile=log):
+        limited_systematics={}, ofile=log, signal_mass="125"):
     """
     """
     filename = file.GetName()
@@ -453,18 +456,20 @@ rate {rs}
     active_unc = []
     debugUncert = False
     fail = False
-    listOfFailures = []
     for (unc, type, vals) in systematics:
-        if debugUncert: log.write("-----------------------------------------------")
-        if debugUncert: log.write("Considering uncert %s\n   type = %s\n   vals = %s\n" % (unc, type, vals))
+        if debugUncert:
+            log.write("-----------------------------------------------")
+            log.write("Considering uncert %s\n   type = %s\n   vals = %s\n" % (unc, type, vals))
         active = False
 
         ofile.write("{u} {t}".format(u=unc, t=type))
         for (n, s) in samples:
-            if debugUncert: log.write("This is sample %s (also %s) \n" % (s,n))
-            file_s = s + "125" if s == "ttH" else s
+            if debugUncert:
+                log.write("This is sample %s (also %s) \n" % (s,n))
+            file_s = s + signal_mass if s == "ttH" else s
             for c in cats[s]:
-                if debugUncert: log.write("This is category %s\n" %c)
+                if debugUncert:
+                    log.write("This is category %s\n" %c)
 
                 if unc in limited_systematics and not limited_systematics[unc](c):
                     ofile.write(" -")
@@ -503,12 +508,9 @@ rate {rs}
                             barf = False
 
                         if barf:
-                            log.write("Integral not available for {s}, {c}, {u}: disabling "
+                            log.write("FAIL: Integral not available for {s}, {c}, {u}: disabling "
                                     "systematics\n".format(s=s, c=c, u=unc))
-
-                            log.write("DEBUG: Failure caused by this uncertainty {s} {c} {u}\n\n".format(s=s,c=c,u=unc)) 
                             fail = True
-                            listOfFailures.append((s,c,unc))
                 elif vals[s] in ["-", "1"] and not \
                         (unc == "Q2scale_ttH_V" and s in ("wjets", "zjets")):
                     ofile.write(" " + vals[s])
@@ -546,10 +548,6 @@ rate {rs}
     ofile.write("---------------\n")
 
     if fail:
-        log.write("Crashing because the following uncertainties\n"
-                  +"Are missing histograms")
-        for (iSample, iCategory, iUncertainty) in listOfFailures:
-            log.write("DEBUG: {s} {c} {u}".format(s=iSample, c=iCategory, u=iUncertainty))
         raise Exception("FAILED TO FIND ALL UNCERTAINTIES! "
                 "INCOMPLETE DATACARD PRODUCED!")
 
@@ -557,12 +555,11 @@ rate {rs}
 
 def create_datacard(ifile, ofile, disc, all_categories,
         disabled_systematics=[], limited_systematics={},
-        btag_mode=B_CAT_SHAPE, print_summary=False):
+        btag_mode=B_CAT_SHAPE, print_summary=False, signal_mass="125"):
     """Create a datacard for `ifile` (an open ROOT file) using the
     discriminant `disc` and categories, jet multiplicities, parton counts
     defined in `all_categories`.
     """
-    print os.path.dirname(__file__)
     sysfile = os.path.join(os.path.dirname(__file__), "systematics.csv")
     all_category_names = map(lambda (c, j, p): c, all_categories)
 
@@ -600,8 +597,9 @@ def create_datacard(ifile, ofile, disc, all_categories,
     systematics = get_systematics(sysfile, overrides=overrides, rename=rename)
     all_uncertainties = map(lambda (u, t, vs): u, systematics)
     systematics = filter(lambda (u, t, vs): u not in disabled_systematics, systematics)
-    systematics += split_systematics(ifile, disc, cats, btag_mode)
-    systematics += get_ann_systematics(ifile, disc, all_categories, cats, is_8_tev=is_8_tev)
+    systematics += split_systematics(ifile, disc, cats, btag_mode, signal_mass=signal_mass)
+    systematics += get_ann_systematics(ifile, disc, all_categories, cats,
+            is_8_tev=is_8_tev, signal_mass=signal_mass)
 
     # Filter out b-tag rate uncertainties
     if btag_mode == B_OFF:
@@ -619,17 +617,16 @@ def create_datacard(ifile, ofile, disc, all_categories,
 
     split_q2(ifile, disc, categories)
 
-
     # split up the non-prompt scale factor uncertainties
     # remove baseline NPSF uncertainties
-    systematics = splitNPSF_forSS (ifile, disc, categories, samples, systematics)
+    systematics = splitNPSF_forSS(ifile, disc, categories, samples, systematics)
 
     #log.write ("\n>>>>>>>>>>>>>>>>>>>>>>AFTER SPLIT<<<<<<<<<<<<<<<<<<<\n")
     #for (sysName, sysType, sysSamples) in systematics:
     #    log.write("SYST: Name is {s}\n".format(s=sysName))
- 
+
     active_unc = write_datacard(ifile, disc, categories, cats, samples,
-            systematics, limited_systematics, ofile=ofile)
+            systematics, limited_systematics, ofile=ofile, signal_mass=signal_mass)
 
     if not print_summary:
         return
