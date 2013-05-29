@@ -573,7 +573,7 @@ def create_datacard(ifile, ofile, disc, all_categories,
     # for certain uncertainties
     overrides = {
             "lumi": "1.044" if is_8_tev else "1.022",
-            "CMS_ttH_eff_lep": "1.04" if is_8_tev else "1.018",
+            "CMS_ttH_eff_lep": "1.014" if is_8_tev else "1.018",
             "CMS_ttH_QCDscale_ttbb": "1.5"}
 
     # Retrieve list of samples (ordered) from systematics file
