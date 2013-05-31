@@ -7,14 +7,32 @@ public:
   LabelInfo(TString n, TString l): name(n), label(l) {}
 };
 
-void printNorms(TString dataFileName = "", TString prefix_ttH = "ttH125") {
+/*
+
+Script to produce yield tables per category
+
+to use, you need a datacard (e.g. datacard.dat), and a root file (e.g. file.root)
+
+combine -M MaxLikelihoodFit -m 125 --rMin -10 --rMax 10 --minos all datacard.dat -t -1
+
+text2workspace.py -m 125 -D data_obs datacard.dat -b -o wsTest.root
+
+root -b -q head.C printNorms.C'("file.root")'
+
+*/
+
+
+////
+////
+
+void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "ttH125") {
 
   gStyle->SetOptStat(0);
 
   //Suppress the printout from making plots
   gErrorIgnoreLevel = 2000;
  
-  gSystem->Load("$CMSSW_BASE/lib/slc5_amd64_gcc472/libHiggsAnalysisCombinedLimit.so");
+  gSystem->Load("$CMSSW_BASE/lib/slc5_amd64_gcc462/libHiggsAnalysisCombinedLimit.so");
   
   //This file has the pdf with everything set to the values before the fit
   TFile *wsFile = TFile::Open("wsTest.root");
@@ -23,9 +41,13 @@ void printNorms(TString dataFileName = "", TString prefix_ttH = "ttH125") {
   //This file has the actual fit results
   TFile *fitFile = TFile::Open("mlfit.root");
   RooFitResult *preFitFR = (RooFitResult*)fitFile->Get("nuisances_prefit_res");  
+  if( fitType==1 )      preFitFR = (RooFitResult*)fitFile->Get("fit_b");
+  else if( fitType==2 ) preFitFR = (RooFitResult*)fitFile->Get("fit_s");
 
   //Try making "snapshots" with preFit and postFit nuisance values
-  w->saveSnapshot("prefit",RooArgSet(preFitFR->floatParsInit()),true);
+  if( fitType==1 )      w->saveSnapshot("postfitB",RooArgSet(preFitFR->floatParsFinal()),true);
+  else if( fitType==2 ) w->saveSnapshot("postfitS",RooArgSet(preFitFR->floatParsFinal()),true);
+  else                  w->saveSnapshot("prefit",RooArgSet(preFitFR->floatParsFinal()),true);
 
   //And if we want it, the data file
   TFile *dataFile = 0;
@@ -37,6 +59,7 @@ void printNorms(TString dataFileName = "", TString prefix_ttH = "ttH125") {
   //Now we need a list of categories and a list of processes
   TList processes;
   processes.Add(new LabelInfo("ttbar","$t\\bar{t}+$lf"));
+  processes.Add(new LabelInfo("ttbarPlusB","$t\\bar{t}+b$"));
   processes.Add(new LabelInfo("ttbarPlusBBbar","$t\\bar{t}+b\\bar{b}$"));
   processes.Add(new LabelInfo("ttbarPlusCCbar","$t\\bar{t}+c\\bar{c}$"));
   processes.Add(new LabelInfo("ttbarW","$t\\bar{t}W$"));
@@ -58,7 +81,8 @@ void printNorms(TString dataFileName = "", TString prefix_ttH = "ttH125") {
   allCategories.Add(new LabelInfo("ljets_j4_t4","LJ: 4J,4T"));
   allCategories.Add(new LabelInfo("ljets_j5_tge4","LJ: 5J,$\\geq3$T"));
   allCategories.Add(new LabelInfo("ljets_jge6_tge4","LJ: $\\geq6$J,$\\geq4$T"));
-  allCategories.Add(new LabelInfo("e2je2t","DIL: 2J,2T"));
+  allCategories.Add(new LabelInfo("e3je2t","DIL: 3J,2T"));
+  allCategories.Add(new LabelInfo("ge4je2t","DIL: $\\geq4$J,2T"));
   allCategories.Add(new LabelInfo("ge3t","DIL: $\\geq3$J,$\\geq3$T"));
 
   //Now look in the postfit workspace to see which ones were actually used
@@ -69,8 +93,8 @@ void printNorms(TString dataFileName = "", TString prefix_ttH = "ttH125") {
 
   while (( c = (LabelInfo *)nextCat())) categories.Add(c);
 
-  const int NumSamples = 9+3;
-  const int NumCats = 9;
+  const int NumSamples = 10+3;
+  const int NumCats = 10;
 
   double table_value[NumSamples][NumCats];
   double table_value_syst_err[NumSamples][NumCats];
@@ -104,7 +128,7 @@ void printNorms(TString dataFileName = "", TString prefix_ttH = "ttH125") {
 
     double total_sumw2 = 0.;
 
-    TString ttHHistName = prefix_ttH + "_CFMlpANN_" + catName;
+    TString ttHHistName = prefix_ttH + "_MVA_" + catName;
     TH1 *ttHHist = (TH1 *)dataFile->Get(ttHHistName);
     double ttH_val_prefit = ttHHist->Integral();
     ttHHist->SetLineColor(kRed);
@@ -119,7 +143,11 @@ void printNorms(TString dataFileName = "", TString prefix_ttH = "ttH125") {
     RooAbsReal *fitTTH = w->function(normName_ttH);
 
     if( fitTTH ){
-        w->loadSnapshot("prefit");        
+      //w->loadSnapshot("prefit");        
+      if( fitType==1 )      w->loadSnapshot("postfitB");
+      else if( fitType==2 ) w->loadSnapshot("postfitS");
+      else                  w->loadSnapshot("prefit");
+
         //ttH_val_prefit = fitTTH->getVal();
         ttH_err_prefit = fitTTH->getPropagatedError(*preFitFR);
     }
@@ -139,7 +167,7 @@ void printNorms(TString dataFileName = "", TString prefix_ttH = "ttH125") {
 
       //Construct the name of the normalization variable.
       TString normName = "n_exp_final_bin"+catName+"_proc_"+procName;
-      TString tempHistName = procName + "_CFMlpANN_"+catName;
+      TString tempHistName = procName + "_MVA_"+catName;
       TH1 *procHist = (TH1 *)dataFile->Get(tempHistName);
     
       int nbins = procHist->GetNbinsX();
@@ -155,7 +183,10 @@ void printNorms(TString dataFileName = "", TString prefix_ttH = "ttH125") {
         fitArgs.add(*fitN);
 
         //Extract normalization and error on nomralization (before fit)
-        w->loadSnapshot("prefit");
+        //w->loadSnapshot("prefit");
+	if( fitType==1 )      w->loadSnapshot("postfitB");
+	else if( fitType==2 ) w->loadSnapshot("postfitS");
+	else                  w->loadSnapshot("prefit");
         preFitNorm = fitN->getVal();
         preFitErr = fitN->getPropagatedError(*preFitFR);
       }
@@ -185,7 +216,10 @@ void printNorms(TString dataFileName = "", TString prefix_ttH = "ttH125") {
     //Sum up the category, pre and post fit.
     RooAddition fitTotal("fitTotal","fitTotal",fitArgs);
 
-    w->loadSnapshot("prefit");
+    //w->loadSnapshot("prefit");
+    if( fitType==1 )      w->loadSnapshot("postfitB");
+    else if( fitType==2 ) w->loadSnapshot("postfitS");
+    else                  w->loadSnapshot("prefit");
     double preFitTotalN = fitTotal.getVal();
     double preFitTotalErr = fitTotal.getPropagatedError(*preFitFR);
 
@@ -199,7 +233,7 @@ void printNorms(TString dataFileName = "", TString prefix_ttH = "ttH125") {
 
     if (dataFile) {
       //Get the data normalization
-      TString dataHistName = "data_obs_CFMlpANN_" + catName;
+      TString dataHistName = "data_obs_MVA_" + catName;
       TH1 *dataHist = (TH1 *)dataFile->Get(dataHistName);
       double nData = dataHist->Integral();
 
@@ -234,7 +268,7 @@ void printNorms(TString dataFileName = "", TString prefix_ttH = "ttH125") {
     else if( table_labels[iSample].EqualTo("$W+$jets") ) std::cout << "$V+$jets";
     else                                                std::cout << table_labels[iSample];
 
-    for( int iCat2=0; iCat2<NumCats-2; iCat2++ ){
+    for( int iCat2=0; iCat2<NumCats-3; iCat2++ ){
       double val = table_value[iSample][iCat2];
       double syst_err2 = table_value_syst_err[iSample][iCat2] * table_value_syst_err[iSample][iCat2];
       double stat_err2 = table_value_stat_err[iSample][iCat2] * table_value_stat_err[iSample][iCat2];
@@ -271,8 +305,8 @@ void printNorms(TString dataFileName = "", TString prefix_ttH = "ttH125") {
   std::cout << "    DIL yields   " << std::endl;
   std::cout << " *************** " << std::endl;
 
-  std::cout << "    \\begin{tabular}{|l|c|c|} \\hline" << std::endl;
-  std::cout << "& 2 jets + 2 tags & $\\geq$3 tags  \\\\ \\hline \\hline" << std::endl;
+  std::cout << "    \\begin{tabular}{|l|c|c|c|} \\hline" << std::endl;
+  std::cout << "& 3 jets + 2 tags & $\\geq$4 jets + 2 tags & $\\geq$3 tags  \\\\ \\hline \\hline" << std::endl;
   for( int iSample=0; iSample<NumSamples; iSample++ ){
     if( table_labels[iSample].EqualTo("$t\\bar{t}Z$") || table_labels[iSample].EqualTo("$Z+$jets") ) continue;
 
@@ -282,7 +316,7 @@ void printNorms(TString dataFileName = "", TString prefix_ttH = "ttH125") {
     else if( table_labels[iSample].EqualTo("$W+$jets") ) std::cout << "$V+$jets";
     else                                                std::cout << table_labels[iSample];
 
-    for( int iCat2=NumCats-2; iCat2<NumCats; iCat2++ ){
+    for( int iCat2=NumCats-3; iCat2<NumCats; iCat2++ ){
       double val = table_value[iSample][iCat2];
       double syst_err2 = table_value_syst_err[iSample][iCat2] * table_value_syst_err[iSample][iCat2];
       double stat_err2 = table_value_stat_err[iSample][iCat2] * table_value_stat_err[iSample][iCat2];
