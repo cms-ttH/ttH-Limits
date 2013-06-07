@@ -44,7 +44,7 @@ to use, you need a datacard (e.g. datacard.dat), and a root file (e.g. file.root
 
 Do this once
 
-combine -M MaxLikelihoodFit -m 125 --rMin -10 --rMax 10 --minos all datacard.dat -t -1
+combine -M MaxLikelihoodFit -m 125 --rMin -10 --rMax 10 --minos all datacard.dat
 
 text2workspace.py -m 125 -D data_obs datacard.dat -b -o wsTest.root
 
@@ -52,7 +52,7 @@ text2workspace.py -m 125 -D data_obs datacard.dat -b -o wsTest.root
 
 Do this each time you want plots
 
-root -b -q head.C plotWithErrors.C+'("LJ_OS_DIL_MVA.root")'
+root -b -q head.C plotWithErrors.C+'("file.root")'
 
 */
 
@@ -207,6 +207,7 @@ void plotWithErrors( TString dataFileName = "", int nToys=500, bool blind=true, 
   TList fitResults;
   fitResults.Add(new LabelInfo("nuisances_prefit_res","preFit"));
   fitResults.Add(new LabelInfo("fit_b","postFitB"));
+  //// uncomment out below to see S+B fit
   //fitResults.Add(new LabelInfo("fit_s","postFitS"));
 
 
