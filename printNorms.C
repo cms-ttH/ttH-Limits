@@ -32,7 +32,7 @@ void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "
   //Suppress the printout from making plots
   gErrorIgnoreLevel = 2000;
  
-  gSystem->Load("$CMSSW_BASE/lib/slc5_amd64_gcc462/libHiggsAnalysisCombinedLimit.so");
+  gSystem->Load("$CMSSW_BASE/lib/$SCRAM_ARCH/libHiggsAnalysisCombinedLimit.so");
   
   //This file has the pdf with everything set to the values before the fit
   TFile *wsFile = TFile::Open("wsTest.root");
@@ -84,6 +84,12 @@ void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "
   allCategories.Add(new LabelInfo("e3je2t","DIL: 3J,2T"));
   allCategories.Add(new LabelInfo("ge4je2t","DIL: $\\geq4$J,2T"));
   allCategories.Add(new LabelInfo("ge3t","DIL: $\\geq3$J,$\\geq3$T"));
+  allCategories.Add(new LabelInfo("TTL_1b_1nb","Tau: 4J,1T"));
+  allCategories.Add(new LabelInfo("TTL_1b_2nb","Tau: 5J,1T"));
+  allCategories.Add(new LabelInfo("TTL_1b_3+nb","Tau: $\\geq6$J,1T"));
+  allCategories.Add(new LabelInfo("TTL_2b_0nb","Tau: 4J,2T"));
+  allCategories.Add(new LabelInfo("TTL_2b_1nb","Tau: 5J,2T"));
+  allCategories.Add(new LabelInfo("TTL_2b_2+nb","Tau: $\\geq6$J,2T"));
 
   //Now look in the postfit workspace to see which ones were actually used
   TList categories;
@@ -94,7 +100,7 @@ void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "
   while (( c = (LabelInfo *)nextCat())) categories.Add(c);
 
   const int NumSamples = 10+3;
-  const int NumCats = 10;
+  const int NumCats = 16;
 
   double table_value[NumSamples][NumCats];
   double table_value_syst_err[NumSamples][NumCats];
@@ -148,8 +154,8 @@ void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "
       else if( fitType==2 ) w->loadSnapshot("postfitS");
       else                  w->loadSnapshot("prefit");
 
-        //ttH_val_prefit = fitTTH->getVal();
-        ttH_err_prefit = fitTTH->getPropagatedError(*preFitFR);
+      //ttH_val_prefit = fitTTH->getVal();
+      ttH_err_prefit = fitTTH->getPropagatedError(*preFitFR);
     }
 
     int iSample = 0;
@@ -170,9 +176,12 @@ void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "
       TString tempHistName = procName + "_MVA_"+catName;
       TH1 *procHist = (TH1 *)dataFile->Get(tempHistName);
     
-      int nbins = procHist->GetNbinsX();
       double sumw2 = 0.;
-      for( int b=0; b<nbins; b++ ) sumw2 += procHist->GetBinError(b+1)*procHist->GetBinError(b+1);
+
+      if (procHist) {
+        int nbins = procHist->GetNbinsX();
+        for( int b=0; b<nbins; b++ ) sumw2 += procHist->GetBinError(b+1)*procHist->GetBinError(b+1);
+      }
 
       //Extract normalization before fit
       double preFitNorm = -9e20, preFitErr = -9e10;
@@ -184,9 +193,9 @@ void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "
 
         //Extract normalization and error on nomralization (before fit)
         //w->loadSnapshot("prefit");
-	if( fitType==1 )      w->loadSnapshot("postfitB");
-	else if( fitType==2 ) w->loadSnapshot("postfitS");
-	else                  w->loadSnapshot("prefit");
+        if( fitType==1 )      w->loadSnapshot("postfitB");
+        else if( fitType==2 ) w->loadSnapshot("postfitS");
+        else                  w->loadSnapshot("prefit");
         preFitNorm = fitN->getVal();
         preFitErr = fitN->getPropagatedError(*preFitFR);
       }
@@ -196,19 +205,19 @@ void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "
 
       if (fitN) {
 
-	if( iCat==0 ) table_labels.push_back(procLabel);
- 	table_value[iSample][iCat] = preFitNorm;
- 	table_value_syst_err[iSample][iCat] = preFitErr;
-	table_value_stat_err[iSample][iCat] = sqrt(sumw2);
-	iSample++;
+        if( iCat==0 ) table_labels.push_back(procLabel);
+        table_value[iSample][iCat] = preFitNorm;
+        table_value_syst_err[iSample][iCat] = preFitErr;
+        table_value_stat_err[iSample][iCat] = sqrt(sumw2);
+        iSample++;
 
       } else {
 
-	if( iCat==0 ) table_labels.push_back(procLabel);
-	table_value[iSample][iCat] = 0;
-	table_value_syst_err[iSample][iCat] = 0;
-	table_value_stat_err[iSample][iCat] = 0;
-	iSample++;
+        if( iCat==0 ) table_labels.push_back(procLabel);
+        table_value[iSample][iCat] = 0;
+        table_value_syst_err[iSample][iCat] = 0;
+        table_value_stat_err[iSample][iCat] = 0;
+        iSample++;
       }
 
     }
@@ -268,27 +277,27 @@ void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "
     else if( table_labels[iSample].EqualTo("$W+$jets") ) std::cout << "$V+$jets";
     else                                                std::cout << table_labels[iSample];
 
-    for( int iCat2=0; iCat2<NumCats-3; iCat2++ ){
+    for( int iCat2=0; iCat2<NumCats-9; iCat2++ ){
       double val = table_value[iSample][iCat2];
       double syst_err2 = table_value_syst_err[iSample][iCat2] * table_value_syst_err[iSample][iCat2];
       double stat_err2 = table_value_stat_err[iSample][iCat2] * table_value_stat_err[iSample][iCat2];
       if( table_labels[iSample].EqualTo("$t\\bar{t}W$") || table_labels[iSample].EqualTo("$W+$jets") ){
-	val += table_value[iSample+1][iCat2];
-	double sum_syst_err = table_value_syst_err[iSample][iCat2] + table_value_syst_err[iSample+1][iCat2];
-	syst_err2 = sum_syst_err*sum_syst_err;
+        val += table_value[iSample+1][iCat2];
+        double sum_syst_err = table_value_syst_err[iSample][iCat2] + table_value_syst_err[iSample+1][iCat2];
+        syst_err2 = sum_syst_err*sum_syst_err;
 
-	stat_err2 = (table_value_stat_err[iSample][iCat2] * table_value_stat_err[iSample][iCat2]) + (table_value_stat_err[iSample+1][iCat2] * table_value_stat_err[iSample+1][iCat2]);
+        stat_err2 = (table_value_stat_err[iSample][iCat2] * table_value_stat_err[iSample][iCat2]) + (table_value_stat_err[iSample+1][iCat2] * table_value_stat_err[iSample+1][iCat2]);
       }
       double err = sqrt( syst_err2 + stat_err2);
 
       if( err>100. ){
-	val = 10 * double( int( val/10.+ 0.8 ) ); 
-	err = 10 * double( int( err/10.+ 0.8 ) ); 
+        val = 10 * double( int( val/10.+ 0.8 ) ); 
+        err = 10 * double( int( err/10.+ 0.8 ) ); 
       }
 
       if( iSample<NumSamples-1 ){
-	if( err>10. ) std::cout << Form(" & %.0f $\\pm$ %.0f", val, err);
-	else          std::cout << Form(" & %.1f $\\pm$ %.1f", val, err);
+        if( err>10. ) std::cout << Form(" & %.0f $\\pm$ %.0f", val, err);
+        else          std::cout << Form(" & %.1f $\\pm$ %.1f", val, err);
       }
       else                       std::cout << Form(" & %.0f", val);
     }
@@ -316,27 +325,27 @@ void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "
     else if( table_labels[iSample].EqualTo("$W+$jets") ) std::cout << "$V+$jets";
     else                                                std::cout << table_labels[iSample];
 
-    for( int iCat2=NumCats-3; iCat2<NumCats; iCat2++ ){
+    for( int iCat2=NumCats-9; iCat2<NumCats-6; iCat2++ ){
       double val = table_value[iSample][iCat2];
       double syst_err2 = table_value_syst_err[iSample][iCat2] * table_value_syst_err[iSample][iCat2];
       double stat_err2 = table_value_stat_err[iSample][iCat2] * table_value_stat_err[iSample][iCat2];
       if( table_labels[iSample].EqualTo("$t\\bar{t}W$") || table_labels[iSample].EqualTo("$W+$jets") ){
-  	val += table_value[iSample+1][iCat2];
-  	double sum_syst_err = table_value_syst_err[iSample][iCat2] + table_value_syst_err[iSample+1][iCat2];
-  	syst_err2 = sum_syst_err*sum_syst_err;
+        val += table_value[iSample+1][iCat2];
+        double sum_syst_err = table_value_syst_err[iSample][iCat2] + table_value_syst_err[iSample+1][iCat2];
+        syst_err2 = sum_syst_err*sum_syst_err;
 
-  	stat_err2 = (table_value_stat_err[iSample][iCat2] * table_value_stat_err[iSample][iCat2]) + (table_value_stat_err[iSample+1][iCat2] * table_value_stat_err[iSample+1][iCat2]);
+        stat_err2 = (table_value_stat_err[iSample][iCat2] * table_value_stat_err[iSample][iCat2]) + (table_value_stat_err[iSample+1][iCat2] * table_value_stat_err[iSample+1][iCat2]);
       }
       double err = sqrt( syst_err2 + stat_err2);
 
       if( err>100. ){
-  	val = 10 * double( int( val/10.+ 0.8 ) ); 
-  	err = 10 * double( int( err/10.+ 0.8 ) ); 
+        val = 10 * double( int( val/10.+ 0.8 ) ); 
+        err = 10 * double( int( err/10.+ 0.8 ) ); 
       }
 
       if( iSample<NumSamples-1 ){
-  	if( err>10. ) std::cout << Form(" & %.0f $\\pm$ %.0f", val, err);
-  	else          std::cout << Form(" & %.1f $\\pm$ %.1f", val, err);
+        if( err>10. ) std::cout << Form(" & %.0f $\\pm$ %.0f", val, err);
+        else          std::cout << Form(" & %.1f $\\pm$ %.1f", val, err);
       }
       else                       std::cout << Form(" & %.0f", val);
     }
@@ -345,6 +354,61 @@ void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "
   }
   std::cout << "\\hline" << std::endl;
   std::cout << "\\end{tabular}" << std::endl;
+
+
+  std::cout << " *************** " << std::endl;
+  std::cout << "    Tau yields    " << std::endl;
+  std::cout << " *************** " << std::endl;
+
+
+
+  std::cout << "    \\begin{tabular}{|l|c|c|c|c|c|c|} \\hline" << std::endl;
+  std::cout << "& 4 jets & 5 jets & $\\geq$6 jets & 4 jets & 5 jets & $\\geq$6 jets \\\\" << std::endl;
+  std::cout << "& 1 tag & 1 tag & 1 tag & 2 tags & 2 tags & 2 tags \\\\ \\hline \\hline" << std::endl;
+  for( int iSample=0; iSample<NumSamples; iSample++ ){
+    if( table_labels[iSample].EqualTo("$t\\bar{t}Z$") || table_labels[iSample].EqualTo("$Z+$jets") ) continue;
+
+    //These rows will never be filled for tau
+    if( table_labels[iSample].EqualTo("$t\\bar{t}+b\\bar{b}$") || 
+        table_labels[iSample].EqualTo("$t\\bar{t}+b$") || 
+        table_labels[iSample].EqualTo("$t\\bar{t}+c\\bar{c}$")) continue;
+
+    if( table_labels[iSample].Contains("Total") ) std::cout << " \\hline" << std::endl;
+
+    if( table_labels[iSample].EqualTo("$t\\bar{t}W$") )  std::cout << "$t\\bar{t}V$";
+    else if( table_labels[iSample].EqualTo("$W+$jets") ) std::cout << "$V+$jets";
+    else                                                std::cout << table_labels[iSample];
+
+    for( int iCat2=NumCats-6; iCat2<NumCats; iCat2++ ){
+      double val = table_value[iSample][iCat2];
+      double syst_err2 = table_value_syst_err[iSample][iCat2] * table_value_syst_err[iSample][iCat2];
+      double stat_err2 = table_value_stat_err[iSample][iCat2] * table_value_stat_err[iSample][iCat2];
+      if( table_labels[iSample].EqualTo("$t\\bar{t}W$") || table_labels[iSample].EqualTo("$W+$jets") ){
+        val += table_value[iSample+1][iCat2];
+        double sum_syst_err = table_value_syst_err[iSample][iCat2] + table_value_syst_err[iSample+1][iCat2];
+        syst_err2 = sum_syst_err*sum_syst_err;
+
+        stat_err2 = (table_value_stat_err[iSample][iCat2] * table_value_stat_err[iSample][iCat2]) + (table_value_stat_err[iSample+1][iCat2] * table_value_stat_err[iSample+1][iCat2]);
+      }
+      double err = sqrt( syst_err2 + stat_err2);
+
+      if( err>100. ){
+        val = 10 * double( int( val/10.+ 0.8 ) ); 
+        err = 10 * double( int( err/10.+ 0.8 ) ); 
+      }
+
+      if( iSample<NumSamples-1 ){
+        if( err>10. ) std::cout << Form(" & %.0f $\\pm$ %.0f", val, err);
+        else          std::cout << Form(" & %.1f $\\pm$ %.1f", val, err);
+      }
+      else                       std::cout << Form(" & %.0f", val);
+    }
+    std::cout << " \\\\" << std::endl;
+    if( table_labels[iSample].Contains("t\\bar{t}H") || table_labels[iSample].Contains("Total") ) std::cout << " \\hline" << std::endl;
+  }
+  std::cout << "\\hline" << std::endl;
+  std::cout << "\\end{tabular}" << std::endl;
+
 
 
 }
