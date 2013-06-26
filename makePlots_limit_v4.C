@@ -187,7 +187,7 @@ void makePlots_limit_v4(TString limitFileName, std::string  pname, std::string  
   }
 
   if (ana & LIM8TEV) {
-    lumiinfo += "#sqrt{s} = 8 TeV, L = 5.1 fb^{-1}";
+    lumiinfo += "#sqrt{s} = 8 TeV, L = 19.5 fb^{-1}";
   }
 
 
