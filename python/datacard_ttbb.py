@@ -93,6 +93,9 @@ def get_ann_systematics(file, discriminant, categories, samples, data_sample="da
                         or sig / bkg < .02:
                     continue
 
+                #if True:
+                #    continue
+
                 # FIXME Subtract 1 from bin name for comparability with
                 # original C macro
                 sys_name = "{s}_{c}_{e}_ANNbin{b:d}".format(
@@ -536,7 +539,10 @@ rate {rs}
                             ofile.write(" -")
                             continue
                     active = True
-                    new_val = math.e ** (math.sqrt(math.log(1 + (float(vals[s]) - 1)**2)))
+                    ## old function for calculating kappa
+                    #new_val = math.e ** (math.sqrt(math.log(1 + (float(vals[s]) - 1)**2)))
+                    ## new function for calculating kappa to give expected correct AVERAGE uncertainty
+                    new_val = (float(vals[s]) - 1) + math.sqrt( 1 + (float(vals[s]) - 1)**2 )
                     ofile.write(" {n:.3f}".format(n=new_val))
         ofile.write("\n")
 
