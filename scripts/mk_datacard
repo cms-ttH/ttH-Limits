@@ -89,7 +89,7 @@ limited_systematics = {
 parser = optparse.OptionParser(usage="%prog [options] file")
 parser.add_option("-d", "--discriminant", dest="disc",
         help="use DISC as discriminant", metavar="DISC",
-        default="CFMlpANN")
+        default="MVA")
 parser.add_option("-o", "--outfile", dest="ofile",
         help="write datacard to FILE", metavar="FILE")
 parser.add_option("-c", "--categories", dest="categories",
@@ -103,9 +103,6 @@ parser.add_option("-b", "--btag-mode", dest="btag",
         help="set b-tag uncertainty treatment to MODE.  (Allowed "
         "values: off, rate, shape, category)", metavar="MODE",
         default="off")
-parser.add_option("-m", "--mass-point", dest="mass",
-        help="use MASS as signal mass point.  (Default: 125)",
-        metavar="MASS", default="125")
 
 (opts, args) = parser.parse_args()
 
@@ -138,5 +135,4 @@ f = r.TFile(args[0], "UPDATE")
 create_datacard(f, ofile, opts.disc, categories,
         disabled_systematics=opts.nosys.split(),
         limited_systematics=limited_systematics,
-        btag_mode=btag_mode, print_summary=True,
-        signal_mass=opts.mass)
+        btag_mode=btag_mode, print_summary=True)
