@@ -25,7 +25,7 @@ root -b -q head.C printNorms.C'("file.root")'
 ////
 ////
 
-void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "ttH125") {
+void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "ttH125", TString fitFileName = "mlfit.root", TString wsFileName = "wsTest.root") {
 
   gStyle->SetOptStat(0);
 
@@ -35,11 +35,11 @@ void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "
   gSystem->Load("$CMSSW_BASE/lib/$SCRAM_ARCH/libHiggsAnalysisCombinedLimit.so");
   
   //This file has the pdf with everything set to the values before the fit
-  TFile *wsFile = TFile::Open("wsTest.root");
+  TFile *wsFile = TFile::Open( wsFileName );
   RooWorkspace *w = (RooWorkspace *)wsFile->Get("w");
 
   //This file has the actual fit results
-  TFile *fitFile = TFile::Open("mlfit.root");
+  TFile *fitFile = TFile::Open( fitFileName );
   RooFitResult *preFitFR = (RooFitResult*)fitFile->Get("nuisances_prefit_res");  
   if( fitType==1 )      preFitFR = (RooFitResult*)fitFile->Get("fit_b");
   else if( fitType==2 ) preFitFR = (RooFitResult*)fitFile->Get("fit_s");
