@@ -4,7 +4,11 @@
 # mlfit.root file lying around.  Runs diffNuisances.py and removed the S+B
 # pull info.
 
-set fitFile = mlfit.root
+if( $#argv<1 ) then
+    set fitFile = mlfit.root
+else
+    set fitFile = $1
+endif
 
 if ( ! -e $fitFile ) then
 	echo "Cannot find $fitFile.  Make sure you run the likelihood fit first"
@@ -12,4 +16,4 @@ if ( ! -e $fitFile ) then
 	exit 2
 endif
 
-python ${CMSSW_BASE}/src/HiggsAnalysis/CombinedLimit/test/diffNuisances.py -a --stol 9999 --vtol 9999 --stol2 9999 --vtol2 9999 --format latex mlfit.root | awk -F '&' 'BEGIN{print "\\begin{tabular}{|l|r|} \\hline"} NF == 4 {print $1" & "$2" \\\\"}END{print " \\hline \n \\end{tabular}"}' | perl -pe 's/\\Delta/\$\\Delta/' | perl -pe 's/\$  \\\\/\$  \\\\ \\hline/'
+python ${CMSSW_BASE}/src/HiggsAnalysis/CombinedLimit/test/diffNuisances.py -a --stol 9999 --vtol 9999 --stol2 9999 --vtol2 9999 --format latex $fitFile | awk -F '&' 'BEGIN{print "\\begin{tabular}{|l|r|} \\hline"} NF == 4 {print $1" & "$2" \\\\"}END{print " \\hline \n \\end{tabular}"}' | perl -pe 's/\\Delta/\$\\Delta/' | perl -pe 's/\$  \\\\/\$  \\\\ \\hline/'
