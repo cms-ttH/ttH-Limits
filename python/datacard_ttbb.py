@@ -89,8 +89,9 @@ def get_ann_systematics(file, discriminant, categories, samples, data_sample="da
 
                 other_frac = math.sqrt(bkg_err**2 - val_err**2)
 
-                if val < .01 or bkg_err < data_err / 3. or other_frac / bkg_err > .95 \
-                        or sig / bkg < .02:
+                #Changed from data_err/3 -> data_err/5 and sig/bkg < 0.02 -> 0.01 - KPL
+                if val < .01 or bkg_err < data_err / 5. or other_frac / bkg_err > .95 \
+                        or sig / bkg < .01:
                     continue
 
                 #if True:
