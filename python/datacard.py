@@ -405,7 +405,7 @@ def split_systematics(file, disc, samples, btag_mode=B_CAT_SHAPE):
     return new_sys
 
 def write_datacard(file, discriminant, categories, cats, samples, systematics,
-        limited_systematics={}, ofile=log):
+        limited_systematics={}, ofile=log, is8TeV=True):
     """
     """
     filename = file.GetName()
@@ -468,7 +468,16 @@ rate {rs}
             if debugUncert: log.write("This is sample %s (also %s) \n" % (s,n))
             file_s = s + "125" if s == "ttH" else s
             for c in cats[s]:
-                if debugUncert: log.write("This is category %s\n" %c)
+                if debugUncert:
+                    log.write("This is category %s\n" %c)
+
+                # Switch the lepton uncertainty value
+                if unc == "CMS_ttH_eff_lep" and is8TeV:                    
+                    if c in ["ge3t", "e3je2t", "ge4je2t"]:                        
+                        vals[s] = 1.028
+                    else:                        
+                        vals[s] = 1.014
+                # end if lepton uncertainty
 
                 if unc in limited_systematics and not limited_systematics[unc](c):
                     ofile.write(" -")
@@ -638,7 +647,7 @@ def create_datacard(ifile, ofile, disc, all_categories,
     #    log.write("SYST: Name is {s}\n".format(s=sysName))
  
     active_unc = write_datacard(ifile, disc, categories, cats, samples,
-            systematics, limited_systematics, ofile=ofile)
+            systematics, limited_systematics, ofile=ofile, is8TeV=is_8_tev)
 
     if not print_summary:
         return
