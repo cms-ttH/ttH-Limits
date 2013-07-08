@@ -25,8 +25,8 @@ CMS_ttH_CSVHFStats1   , shape , 1     , 1     , 1          , 1              , 1 
 CMS_ttH_CSVLFStats1   , shape , 1     , 1     , 1          , 1              , 1              , 1       , 1     , 1     , 1      , 1      , 1
 CMS_ttH_CSVHFStats2   , shape , 1     , 1     , 1          , 1              , 1              , 1       , 1     , 1     , 1      , 1      , 1
 CMS_ttH_CSVLFStats2   , shape , 1     , 1     , 1          , 1              , 1              , 1       , 1     , 1     , 1      , 1      , 1
-CMS_ttH_CSVCErr1      , shape , 2     , 2     , 2          , 2              , 2              , 2       , 2     , 2     , 2      , 2      , 2
-CMS_ttH_CSVCErr2      , shape , 2     , 2     , 2          , 2              , 2              , 2       , 2     , 2     , 2      , 2      , 2
+CMS_ttH_CSVCErr1      , shape , 1     , 1     , 1          , 1              , 1              , 1       , 1     , 1     , 1      , 1      , 1
+CMS_ttH_CSVCErr2      , shape , 1     , 1     , 1          , 1              , 1              , 1       , 1     , 1     , 1      , 1      , 1
 CMS_scale_j           , shape , 1     , 1     , 1          , 1              , 1              , 1       , 1     , 1     , 1      , 1      , 1
 CMS_ttH_topPtcorr     , shape , 1     , 1     , 1          , 1              , 1              , 1       , 1     , 1     , 1      , 1      , 1
 CMS_ttH_QCDscale_ttb  , lnN   , -     , -     , x          , -              , -              , -       , -     , -     , -      , -      , -
