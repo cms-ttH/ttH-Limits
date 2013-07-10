@@ -1,3 +1,18 @@
+#!/usr/bin/env python
+"""Plot ratio comparisons
+
+Currently, all customization and providing of data has to be done within
+this script.  See the following two variables to get started (`channels`
+contains lists of alias, y-axis label, ratio, error down, error up.)
+"""
+outfile = "/afs/crc.nd.edu/user/m/mwolf3/www/limit_mu_cmp.pdf"
+channels = [
+        ("TAU", "Hadronic #tau#tau", -0.733308, 5.24428, 6.13693),
+        ("OSDIL", "Dilepton", 1.2266, 4.68643, 4.19684),
+        ("LJ", "Lepton + Jets", -0.103221, 2.57988, 2.53175),
+        ("COMBI", "Combination", 0.851967, 2.40582, 2.47273)
+        ]
+
 import ROOT as r
 
 r.gROOT.SetBatch()
@@ -13,13 +28,6 @@ canvas.SetLeftMargin(.2)
 canvas.SetRightMargin(.05)
 canvas.SetTopMargin(.12)
 legend = r.TLegend(0.6, 0.7, 0.9, 0.87)
-
-channels = [
-        ("TAU", "Hadronic #tau#tau", -0.733308, 5.24428, 6.13693),
-        ("OSDIL", "Dilepton", 1.2266, 4.68643, 4.19684),
-        ("LJ", "Lepton + Jets", -0.103221, 2.57988, 2.53175),
-        ("COMBI", "Combination", 0.851967, 2.40582, 2.47273)
-        ]
 
 ratio = r.TGraphAsymmErrors(len(channels))
 ratio.SetMarkerStyle(21)
@@ -82,4 +90,4 @@ tex.DrawLatex(0.6, 0.9, "#sqrt{s} = 8 TeV, L = 19.5 fb^{-1}")
 
 canvas.GetPad(0).RedrawAxis()
 
-canvas.SaveAs("/afs/crc.nd.edu/user/m/mwolf3/www/limit_mu_cmp.pdf")
+canvas.SaveAs(outfile)
