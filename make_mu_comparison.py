@@ -17,11 +17,15 @@ legend = r.TLegend(0.6, 0.7, 0.9, 0.87)
 channels = [
         ("TAU", "Hadronic #tau#tau", -0.733308, 5.24428, 6.13693),
         ("OSDIL", "Dilepton", 1.2266, 4.68643, 4.19684),
-        ("LJ", "Lepton + Jets", -0.103221, 2.57988, 2.53175)
+        ("LJ", "Lepton + Jets", -0.103221, 2.57988, 2.53175),
+        ("COMBI", "Combination", 0.851967, 2.40582, 2.47273)
         ]
 
 ratio = r.TGraphAsymmErrors(len(channels))
-ratio.SetMarkerStyle(8)
+ratio.SetMarkerStyle(21)
+ratio.SetMarkerSize(2)
+ratio.SetLineWidth(4)
+ratio.SetLineColor(r.kRed)
 
 dummy = r.TH1F("dummy", ";Best fit #sigma/#sigma_{SM} at m_{H} = 125 GeV;", 100, -7, 7)
 dummy.GetXaxis().SetTitleSize(0.05)
@@ -34,13 +38,14 @@ for (n, (chan, label, c, m, p)) in enumerate(channels):
     ratio.SetPointError(n, m, p, 0, 0)
 
 dummy.Draw("axis")
-box = r.TBox()
-box.SetFillColor(r.kGreen)
-box.SetFillStyle(1001)
-box.DrawBox(0.851967 - 2.40582, -0.5, 0.851967 + 2.47273, len(channels) - 0.5)
+# box = r.TBox()
+# box.SetFillColor(r.kGreen)
+# box.SetFillStyle(1001)
+# box.DrawBox(0.851967 - 2.40582, -0.5, 0.851967 + 2.47273, len(channels) - 0.5)
 line = r.TLine()
 line.SetLineWidth(2)
-line.DrawLine(0.851967, -0.5, 0.851967, len(channels) - 0.5)
+# line.DrawLine(0.851967, -0.5, 0.851967, len(channels) - 0.5)
+line.DrawLine(1, -0.5, 1, len(channels) - 0.5)
 ratio.Draw("same p")
 
 exp = r.TGraphAsymmErrors(len(channels))
