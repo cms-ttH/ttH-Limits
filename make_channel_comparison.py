@@ -1,3 +1,20 @@
+#!/usr/bin/env python
+"""Plot a comparison of limits
+
+All available configuration is contained in the two variables below.  The
+list `channels` contains pairs of alias and y-axis labels, where the data
+for the plot is extracted from files with the name
+`limit_card_{alias}_125.log`, which are expected to contain regular
+`combine` output.
+"""
+outfile = "/afs/crc.nd.edu/user/m/mwolf3/www/limit_cmp.pdf"
+channels = [
+        ("TAU", "Hadronic #tau#tau"),
+        ("OSDIL", "Dilepton"),
+        ("LJ", "Lepton + Jets"),
+        ("LJ_OSDIL_TAU_MVA", "Combination")
+        ]
+
 import ROOT as r
 
 r.gROOT.SetBatch()
@@ -13,13 +30,6 @@ canvas.SetLeftMargin(.2)
 canvas.SetRightMargin(.05)
 canvas.SetTopMargin(.12)
 legend = r.TLegend(0.6, 0.7, 0.9, 0.87)
-
-channels = [
-        ("TAU", "Hadronic #tau#tau"),
-        ("OSDIL", "Dilepton"),
-        ("LJ", "Lepton + Jets"),
-        ("LJ_OSDIL_TAU_MVA", "Combination")
-        ]
 
 dummy = r.TH1F("dummy", ";95% CL limit on #sigma/#sigma_{SM} at m_{H} = 125 GeV;", 100, 0, 35.5)
 dummy.GetXaxis().SetTitleSize(0.05)
@@ -96,4 +106,4 @@ tex.DrawLatex(0.6, 0.9, "#sqrt{s} = 8 TeV, L = 19.5 fb^{-1}")
 
 canvas.GetPad(0).RedrawAxis()
 
-canvas.SaveAs("/afs/crc.nd.edu/user/m/mwolf3/www/limit_cmp.pdf")
+canvas.SaveAs(outfile)
