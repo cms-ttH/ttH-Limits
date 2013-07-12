@@ -18,6 +18,8 @@
 #include "TDirectory.h"
 #include "TGraphAsymmErrors.h"
 #include "TKey.h"
+#include "TMatrix.h"
+#include "TVector.h"
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -68,6 +70,13 @@ public:
   ClassDef(LabelInfo,1);
 };
 
+//*****************************************************************************
+
+TMatrix getUpperTriangularMatrix( RooFitResult *fitRes );
+
+//*****************************************************************************
+
+
 void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", int nToys=500, int nJobs=1, int jobN=1, bool debug=false, TString fitFileName = "mlfit.root", TString wsFileName = "wsTest.root" ) {
 
   RooRandom::randomGenerator()->SetSeed(jobN);
@@ -112,12 +121,12 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
   allCategories.Add(new LabelInfo("ge3t","Dilepton + #geq3 b-tags"));
 
   // Get real tau category titles
-  allCategories.Add(new LabelInfo("TTL_1b_1nb","Lep + #tau_{h}#tau_{h} + 4 jets + 1 b-tag"));
-  allCategories.Add(new LabelInfo("TTL_1b_2nb","Lep + #tau_{h}#tau_{h} + 5 jets + 1 b-tag"));
-  allCategories.Add(new LabelInfo("TTL_1b_3+nb","Lep + #tau_{h}#tau_{h} + #geq6 jets + 1 b-tag"));
-  allCategories.Add(new LabelInfo("TTL_2b_0nb","Lep + #tau_{h}#tau_{h} + 4 jets + 2 b-tags"));
-  allCategories.Add(new LabelInfo("TTL_2b_1nb","Lep + #tau_{h}#tau_{h} + 5 jets + 2 b-tags"));
-  allCategories.Add(new LabelInfo("TTL_2b_2+nb","Lep + #tau_{h}#tau_{h} + #geq6 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("TTL_1b_1nb","Lep + #tau_{h}#tau_{h} + 2 jets + 1 b-tag"));
+  allCategories.Add(new LabelInfo("TTL_1b_2nb","Lep + #tau_{h}#tau_{h} + 3 jets + 1 b-tag"));
+  allCategories.Add(new LabelInfo("TTL_1b_3+nb","Lep + #tau_{h}#tau_{h} + #geq4 jets + 1 b-tag"));
+  allCategories.Add(new LabelInfo("TTL_2b_0nb","Lep + #tau_{h}#tau_{h} + 2 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("TTL_2b_1nb","Lep + #tau_{h}#tau_{h} + 3 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("TTL_2b_2+nb","Lep + #tau_{h}#tau_{h} + #geq4 jets + 2 b-tags"));
 
   // Add SS because why not
   allCategories.Add(new LabelInfo("SS_ge4je1t","SS_ge4je1t"));
@@ -180,6 +189,9 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
     std::vector<TString> nuisance_names;
     nuisance_names.clear();
 
+    std::vector<double> nuisance_bestfit;
+    nuisance_bestfit.clear();
+
     std::vector<TString> nuisance_names_noMCstat;
     nuisance_names_noMCstat.clear();
     RooArgSet myArgs = fitFR->floatParsFinal();
@@ -187,11 +199,14 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
     TIterator *nextArg(myArgs.createIterator());
     for (TObject *a = nextArg->Next(); a != 0; a = nextArg->Next()) {
       RooRealVar *rrv = dynamic_cast<RooRealVar *>(a);      
-      //RooRealVar *rrv = a;      
-      if( debug ) std::cout << " name = " << rrv->GetName() << ":\t old value = " << rrv->getVal() << ",\t error = " << rrv->getError() << std::endl;
       TString nuis_name = rrv->GetName();
       nuisance_names.push_back( nuis_name );
+      nuisance_bestfit.push_back( rrv->getVal() );
       if( !nuis_name.Contains("ANNbin") ) nuisance_names_noMCstat.push_back( nuis_name );
+      if( debug ){
+	printf(" name = %s: val = %.4f,\t getError = %.3f,\t getAsymErrorLo = %.3f,\t getAsymErrorHi = %.3f \n",
+ 	   nuis_name.Data(), rrv->getVal(), rrv->getError(), rrv->getAsymErrorLo(), rrv->getAsymErrorHi() );
+      }
     }
 
 
@@ -231,6 +246,14 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
     TH1D* h_data_SoverB = new TH1D(Form("h_data_SoverB_%s",fitLabel.Data()),";log_{10}(S/B)",numBinsSoverB, minLogSoverB, maxLogSoverB);
     TH1D* h_bkg_SoverB = new TH1D(Form("h_bkg_SoverB_%s",fitLabel.Data()),";log_{10}(S/B)",numBinsSoverB, minLogSoverB, maxLogSoverB);
     TH1D* h_sig_SoverB = new TH1D(Form("h_sig_SoverB_%s",fitLabel.Data()),";log_{10}(S/B)",numBinsSoverB, minLogSoverB, maxLogSoverB);
+
+
+    TH1D* fluctHist_category_yield[numCats];
+    TH1D* h_category_yield_data = new TH1D(Form("h_category_yield_data_%s",fitLabel.Data()),";category",numCats,0,numCats);
+    TH1D* h_category_yield_bkg  = new TH1D(Form("h_category_yield_bkg_%s",fitLabel.Data()),";category",numCats,0,numCats);
+    TH1D* h_category_yield_sig  = new TH1D(Form("h_category_yield_sig_%s",fitLabel.Data()),";category",numCats,0,numCats);
+
+
 
     TIter nextCat1(&categories);
     LabelInfo *category1 = 0;
@@ -291,8 +314,16 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
 	if( signal/background>0.1 ) printf("%s\t%s\t%d\t S/B = %.2f\t S = %.1f\t B = %.1f\n",fitLabel.Data(),catName.Data(),iBin,signal/background,signal,background);
       }
 
-      delete sigTempHist;
 
+      double integral_data = dataHist->Integral();
+      double integral_bkg  = fitTempHist->Integral();
+      double integral_sig  = sigTempHist->Integral();
+
+      h_category_yield_data->Fill(iCat1,integral_data);
+      h_category_yield_bkg->Fill(iCat1,integral_bkg);
+      h_category_yield_sig->Fill(iCat1,integral_sig);
+
+      
 
       //Now we need to fluctuate the nuisance parameters and get the fluctuated histograms
       for( int iBin=0; iBin<numBins[iCat1]; iBin++ ) fluctHist[iCat1][iBin] = new TH1D(Form("fluctHist_%s_%s_%d",fitLabel.Data(),catName.Data(),iBin),"",10000,0,5*fitHist->GetBinContent(iBin+1));
@@ -300,14 +331,27 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
       iCat1++;
 
       delete fitTempHist;
+      delete sigTempHist;
     }
 
     for( int iBin=0; iBin<numBinsSoverB; iBin++ ) fluctHist_SoverB[iBin] = new TH1D(Form("fluctHist_SoverB_%s_%d",fitLabel.Data(),iBin),"",100000,0,4*h_bkg_SoverB->GetBinContent(iBin+1));
 
+    for( int iBin=0; iBin<numCats; iBin++ ) fluctHist_category_yield[iBin] = new TH1D(Form("fluctHist_category_yield_%s_%d",fitLabel.Data(),iBin),"",100000,0,4*h_category_yield_bkg->GetBinContent(iBin+1));
+
+
+    TMatrix myL = getUpperTriangularMatrix( fitFR );
+    TMatrix* _Lt = new TMatrix(TMatrix::kTransposed,myL);
 
     std::cout << " \t Begin making toys (nToys = " << nToys << ")" << std::endl;
     for (int iToy = 0; iToy < nToys; ++iToy) {
-      RooArgSet myArgs_temp = fitFR->randomizePars();
+      //RooArgSet myArgs_temp = fitFR->randomizePars();
+      RooArgSet myArgs_temp = fitFR->floatParsFinal();
+
+      // create a vector of unit Gaussian variables
+      TVector g(NumPars);
+      for( int k=0; k<NumPars; k++ ) g(k)= RooRandom::gaussian();
+      // multiply this vector by Lt to introduce the appropriate correlations
+      g *= (*_Lt);
 
       if( iToy%10==0 ) std::cout << "\t\t iToy " << iToy << std::endl;
       int iPar=0;
@@ -315,6 +359,12 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
       for (TObject *a = nextArg_temp->Next(); a != 0; a = nextArg_temp->Next()) {
 	RooRealVar *rrv = dynamic_cast<RooRealVar *>(a);      
 	TString nuis_name = rrv->GetName();
+	double oldValue = nuisance_bestfit[iPar];
+	// add the mean value offsets and store the results
+	rrv->setVal(oldValue + g(iPar));
+	///// For debugging
+	//double newValue = rrv->getVal();
+	//printf(" name = %s: old val = %.4f,\t new val = %.4f,\t getError = %.3f,\t getAsymErrorLo = %.3f,\t getAsymErrorHi = %.3f \n", nuis_name.Data(), oldValue, newValue, rrv->getError(), rrv->getAsymErrorLo(), rrv->getAsymErrorHi() );
 	if( !nuis_name.EqualTo(nuisance_names[iPar]) ) assert(0);
 	h_nuis[iPar]->Fill(rrv->getVal());
 	iPar++;
@@ -335,6 +385,8 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
 
 	TH1 *temp = w->pdf("pdf_bin"+catName)->createHistogram("CMS_th1x");
 	temp->Scale(fitTotal_cat[iCat2]->getVal());
+
+	fluctHist_category_yield[iCat2]->Fill(std::min(temp->Integral(),fluctHist_category_yield[iCat2]->GetXaxis()->GetXmax()-0.001));
 
 	for (int iBin=0; iBin<numBins[iCat2]; iBin++) fluctHist[iCat2][iBin]->Fill(std::min(temp->GetBinContent(iBin+1),fluctHist[iCat2][iBin]->GetXaxis()->GetXmax()-0.001));
 
@@ -373,11 +425,23 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
       h_data_SoverB->Reset();
       h_bkg_SoverB->Reset();
       h_sig_SoverB->Reset();
+
+      h_category_yield_data->Reset();
+      h_category_yield_bkg->Reset();
+      h_category_yield_sig->Reset();
     }
 
     h_data_SoverB->Write(Form("data_SoverB_%s",fitLabel.Data()));
     h_bkg_SoverB->Write(Form("bkg_SoverB_%s",fitLabel.Data()));
     h_sig_SoverB->Write(Form("sig_SoverB_%s",fitLabel.Data()));
+
+
+
+
+    for( int iBin=0; iBin<numCats; iBin++ ) fluctHist_category_yield[iBin]->Write(Form("fluctHist_category_yield_%s_%d",fitLabel.Data(),iBin));
+    h_category_yield_data->Write(Form("data_category_yield_%s",fitLabel.Data()));
+    h_category_yield_bkg->Write(Form("bkg_category_yield_%s",fitLabel.Data()));
+    h_category_yield_sig->Write(Form("sig_category_yield_%s",fitLabel.Data()));
 
 
 
@@ -405,3 +469,72 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
   std::cout << "Done!" << std::endl;
 
 }
+
+
+TMatrix getUpperTriangularMatrix( RooFitResult *fitRes ){
+
+  RooArgSet myArgs = fitRes->floatParsFinal();
+
+  std::vector<TString> nuisance_names;
+  nuisance_names.clear();
+
+  std::vector<double> nuisance_errors;
+  nuisance_errors.clear();
+
+  TIterator *nextArg(myArgs.createIterator());
+  for (TObject *a = nextArg->Next(); a != 0; a = nextArg->Next()) {
+    RooRealVar *rrv = dynamic_cast<RooRealVar *>(a);      
+
+    double thres = 0.00001;
+
+    double errHi = fabs( rrv->getAsymErrorHi() );
+    double errLo = fabs( rrv->getAsymErrorLo() );
+    errHi = ( errHi<thres*rrv->getError() ) ? rrv->getError() : errHi;
+    errLo = ( errLo<thres*rrv->getError() ) ? rrv->getError() : errLo;
+
+    double err = 0.5 * ( errHi + errLo );
+
+    TString nuis_name = rrv->GetName();
+    nuisance_names.push_back( nuis_name );
+    nuisance_errors.push_back( err );
+//     printf(" name = %s: val = %.4f,\t err = %.4f,\t getError = %.3f,\t getAsymErrorLo = %.3f,\t getAsymErrorHi = %.3f \n",
+// 	   nuis_name.Data(), rrv->getVal(), err, rrv->getError(), rrv->getAsymErrorLo(), rrv->getAsymErrorHi() );
+  }
+
+  int NumPars = int( nuisance_names.size() );
+
+  TMatrix Cov(NumPars,NumPars);
+  for( int iPar=0; iPar<NumPars; iPar++ ){
+    for( int jPar=0; jPar<NumPars; jPar++ ){
+
+      double correlation = fitRes->correlation( nuisance_names[iPar], nuisance_names[jPar] );
+      double covariance  = nuisance_errors[iPar] * nuisance_errors[jPar] * correlation;
+
+      Cov(iPar,jPar) = covariance;
+      Cov(jPar,iPar) = covariance;
+    }
+  }
+
+
+  TMatrix L(NumPars,NumPars);
+  for( int iPar= 0; iPar<NumPars; iPar++ ){
+    // calculate the diagonal term first
+    L(iPar,iPar)= Cov(iPar,iPar);
+    for( int kPar=0; kPar<iPar; kPar++) {
+      Double_t tmp= L(kPar,iPar);
+      L(iPar,iPar) -= tmp*tmp;
+    }
+    L(iPar,iPar)= sqrt(L(iPar,iPar));
+    // then the off-diagonal terms
+    for( int jPar=iPar+1; jPar<NumPars; jPar++ ){
+      L(iPar,jPar)= Cov(iPar,jPar);
+      for(Int_t kPar=0; kPar<iPar; kPar++) {
+	L(iPar,jPar)-= L(kPar,iPar)*L(kPar,jPar);
+      }
+      L(iPar,jPar)/= L(iPar,iPar);
+    }
+  }
+
+  return L;
+}
+

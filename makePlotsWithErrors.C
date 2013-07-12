@@ -66,14 +66,15 @@ public:
   ClassDef(LabelInfo,1);
 };
 
-void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLegend=true, bool debug=false, TString fitFileName = "mlfit.root", TString wsFileName = "wsTest.root" ) {
+void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLegend=true, bool debug=false, TString fitFileName = "mlfit.root", TString wsFileName = "wsTest.root", bool plotBDTFits_=true, bool plotSoverBCombined_=true, bool plotCategoryYieldCombined_=true ) {
 
 
   TString histoFilename = "HistoFiles/generateToys_histo.root";
 
 
-  bool plotBDTFits = !true;
-  bool plotSoverBCombined = true;
+  bool plotBDTFits = plotBDTFits_;
+  bool plotSoverBCombined = plotSoverBCombined_;
+  bool plotCategoryYieldCombined = plotCategoryYieldCombined_;
 
   TFile *file = new TFile(histoFilename);
 
@@ -180,17 +181,36 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
   allCategories.Add(new LabelInfo("ge3t","Dilepton + #geq3 b-tags"));
 
   // Get real tau category titles
-  allCategories.Add(new LabelInfo("TTL_1b_1nb","Lep + #tau_{h}#tau_{h} + 4 jets + 1 b-tag"));
-  allCategories.Add(new LabelInfo("TTL_1b_2nb","Lep + #tau_{h}#tau_{h} + 5 jets + 1 b-tag"));
-  allCategories.Add(new LabelInfo("TTL_1b_3+nb","Lep + #tau_{h}#tau_{h} + #geq6 jets + 1 b-tag"));
-  allCategories.Add(new LabelInfo("TTL_2b_0nb","Lep + #tau_{h}#tau_{h} + 4 jets + 2 b-tags"));
-  allCategories.Add(new LabelInfo("TTL_2b_1nb","Lep + #tau_{h}#tau_{h} + 5 jets + 2 b-tags"));
-  allCategories.Add(new LabelInfo("TTL_2b_2+nb","Lep + #tau_{h}#tau_{h} + #geq6 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("TTL_1b_1nb","Lep + #tau_{h}#tau_{h} + 2 jets + 1 b-tag"));
+  allCategories.Add(new LabelInfo("TTL_1b_2nb","Lep + #tau_{h}#tau_{h} + 3 jets + 1 b-tag"));
+  allCategories.Add(new LabelInfo("TTL_1b_3+nb","Lep + #tau_{h}#tau_{h} + #geq4 jets + 1 b-tag"));
+  allCategories.Add(new LabelInfo("TTL_2b_0nb","Lep + #tau_{h}#tau_{h} + 2 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("TTL_2b_1nb","Lep + #tau_{h}#tau_{h} + 3 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("TTL_2b_2+nb","Lep + #tau_{h}#tau_{h} + #geq4 jets + 2 b-tags"));
 
   // Add SS because why not
   allCategories.Add(new LabelInfo("SS_ge4je1t","SS_ge4je1t"));
   allCategories.Add(new LabelInfo("SS_e3jge2t","SS_e3jge2t"));
   allCategories.Add(new LabelInfo("SS_ge4jge2t","SS_ge4jge2t"));
+
+  std::vector<TString> axis_labels;
+  axis_labels.push_back("#splitline{LJ}{6j2t}");
+  axis_labels.push_back("#splitline{LJ}{4j3t}");
+  axis_labels.push_back("#splitline{LJ}{5j3t}");
+  axis_labels.push_back("#splitline{LJ}{6j3t}");
+  axis_labels.push_back("#splitline{LJ}{4j4t}");
+  axis_labels.push_back("#splitline{LJ}{5j4t}");
+  axis_labels.push_back("#splitline{LJ}{6j4t}");
+  axis_labels.push_back("#splitline{DIL}{3j2t}");
+  axis_labels.push_back("#splitline{DIL}{4j2t}");
+  axis_labels.push_back("#splitline{DIL}{3t}");
+  axis_labels.push_back("#splitline{TAU}{4j1t}");
+  axis_labels.push_back("#splitline{TAU}{5j1t}");
+  axis_labels.push_back("#splitline{TAU}{6j1t}");
+  axis_labels.push_back("#splitline{TAU}{4j2t}");
+  axis_labels.push_back("#splitline{TAU}{5j2t}");
+  axis_labels.push_back("#splitline{TAU}{6j2t}");
+
 
 
   //This file has the pdf with everything set to the values before the fit
@@ -235,6 +255,8 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
  
   //gSystem->Load("${CMSSW_BASE}/lib/${SCRAM_ARCH}/libHiggsAnalysisCombinedLimit.so");
 
+  std::vector<std::vector<TString> > BDT_cat_names;
+  std::vector<std::vector<double> >  BDT_chi2_value;
 
 
   double ratioMax = 2.3;
@@ -242,6 +264,24 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 
   TIter nextFit(&fitResults);
   LabelInfo *fitRes = 0;
+
+  std::vector<TString> nuisance_names_noMCstat_postFitB;
+  std::vector<double>  nuisance_pulls_noMCstat_postFitB;
+  std::vector<double>  nuisance_constraints_noMCstat_postFitB;
+  std::vector<double>  nuisance_AsymErrorLo_noMCstat_postFitB;
+  std::vector<double>  nuisance_AsymErrorHi_noMCstat_postFitB;
+  std::vector<double>  nuisance_getMax_noMCstat_postFitB;
+  std::vector<double>  nuisance_getMin_noMCstat_postFitB;
+
+
+  std::vector<TString> nuisance_names_noMCstat_postFitS;
+  std::vector<double>  nuisance_pulls_noMCstat_postFitS;
+  std::vector<double>  nuisance_constraints_noMCstat_postFitS;
+  std::vector<double>  nuisance_AsymErrorLo_noMCstat_postFitS;
+  std::vector<double>  nuisance_AsymErrorHi_noMCstat_postFitS;
+  std::vector<double>  nuisance_getMax_noMCstat_postFitS;
+  std::vector<double>  nuisance_getMin_noMCstat_postFitS;
+
 
   while ((fitRes = (LabelInfo *)nextFit())) {
 
@@ -269,6 +309,12 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
     TH1D* h_pulls_noMCstats = new TH1D("h_pulls_noMCstats","",80,-4,4);
     
     std::vector<TString> nuisance_names_noMCstat;
+    std::vector<double>  nuisance_pulls_noMCstat;
+    std::vector<double>  nuisance_constraints_noMCstat;
+    std::vector<double>  nuisance_AsymErrorLo_noMCstat;
+    std::vector<double>  nuisance_AsymErrorHi_noMCstat;
+    std::vector<double>  nuisance_getMax_noMCstat;
+    std::vector<double>  nuisance_getMin_noMCstat;
     nuisance_names_noMCstat.clear();
     RooArgSet myArgs = fitFR->floatParsFinal();
 
@@ -276,15 +322,72 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
     for (TObject *a = nextArg->Next(); a != 0; a = nextArg->Next()) {
       RooRealVar *rrv = dynamic_cast<RooRealVar *>(a);      
       //RooRealVar *rrv = a;      
-      if( debug ) std::cout << " name = " << rrv->GetName() << ":\t fit value = " << rrv->getVal() << ",\t error = " << rrv->getError() << std::endl;
+      //if( debug ) std::cout << " name = " << rrv->GetName() << ":\t fit value = " << rrv->getVal() << ",\t error = " << rrv->getError() << std::endl;
       TString nuis_name = rrv->GetName();
       nuisance_names.push_back( nuis_name );
       h_pulls->Fill(rrv->getVal());
+      if( debug ) std::cout << " name = " << rrv->GetName() << ":\t fit value = " << rrv->getVal() << ",\t error = " << rrv->getError() << ",\t getAsymErrorHi = " << rrv->getAsymErrorHi() << ",\t getAsymErrorLo = " << rrv->getAsymErrorLo() << std::endl;
       if( !nuis_name.Contains("ANNbin") ){
 	nuisance_names_noMCstat.push_back( nuis_name );
+	nuisance_pulls_noMCstat.push_back( rrv->getVal() );
+	nuisance_constraints_noMCstat.push_back( rrv->getError() );
+	nuisance_AsymErrorLo_noMCstat.push_back( rrv->getAsymErrorLo() );
+	nuisance_AsymErrorHi_noMCstat.push_back( rrv->getAsymErrorHi() );
+	nuisance_getMax_noMCstat.push_back( rrv->getMax() );
+	nuisance_getMin_noMCstat.push_back( rrv->getMin() );
 	h_pulls_noMCstats->Fill(rrv->getVal());
       }
     }
+
+    int NumPulls_noMCstat = int(nuisance_names_noMCstat.size());
+    TH1D* h_pulls_all = new TH1D("h_pulls_all",";Index;Pull",NumPulls_noMCstat,0,NumPulls_noMCstat);
+    TH2D* h_pulls_vert = new TH2D("h_pulls_vert",";Pull", 100, -2.5, 2.5, NumPulls_noMCstat,0,NumPulls_noMCstat);
+
+    if( fitLabel.EqualTo("postFitB") ){
+      for( int iPar=0; iPar<NumPulls_noMCstat; iPar++ ){
+	nuisance_names_noMCstat_postFitB.push_back(nuisance_names_noMCstat[iPar]);
+	nuisance_pulls_noMCstat_postFitB.push_back(nuisance_pulls_noMCstat[iPar]);
+	nuisance_constraints_noMCstat_postFitB.push_back(nuisance_constraints_noMCstat[iPar]);
+	nuisance_AsymErrorLo_noMCstat_postFitB.push_back(nuisance_AsymErrorLo_noMCstat[iPar]);
+	nuisance_AsymErrorHi_noMCstat_postFitB.push_back(nuisance_AsymErrorHi_noMCstat[iPar]);
+	nuisance_getMax_noMCstat_postFitB.push_back(nuisance_getMax_noMCstat[iPar]);
+	nuisance_getMin_noMCstat_postFitB.push_back(nuisance_getMin_noMCstat[iPar]);
+      }
+    }
+    else if( fitLabel.EqualTo("postFitS") ){
+      for( int iPar=0; iPar<NumPulls_noMCstat; iPar++ ){
+	nuisance_names_noMCstat_postFitS.push_back(nuisance_names_noMCstat[iPar]);
+	nuisance_pulls_noMCstat_postFitS.push_back(nuisance_pulls_noMCstat[iPar]);
+	nuisance_constraints_noMCstat_postFitS.push_back(nuisance_constraints_noMCstat[iPar]);
+	nuisance_AsymErrorLo_noMCstat_postFitS.push_back(nuisance_AsymErrorLo_noMCstat[iPar]);
+	nuisance_AsymErrorHi_noMCstat_postFitS.push_back(nuisance_AsymErrorHi_noMCstat[iPar]);
+	nuisance_getMax_noMCstat_postFitS.push_back(nuisance_getMax_noMCstat[iPar]);
+	nuisance_getMin_noMCstat_postFitS.push_back(nuisance_getMin_noMCstat[iPar]);
+      }
+    }
+
+    double use_y[NumPulls_noMCstat];
+    double use_yErr[NumPulls_noMCstat];
+    double pulls_noMCstat[NumPulls_noMCstat];
+    double constraints_noMCstat[NumPulls_noMCstat];
+
+    for( int iPar=0; iPar<NumPulls_noMCstat; iPar++ ){
+      use_y[iPar] = iPar + 0.5;
+      use_yErr[iPar] = 0.;
+
+      pulls_noMCstat[iPar] = nuisance_pulls_noMCstat[iPar];
+      constraints_noMCstat[iPar] = nuisance_constraints_noMCstat[iPar];
+
+      h_pulls_all->SetBinContent(iPar+1, nuisance_pulls_noMCstat[iPar]);
+      h_pulls_all->SetBinError(iPar+1, nuisance_constraints_noMCstat[iPar]);
+
+      h_pulls_vert->GetYaxis()->SetBinLabel(iPar+1,nuisance_names_noMCstat[iPar].Data());
+    }
+
+    TGraphAsymmErrors *gr = new TGraphAsymmErrors(NumPulls_noMCstat,pulls_noMCstat,use_y,constraints_noMCstat,constraints_noMCstat,use_yErr,use_yErr); 
+    gr->SetMarkerSize(1.2);
+    gr->SetMarkerStyle(20);
+    gr->SetMarkerColor(kBlack);
 
     if( debug ){
       TCanvas *c1 = new TCanvas("c1","");
@@ -294,8 +397,43 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
       h_pulls_noMCstats->Draw("hist");
       c1->Print(debugDir+"/pulls_noMCstats_"+fitLabel+".png");
 
+      h_pulls_all->SetStats(0);
+      h_pulls_all->GetYaxis()->SetRangeUser(-2.5,2.5);
+      h_pulls_all->SetMarkerStyle(20);
+      h_pulls_all->SetLineWidth(2);
+      h_pulls_all->Draw("pe1");
+
+      TLine* myLine;
+      myLine = new TLine(h_pulls_all->GetXaxis()->GetXmin(), 0., h_pulls_all->GetXaxis()->GetXmax(), 0.);
+      myLine->SetLineStyle(7);
+      myLine->Draw();
+
+      c1->Print(debugDir+"/pulls_all_"+fitLabel+".png");
+
+
+      TCanvas *c2 = new TCanvas("c2","",900,800);
+      h_pulls_vert->SetStats(0);
+      h_pulls_vert->Draw();
+      gr->Draw("pe1same");
+
+      TLine* myLine1;
+      myLine1 = new TLine( 0., h_pulls_vert->GetYaxis()->GetXmin(), 0., h_pulls_vert->GetYaxis()->GetXmax());
+      myLine1->SetLineStyle(7);
+      myLine1->Draw();
+
+      c2->GetPad(0)->SetLeftMargin(0.23);
+      c2->GetPad(0)->SetTopMargin(0.05);
+      c2->GetPad(0)->SetRightMargin(0.05);
+      c2->Print(debugDir+"/pulls_vert_"+fitLabel+".png");
+
       delete c1;
+      delete c2;
+      delete myLine;
+      delete myLine1;
     }
+    delete gr;
+    delete h_pulls_vert;
+    delete h_pulls_all;
     delete h_pulls;
     delete h_pulls_noMCstats;
 
@@ -760,8 +898,15 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
       Chi2Latex.SetTextSize(0.055);
 
 
+      TString selectioninfo = "ttH(bb,#tau#tau): LJ + OSDIL + TAU";//"Lepton + #geq6 jets + 2 tags";
+      TLatex SELECTIONInfoLatex(0.12, 0.91, selectioninfo);
+      SELECTIONInfoLatex.SetNDC();
+      SELECTIONInfoLatex.SetTextFont(42);
+      SELECTIONInfoLatex.SetTextSize(0.035);
 
-      h_data_SoverB->SetMinimum(10);
+
+
+      h_data_SoverB->SetMinimum(5);
       h_data_SoverB->Draw("e1");
       hs->Draw("histsame");
       errHist_SoverB_1sig->Draw("e2same");
@@ -770,7 +915,7 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
       if( useLegend ) legend->Draw();
 
       CMSInfoLatex.Draw();
-      //SELECTIONInfoLatex.Draw();
+      SELECTIONInfoLatex.Draw();
       FitinfoLatex.Draw();
 
 
@@ -890,10 +1035,636 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 
 
 
+
+    if( plotCategoryYieldCombined ){
+      TH1D* h_data_category_yield = (TH1D*)file->Get(Form("data_category_yield_%s",fitLabel.Data()));
+      TH1D* h_bkg_category_yield = (TH1D*)file->Get(Form("bkg_category_yield_%s",fitLabel.Data()));
+      TH1D* h_sig_category_yield = (TH1D*)file->Get(Form("sig_category_yield_%s",fitLabel.Data()));
+
+      h_data_category_yield->SetLineColor(1);
+      h_data_category_yield->SetLineWidth(2);
+      h_data_category_yield->SetMarkerStyle(20);
+      h_data_category_yield->SetMarkerSize(0.75);
+
+
+
+      TH1* h_bkg[NumBkgs];
+
+      TIter nextProcess(&processes);
+      LabelInfo *process = 0;
+      int nProc = 0;
+      //std::cout << "\t Filling individual sample components" << std::endl;
+      while ((process = (LabelInfo *)nextProcess())) {
+	TString procName = process->name;
+	h_bkg[nProc] = (TH1 *)h_data_category_yield->Clone("pdf_bin_"+procName+"_"+fitLabel+"Clone_cat_yield");
+	h_bkg[nProc]->Reset();
+
+	TIter nextCat3(&categories);
+	LabelInfo *category3 = 0;
+	int iCat3=0;
+	while ((category3 = (LabelInfo *)nextCat3())) {
+	  TString catLabel = category3->label;
+	  TString catName  = category3->name;
+
+	  //Construct the name of the normalization variable.
+	  TString normName = "n_exp_final_bin"+catName+"_proc_"+procName;
+
+	  RooAbsReal *fitN = w->function(normName);
+
+	  if( fitN ){
+	    h_bkg[nProc]->Fill(iCat3,fitN->getVal());
+	  }
+	  iCat3++;
+	}
+	nProc++;
+      }
+
+
+      TH1D* h_ttH = (TH1D*)h_sig_category_yield->Clone("h_ttH_category_yield"+fitLabel);
+      h_ttH->SetLineColor(color[bin_ttH]);
+      h_ttH->SetLineWidth(4);
+
+
+      TIter nextCat3(&categories);
+      LabelInfo *category3 = 0;
+      double integral_ttH_original = 0;
+      while ((category3 = (LabelInfo *)nextCat3())) {
+	TString catLabel = category3->label;
+	TString catName  = category3->name;
+
+	TH1 *sigHist_original = (TH1 *)dataFile->Get("ttH125_MVA_"+catName)->Clone("ttH125_original_yield_"+catName+"_"+fitLabel);
+	integral_ttH_original += sigHist_original->Integral();
+      }
+
+      if( blind && fitLabel.EqualTo("postFitS") ){
+	double integral_ttH_post = h_ttH->Integral();
+	h_ttH->Scale( integral_ttH_original / integral_ttH_post );
+      }
+
+      TH1D* h_ewk_bkg = (TH1D*)h_bkg[bin_wjets]->Clone("h_ewk_category_yield_"+fitLabel);
+      h_ewk_bkg->Add(h_bkg[bin_zjets]);
+      h_ewk_bkg->Add(h_bkg[bin_diboson]);
+
+      TH1D* h_ttbarV_bkg = (TH1D*)h_bkg[bin_ttW]->Clone("h_ttbarV_category_yield_"+fitLabel);
+      h_ttbarV_bkg->Add(h_bkg[bin_ttZ]);
+
+      h_ewk_bkg->SetFillColor(color[bin_ewk]);
+      h_ttbarV_bkg->SetFillColor(color[bin_ttV]);
+      h_bkg[bin_singlet]->SetFillColor(color[bin_singlet]);
+      h_bkg[bin_ttjets_other]->SetFillColor(color[bin_ttjets_other]);
+      h_bkg[bin_ttjets_ccbar]->SetFillColor(color[bin_ttjets_ccbar]);
+      h_bkg[bin_ttjets_bbbar]->SetFillColor(color[bin_ttjets_bbbar]);
+      h_bkg[bin_ttjets_b]->SetFillColor(color[bin_ttjets_b]);
+
+      h_bkg[bin_zjets]->SetFillColor(color[bin_zjets]);
+      h_bkg[bin_wjets]->SetFillColor(color[bin_wjets]);
+      h_bkg[bin_diboson]->SetFillColor(color[bin_diboson]);
+
+
+      h_ewk_bkg->SetLineColor(color[bin_ewk]);
+      h_ttbarV_bkg->SetLineColor(color[bin_ttV]);
+      h_bkg[bin_singlet]->SetLineColor(color[bin_singlet]);
+      h_bkg[bin_ttjets_other]->SetLineColor(color[bin_ttjets_other]);
+      h_bkg[bin_ttjets_ccbar]->SetLineColor(color[bin_ttjets_ccbar]);
+      h_bkg[bin_ttjets_bbbar]->SetLineColor(color[bin_ttjets_bbbar]);
+      h_bkg[bin_ttjets_b]->SetLineColor(color[bin_ttjets_b]);
+
+      h_bkg[bin_zjets]->SetLineColor(color[bin_zjets]);
+      h_bkg[bin_wjets]->SetLineColor(color[bin_wjets]);
+      h_bkg[bin_diboson]->SetLineColor(color[bin_diboson]);
+
+
+      THStack *hs = new THStack("hs_category_yield_"+fitLabel,"");
+
+      hs->Add(h_ewk_bkg);
+      hs->Add(h_ttbarV_bkg);
+      hs->Add(h_bkg[bin_singlet]);
+      hs->Add(h_bkg[bin_ttjets_bbbar]);
+      hs->Add(h_bkg[bin_ttjets_b]);
+      hs->Add(h_bkg[bin_ttjets_ccbar]);
+      hs->Add(h_bkg[bin_ttjets_other]);
+
+
+
+
+
+
+      TH1D* h_bkgToFit_category_yield = (TH1D*)h_bkg_category_yield->Clone(Form("bkgToFit_category_yield_%s",fitLabel.Data()));
+      if( fitLabel.EqualTo("postFitS") ) h_bkgToFit_category_yield->Add(h_sig_category_yield);
+
+      TH1D* fluctHist_category_yield[numCats];
+      for( int iBin=0; iBin<numCats; iBin++ ) fluctHist_category_yield[iBin] = (TH1D*)file->Get(Form("fluctHist_category_yield_%s_%d",fitLabel.Data(),iBin));
+
+
+
+      TH1 *errHist_category_yield_1sig = (TH1 *)h_data_category_yield->Clone("errHist_category_yield_1sig_"+fitLabel);
+      errHist_category_yield_1sig->Reset();
+      errHist_category_yield_1sig->SetFillColor(1);
+      errHist_category_yield_1sig->SetFillStyle(3654);
+      errHist_category_yield_1sig->SetLineColor(1);
+      errHist_category_yield_1sig->SetMarkerColor(0);
+      errHist_category_yield_1sig->SetMarkerStyle(1);
+      errHist_category_yield_1sig->SetMarkerSize(0.);
+
+      for (int xBin=0; xBin<numCats; xBin++) {
+
+	//int yBinMin = fluctHist_category_yield[xBin]->FindBin(h_data_category_yield->GetBinContent(xBin+1));
+	int yBinMin = fluctHist_category_yield[xBin]->FindBin(h_bkg_category_yield->GetBinContent(xBin+1));
+	int yBinMax = yBinMin; //To start...
+
+	double sum = fluctHist_category_yield[xBin]->GetBinContent(yBinMin);
+
+	//printf("\t xBin=%d, data=%.0f, findBin=%d, sum=%.1f\t \n",xBin,h_data_category_yield->GetBinContent(xBin+1),yBinMin,sum);
+
+	while (sum < 0.68269*nToys && yBinMin > 0 && yBinMax <= fluctHist_category_yield[xBin]->GetNbinsX()) {
+
+	  double contMin = fluctHist_category_yield[xBin]->GetBinContent(yBinMin-1);
+	  double contMax = fluctHist_category_yield[xBin]->GetBinContent(yBinMax+1);
+
+	  if (contMin > contMax) {
+	    sum += contMin;        
+	    --yBinMin;
+	  } else if (contMax > contMin) {
+	    sum += contMax;
+	    ++yBinMax;
+	  } else {
+	    sum += contMax;
+	    sum += contMin;
+	    --yBinMin;
+	    ++yBinMax;
+	  }
+	}
+
+	if (yBinMin == 0) std::cerr << "WARNING (1sig): error extends to underflow for bin " << xBin+1 << "!" << std::endl;
+	if (yBinMax == fluctHist_category_yield[xBin]->GetNbinsX()+1) std::cerr << "WARNING (1sig): error extends to overflow for bin " << xBin+1 << "!" << std::endl;
+
+	double yMin = fluctHist_category_yield[xBin]->GetBinCenter(yBinMin);
+	double yMax = fluctHist_category_yield[xBin]->GetBinCenter(yBinMax);
+	double yAve = (yMin+yMax)/2;
+
+	errHist_category_yield_1sig->SetBinContent(xBin+1,yAve);
+	errHist_category_yield_1sig->SetBinError(xBin+1,yMax-yAve);
+      }
+
+
+
+      TH1D* h_bkg_category_yield_blind = (TH1D*)h_bkgToFit_category_yield->Clone("h_bkgToFit_category_yield_blind");
+//       if( blind ){
+// 	for( int iBin=0; iBin<numCats; iBin++ ){
+// 	  double lowEdge = h_data_category_yield->GetBinLowEdge(iBin+1);
+// 	  if( lowEdge>-1.5 ){
+// 	    h_data_category_yield->SetBinContent(iBin+1,0.);
+// 	    h_bkg_category_yield_blind->SetBinContent(iBin+1,0.);
+// 	  }
+// 	}
+//       }
+
+      //Now calculate the ratio
+      TH1 *ratio_category_yield = (TH1 *)h_data_category_yield->Clone("ratio_category_yield_"+fitLabel);
+      ratio_category_yield->SetMarkerStyle(1);
+
+      TH1 *ratioErr_category_yield_1sig = (TH1 *)ratio_category_yield->Clone("ratioErr_category_yield_1sig_"+fitLabel);
+      ratioErr_category_yield_1sig->Reset();
+      ratioErr_category_yield_1sig->SetFillColor(kGreen);
+      ratioErr_category_yield_1sig->SetLineColor(0);
+      ratioErr_category_yield_1sig->SetLineWidth(0);
+      ratioErr_category_yield_1sig->SetMarkerStyle(0);
+      ratioErr_category_yield_1sig->SetMarkerColor(0);
+      ratioErr_category_yield_1sig->SetMarkerSize(0.);
+
+      for (int iBin = 1; iBin <= numCats; iBin++) {
+
+	double dataCentral = h_data_category_yield->GetBinContent(iBin);
+	double mcCentral = h_bkg_category_yield->GetBinContent(iBin);
+	double mcUp = errHist_category_yield_1sig->GetBinContent(iBin)+errHist_category_yield_1sig->GetBinError(iBin);
+	double mcDown = errHist_category_yield_1sig->GetBinContent(iBin)-errHist_category_yield_1sig->GetBinError(iBin);
+
+	double ratioUp = mcUp/mcCentral;
+	double ratioDown = mcDown/mcCentral;
+	double ratioAve = (ratioUp+ratioDown)/2;
+
+	ratioErr_category_yield_1sig->SetBinContent(iBin,ratioAve);
+	ratioErr_category_yield_1sig->SetBinError(iBin, ratioUp-ratioAve);
+
+	double mcCentral_maySig = h_bkgToFit_category_yield->GetBinContent(iBin);
+	double myratio = dataCentral/mcCentral_maySig;
+	double myratio_err = sqrt( dataCentral ) / mcCentral_maySig;
+
+	ratio_category_yield->SetBinContent(iBin,myratio);
+	ratio_category_yield->SetBinError(iBin,myratio_err);
+
+	if( (myratio>ratioMax) && ((myratio - myratio_err)<ratioMax) ){
+	  double minner = myratio - myratio_err;
+	  ratio_category_yield->SetBinContent(iBin,ratioMax-0.0001);
+	  ratio_category_yield->SetBinError(iBin,ratioMax-0.0001-minner);
+	}
+      }
+
+
+      TH1 *errHist_category_yield_2sig = (TH1 *)h_data_category_yield->Clone("errHist_category_yield_2sig_"+fitLabel);
+      errHist_category_yield_2sig->Reset();
+      errHist_category_yield_2sig->SetFillColor(1);
+      errHist_category_yield_2sig->SetFillStyle(3654);
+      errHist_category_yield_2sig->SetLineColor(1);
+      errHist_category_yield_2sig->SetMarkerColor(0);
+      errHist_category_yield_2sig->SetMarkerStyle(1);
+      errHist_category_yield_2sig->SetMarkerSize(0.);
+
+      for (int xBin=0; xBin<numCats; xBin++) {
+
+	int yBinMin = fluctHist_category_yield[xBin]->FindBin(h_bkg_category_yield->GetBinContent(xBin+1));
+	int yBinMax = yBinMin; //To start...
+
+	double sum = fluctHist_category_yield[xBin]->GetBinContent(yBinMin);
+
+	while (sum < 0.954499736*nToys && yBinMin > 0 && yBinMax <= fluctHist_category_yield[xBin]->GetNbinsX()) {
+
+	  double contMin = fluctHist_category_yield[xBin]->GetBinContent(yBinMin-1);
+	  double contMax = fluctHist_category_yield[xBin]->GetBinContent(yBinMax+1);
+
+	  if (contMin > contMax) {
+	    sum += contMin;        
+	    --yBinMin;
+	  } else if (contMax > contMin) {
+	    sum += contMax;
+	    ++yBinMax;
+	  } else {
+	    sum += contMax;
+	    sum += contMin;
+	    --yBinMin;
+	    ++yBinMax;
+	  }
+	}
+
+	if (yBinMin == 0  && !fitLabel.EqualTo("preFit") ) std::cerr << "WARNING (2sig): error extends to underflow for bin " << xBin+1 << "!" << std::endl;
+	if (yBinMax == (fluctHist_category_yield[xBin]->GetNbinsX()+1) && !fitLabel.EqualTo("preFit") ) std::cerr << "WARNING (2sig): error extends to overflow for bin " << xBin+1 << "!" << std::endl;
+
+	double yMin = fluctHist_category_yield[xBin]->GetBinCenter(yBinMin);
+	double yMax = fluctHist_category_yield[xBin]->GetBinCenter(yBinMax);
+	double yAve = (yMin+yMax)/2;
+
+	errHist_category_yield_2sig->SetBinContent(xBin+1,yAve);
+	errHist_category_yield_2sig->SetBinError(xBin+1,yMax-yAve);
+      }
+
+      TH1 *ratioErr_category_yield_2sig = (TH1 *)ratio_category_yield->Clone("ratioErr_category_yield_2sig_"+fitLabel);
+      ratioErr_category_yield_2sig->Reset();
+      ratioErr_category_yield_2sig->SetFillColor(kYellow);
+      ratioErr_category_yield_2sig->SetLineColor(0);
+      ratioErr_category_yield_2sig->SetLineWidth(0);
+      ratioErr_category_yield_2sig->SetMarkerStyle(0);
+      ratioErr_category_yield_2sig->SetMarkerColor(0);
+      ratioErr_category_yield_2sig->SetMarkerSize(0.);
+
+      for (int iBin = 1; iBin <= numCats; iBin++) {
+	double mcCentral = h_bkg_category_yield->GetBinContent(iBin);
+	double mcUp = errHist_category_yield_2sig->GetBinContent(iBin)+errHist_category_yield_2sig->GetBinError(iBin);
+	double mcDown = errHist_category_yield_2sig->GetBinContent(iBin)-errHist_category_yield_2sig->GetBinError(iBin);
+
+	double ratioUp = mcUp/mcCentral;
+	double ratioDown = mcDown/mcCentral;
+	double ratioAve = (ratioUp+ratioDown)/2;
+
+	ratioErr_category_yield_2sig->SetBinContent(iBin,ratioAve);
+	ratioErr_category_yield_2sig->SetBinError(iBin, ratioUp-ratioAve);
+      }
+
+
+      if( debug ) {
+	for( int xBin = 1; xBin <= numCats; xBin++ ) {
+	  std::cout << " xBin = " << xBin << ",\t dataHist = " << h_data_category_yield->GetBinContent(xBin) << ",\t fitHist = " << h_bkg_category_yield->GetBinContent(xBin) << ",\t errHist_1sig = " << errHist_category_yield_1sig->GetBinContent(xBin) << " +/- " << errHist_category_yield_1sig->GetBinError(xBin) << ",\t ratio = " << ratio_category_yield->GetBinContent(xBin) << ",\t ratioErr_1sig = " << ratioErr_category_yield_1sig->GetBinContent(xBin) << " +/- " << ratioErr_category_yield_1sig->GetBinError(xBin) << std::endl;
+	}
+      }
+ 
+
+      //Hack to get it plotted with ratio plot
+      TCanvas* myC = new TCanvas("myC", "myC", 800,700);
+      gStyle->SetPadBorderMode(0);
+      gStyle->SetFrameBorderMode(0);
+      Float_t small = 1.e-5;
+      myC->Divide(1,2,small,small);
+      const float padding=1e-5; const float ydivide=0.3;
+      myC->GetPad(1)->SetPad( padding, ydivide + padding , 1-padding, 1-padding);
+      myC->GetPad(2)->SetPad( padding, padding, 1-padding, ydivide-padding);
+      myC->GetPad(1)->SetLeftMargin(.11);
+      myC->GetPad(2)->SetLeftMargin(.11);
+      myC->GetPad(1)->SetRightMargin(.05);
+      myC->GetPad(2)->SetRightMargin(.05);
+      myC->GetPad(1)->SetBottomMargin(.3);
+      myC->GetPad(2)->SetBottomMargin(.3);
+      myC->GetPad(1)->Modified();
+      myC->GetPad(2)->Modified();
+      myC->cd(1);
+      gPad->SetBottomMargin(small);
+      gPad->Modified();
+
+      ratioErr_category_yield_1sig->SetMinimum(ratioMin);
+      ratioErr_category_yield_1sig->SetMaximum(ratioMax);
+      ratioErr_category_yield_1sig->GetYaxis()->SetNdivisions(50000+404);
+      ratioErr_category_yield_1sig->GetYaxis()->SetLabelSize(0.1); //make y label bigger
+      ratioErr_category_yield_1sig->GetXaxis()->SetLabelSize(0.1); //make y label bigger
+      ratioErr_category_yield_1sig->GetXaxis()->SetTitleOffset(1.1);
+      ratioErr_category_yield_1sig->GetXaxis()->SetTitle(h_data_category_yield->GetXaxis()->GetTitle()); //make y label bigger
+      ratioErr_category_yield_1sig->GetXaxis()->SetLabelSize(0.12);
+      //ratioErr_category_yield_1sig->GetXaxis()->SetLabelOffset(0.04);
+      ratioErr_category_yield_1sig->GetXaxis()->SetTitleSize(0.12);
+      ratioErr_category_yield_1sig->GetYaxis()->SetTitle("Data/MC");
+      ratioErr_category_yield_1sig->GetYaxis()->SetTitleSize(0.1);
+      ratioErr_category_yield_1sig->GetYaxis()->SetTitleOffset(.45);
+      myC->cd(2);
+      gPad->SetTopMargin(small);
+      gPad->SetTickx();
+      gPad->Modified();
+
+      
+
+
+      TLegend *legend = new TLegend(0.14,0.75,0.94,0.89);
+
+      legend->SetFillColor(kWhite);
+      legend->SetLineColor(kWhite);
+      legend->SetShadowColor(kWhite);
+      legend->SetTextFont(42);
+      legend->SetTextSize(0.035);
+
+      legend->SetNColumns(3);
+
+      //double scale_ttH = ( fitLabel.EqualTo("postFitS") && !blind ) ? 1. : 30.; // fitHist->Integral() / h_ttH->Integral()
+      double scale_ttH = 30.; // fitHist->Integral() / h_ttH->Integral()
+
+ 
+      legend->AddEntry(h_bkg[bin_ttjets_other],Form("%s (%.1f)",label[bin_ttjets_other].Data(),h_bkg[bin_ttjets_other]->Integral()),"f");
+      legend->AddEntry(h_bkg[bin_ttjets_ccbar],Form("%s (%.1f)",label[bin_ttjets_ccbar].Data(),h_bkg[bin_ttjets_ccbar]->Integral()),"f");
+      legend->AddEntry(h_bkg[bin_ttjets_b],Form("%s (%.1f)",label[bin_ttjets_b].Data(),h_bkg[bin_ttjets_b]->Integral()),"f");
+      legend->AddEntry(h_bkg[bin_ttjets_bbbar],Form("%s (%.1f)",label[bin_ttjets_bbbar].Data(),h_bkg[bin_ttjets_bbbar]->Integral()),"f");
+      legend->AddEntry(h_bkg[bin_singlet],Form("%s (%.1f)",label[bin_singlet].Data(),h_bkg[bin_singlet]->Integral()),"f");
+      
+      legend->AddEntry(h_ttbarV_bkg,Form("%s (%.1f)",label[bin_ttV].Data(),h_ttbarV_bkg->Integral()),"f");
+      legend->AddEntry(h_ewk_bkg,Form("%s (%.1f)",label[bin_ewk].Data(),h_ewk_bkg->Integral()),"f");
+
+      legend->AddEntry(h_data_category_yield,Form("%s (%.1f)",label[bin_data].Data(),h_data_category_yield->Integral()),"lpe");
+
+      legend->AddEntry(errHist_category_yield_1sig,Form("Sum MC (%.1f)",h_data_category_yield->Integral()),"f");
+
+      //if( fitLabel.EqualTo("postFitS") && !blind ) legend->AddEntry(h_ttH,Form("t#bar{t}H125 (%.1f)",h_ttH->Integral()),"l");
+      //else                                         legend->AddEntry(h_ttH,Form("t#bar{t}H125 (%.1f#times%.0f)",h_ttH->Integral(),scale_ttH),"l");
+      legend->AddEntry(h_ttH,Form("t#bar{t}H125 (%.1f#times%.0f)",h_ttH->Integral(),scale_ttH),"l");
+
+
+
+      TLegend *legend_ratio = new TLegend(0.14,0.87,0.34,0.97);
+
+      legend_ratio->SetFillColor(kWhite);
+      legend_ratio->SetLineColor(kWhite);
+      legend_ratio->SetShadowColor(kWhite);
+      legend_ratio->SetTextFont(42);
+      legend_ratio->SetTextSize(0.055);
+
+      if( !fitLabel.EqualTo("preFit") ){
+	legend_ratio->SetNColumns(2);
+
+	legend_ratio->AddEntry(ratioErr_category_yield_1sig,"Fit #pm1#sigma","f");
+	legend_ratio->AddEntry(ratioErr_category_yield_2sig,"Fit #pm2#sigma","f");
+      }
+      else {
+	legend_ratio->AddEntry(ratioErr_category_yield_1sig,"Stat+Syst Uncertainty","f");
+      }
+
+      ratioErr_category_yield_1sig->SetTitle(";channel and category");
+      for( int iBin=0; iBin<ratioErr_category_yield_1sig->GetNbinsX(); iBin++ ) ratioErr_category_yield_1sig->GetXaxis()->SetBinLabel(iBin+1,axis_labels[iBin]);
+
+      h_data_category_yield->SetTitle(";;Events");
+      h_data_category_yield->GetYaxis()->SetTitleSize(0.05);
+      h_data_category_yield->GetYaxis()->SetTitleOffset(1.);
+
+      double xmin = h_data_category_yield->GetBinLowEdge(1);
+      double xmax = h_data_category_yield->GetBinLowEdge(numCats) + h_data_category_yield->GetBinWidth(numCats);
+
+
+
+      myC->cd(1);
+      myC->GetPad(1)->SetLogy(1);
+
+      int maxBin_data = h_data_category_yield->GetMaximumBin();
+      int maxBin_bkg  = errHist_category_yield_1sig->GetMaximumBin();
+
+      double max_data = h_data_category_yield->GetBinContent(maxBin_data) + h_data_category_yield->GetBinError(maxBin_data);
+      double max_bkg  = errHist_category_yield_1sig->GetBinContent(maxBin_bkg) + errHist_category_yield_1sig->GetBinError(maxBin_bkg);
+
+      double histMax = TMath::Max( max_data, max_bkg );
+
+      if( useLegend ) histMax = 10. * histMax;
+      else            histMax = 10. * histMax;
+
+      h_data_category_yield->SetMaximum(histMax);
+      errHist_category_yield_1sig->SetMaximum(histMax);
+
+      double chi2 = h_data_category_yield->Chi2Test(h_bkg_category_yield_blind,"UWP");
+
+      TString str_chi2 = ( !fitLabel.EqualTo("postFitS") ) ? Form("B-only p-value (#chi^{2}) = %.3f",chi2) : Form("S+B p-value (#chi^{2}) = %.3f",chi2);
+      TLatex Chi2Latex(0.7, 0.91, str_chi2);
+      Chi2Latex.SetNDC();
+      Chi2Latex.SetTextFont(42);
+      Chi2Latex.SetTextSize(0.055);
+
+
+
+      TString selectioninfo = "ttH(bb,#tau#tau): LJ + OSDIL + TAU";//"Lepton + #geq6 jets + 2 tags";
+      TLatex SELECTIONInfoLatex(0.12, 0.91, selectioninfo);
+      SELECTIONInfoLatex.SetNDC();
+      SELECTIONInfoLatex.SetTextFont(42);
+      SELECTIONInfoLatex.SetTextSize(0.035);
+
+
+      //if( fitLabel.EqualTo("postFitS") && !blind ) hs->Add(h_ttH);
+      //else                                         h_ttH->Scale( scale_ttH );
+      h_ttH->Scale( scale_ttH );
+
+
+
+
+
+      h_data_category_yield->SetMinimum(3);
+      h_data_category_yield->Draw("e1");
+      hs->Draw("histsame");
+      errHist_category_yield_1sig->Draw("e2same");
+      //if( !fitLabel.EqualTo("postFitS") || blind ) h_ttH->Draw("histsame");
+      h_ttH->Draw("histsame");
+      h_data_category_yield->Draw("e1SAME");
+
+      if( useLegend ) legend->Draw();
+
+
+      int myline_width = 3;
+      int myline_style = 1;
+
+      TLine* myLine_channel1;
+      myLine_channel1 = new TLine(7, 0.000, 7, 2e4);
+      myLine_channel1->SetLineWidth(myline_width);
+      myLine_channel1->SetLineStyle(myline_style);
+      myLine_channel1->Draw();
+
+      TLine* myLine_channel2;
+      myLine_channel2 = new TLine(10, 0.000, 10, 2e4);
+      myLine_channel2->SetLineWidth(myline_width);
+      myLine_channel2->SetLineStyle(myline_style);
+      myLine_channel2->Draw();
+
+
+      TLatex CMSInfoLatex_wide(0.57, 0.91, cmsinfo.c_str());
+      CMSInfoLatex_wide.SetNDC();
+      CMSInfoLatex_wide.SetTextFont(42);
+      CMSInfoLatex_wide.SetTextSize(0.035);
+
+
+      CMSInfoLatex_wide.Draw();
+      SELECTIONInfoLatex.Draw();
+      FitinfoLatex.Draw();
+
+
+      myC->cd(2);
+      ratioErr_category_yield_1sig->Draw("e2");
+      if( !fitLabel.EqualTo("preFit") ){
+	ratioErr_category_yield_2sig->Draw("e2same");
+	ratioErr_category_yield_1sig->Draw("e2same");
+      }
+      ratio_category_yield->Draw("e1SAME");
+
+
+      double use_ratio[ratio_category_yield->GetNbinsX()];
+      for( int iBin=0; iBin<ratio_category_yield->GetNbinsX(); iBin++ ) use_ratio[iBin] = ratio_category_yield->GetBinContent(iBin+1);
+
+      TLatex *bin_ratio[ratio_category_yield->GetNbinsX()];
+      for( int iBin=0; iBin<ratio_category_yield->GetNbinsX(); iBin++ ){
+	//bin_ratio[iBin] = new TLatex(0.135+0.093*iBin,0.33,Form("%1.2f", use_ratio[iBin]) );
+	bin_ratio[iBin] = new TLatex(0.123+0.0522*iBin,0.33,Form("%1.2f", use_ratio[iBin]) );
+	bin_ratio[iBin]->SetNDC();
+	bin_ratio[iBin]->SetTextFont(42);
+	bin_ratio[iBin]->SetTextSize(0.07);
+	//bin_ratio[iBin]->Draw();
+      }
+
+      myC->GetPad(1)->RedrawAxis();
+      myC->GetPad(2)->RedrawAxis();
+
+
+      myLine_channel1->Draw();
+      myLine_channel2->Draw();
+
+      TLine* myLine;
+      myLine = new TLine(xmin, 1.000, xmax, 1.000);
+      myLine->Draw();
+      legend_ratio->Draw();
+
+      Chi2Latex.Draw();
+
+      myC->SaveAs(imageDir+"/dataToMC_"+era+"_category_yield_"+fitLabel+".png");
+      myC->SaveAs(imageDir+"/dataToMC_"+era+"_category_yield_"+fitLabel+".pdf");
+
+      delete hs;
+      delete myLine;
+      delete myC;
+
+
+      if( debug ){
+
+	TLine* l_nom = new TLine( 0,0,1,1 );
+	TLine* l_ave = new TLine( 0,0,1,1 );
+	TLine* l_ave_p1 = new TLine( 0,0,1,1 );
+	TLine* l_ave_m1 = new TLine( 0,0,1,1 );
+	TLine* l_ave_p2 = new TLine( 0,0,1,1 );
+	TLine* l_ave_m2 = new TLine( 0,0,1,1 );
+
+	l_nom->SetLineColor(kBlack);
+	l_ave->SetLineColor(kBlue);
+	l_ave_p1->SetLineColor(kGreen+1);
+	l_ave_m1->SetLineColor(kGreen+1);
+	l_ave_p2->SetLineColor(kRed+1);
+	l_ave_m2->SetLineColor(kRed+1);
+
+	l_nom->SetLineWidth(2);
+	l_ave->SetLineWidth(2);
+	l_ave_p1->SetLineWidth(2);
+	l_ave_m1->SetLineWidth(2);
+	l_ave_p2->SetLineWidth(2);
+	l_ave_m2->SetLineWidth(2);
+
+	TCanvas *c1 = new TCanvas("c1","",900,800);
+	for( int iBin=0; iBin<numCats; iBin++ ){
+
+	  TString s_bin = Form("%d",iBin+1);
+	  TString proj_name = "projection_bin"+s_bin+"_"+fitLabel;
+
+	  TH1D* h_proj = (TH1D*)fluctHist_category_yield[iBin]->Clone(proj_name);
+	  int rebin = 1000;
+	  if( !fitLabel.EqualTo("preFit")) rebin = 100;
+	  h_proj->Rebin(rebin);
+
+	  int nProjBins = h_proj->GetNbinsX();
+	  std::cout << "  h_proj nbins = " << nProjBins << std::endl;
+
+	  double ave = errHist_category_yield_1sig->GetBinContent(iBin+1);
+	  double aveErr = errHist_category_yield_1sig->GetBinError(iBin+1);
+	  double nom = h_bkg_category_yield->GetBinContent(iBin+1);
+
+	  double ave_2s = errHist_category_yield_2sig->GetBinContent(iBin+1);
+	  double aveErr_2s = errHist_category_yield_2sig->GetBinError(iBin+1);
+
+	  double scaleBand = 4;
+	  double xminProj = std::max( h_proj->GetXaxis()->GetXmin(), ave-scaleBand*aveErr );
+	  double xmaxProj = std::min( h_proj->GetXaxis()->GetXmax(), ave+scaleBand*aveErr );
+
+	  double ymaxProj = 1.05 * h_proj->GetMaximum();
+
+	  double integral_total = h_proj->Integral();
+	  double integral_68 = h_proj->Integral( h_proj->FindBin(ave-aveErr), h_proj->FindBin(ave+aveErr) );
+	  double integral_95 = h_proj->Integral( h_proj->FindBin(ave_2s-aveErr_2s), h_proj->FindBin(ave_2s+aveErr_2s) );
+
+	  printf("\t bin = %d,\t integral_total = %.1f,\t integral_68 = %.1f,\t integral_95 = %.1f,\t 68/total = %.3f,\t 95/total = %.3f \n",iBin+1,integral_total, integral_68, integral_95,integral_68/integral_total,integral_95/integral_total);
+
+	  h_proj->GetXaxis()->SetRangeUser(xminProj,xmaxProj);
+	  h_proj->GetYaxis()->SetRangeUser(0,ymaxProj);
+
+	  h_proj->SetLineColor(kBlack);
+	  h_proj->Draw("hist");
+
+	  l_nom->DrawLine(nom,0,nom,ymaxProj);
+	  l_ave->DrawLine(ave,0,ave,ymaxProj);
+	  l_ave_p1->DrawLine(ave+aveErr,0,ave+aveErr,ymaxProj);
+	  l_ave_m1->DrawLine(ave-aveErr,0,ave-aveErr,ymaxProj);
+	  if( !fitLabel.EqualTo("preFit") ){
+	    l_ave_p2->DrawLine(ave_2s+aveErr_2s,0,ave_2s+aveErr_2s,ymaxProj);
+	    l_ave_m2->DrawLine(ave_2s-aveErr_2s,0,ave_2s-aveErr_2s,ymaxProj);
+	  }
+
+	  printf("  bin = %d,\t nom = %.2f,\t ave = %.2f,\t ave - err = %.2f,\t ave+err = %.2f \n",iBin+1,nom,ave,ave-aveErr,ave+aveErr );
+
+	  c1->Print(debugDir+"/projection_category_yield_"+fitLabel+"_bin"+s_bin+".png");
+	}
+
+	delete c1;
+	delete l_nom;
+	delete l_ave;
+	delete l_ave_p1;
+	delete l_ave_m1;
+	delete l_ave_p2;
+	delete l_ave_m2;
+      }
+
+    }
+
+
+
+
+
     if( plotBDTFits ){
       TIter nextCat3(&categories);
       LabelInfo *category3 = 0;
       int iCat3=0;
+
+      std::vector<TString> temp_BDT_cat_names;
+      std::vector<double>  temp_BDT_chi2_value;
+
       while ((category3 = (LabelInfo *)nextCat3())) {
 	TString catLabel = category3->label;
 	TString catName  = category3->name;
@@ -915,6 +1686,7 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 	dataHist->SetMarkerSize(0.75);
 
 
+	TH1 *sigHist_original = (TH1 *)dataFile->Get("ttH125_MVA_"+catName)->Clone("ttH125_original_"+catName+"_"+fitLabel);
 
 	TH1* h_bkg[NumBkgs];
 
@@ -967,6 +1739,11 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 	  h_ttH->SetBinContent(iBin+1,sigTempHist->GetBinContent(iBin+1));
 	}
 
+	double blindSscale = sigHist_original->Integral() / h_ttH->Integral();
+
+	if( blind ){
+	  h_ttH->Scale( blindSscale );
+	}
 
 	delete sigTempHist;
 
@@ -1172,6 +1949,11 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 	}
 	double chi2 = dataHist->Chi2Test(fitHist_blind,"UWP");
 
+
+	temp_BDT_cat_names.push_back(catName);
+	temp_BDT_chi2_value.push_back(chi2);
+
+
 	//Now calculate the ratio
 	TH1 *ratio = (TH1 *)dataHist->Clone("ratio"+catName+"_"+fitLabel);
 	ratio->SetMarkerStyle(1);
@@ -1295,11 +2077,13 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 
 	legend->SetNColumns(3);
 
-	double scale_ttH = ( fitLabel.EqualTo("postFitS") && !blind ) ? 1. : 30.; // fitHist->Integral() / h_ttH->Integral()
+	//double scale_ttH = ( fitLabel.EqualTo("postFitS") && !blind ) ? 1. : 30.; // fitHist->Integral() / h_ttH->Integral()
+	double scale_ttH = 30.; // fitHist->Integral() / h_ttH->Integral()
 
 
 	if( isTauCat ){
-	  scale_ttH = ( fitLabel.EqualTo("postFitS") && !blind ) ? 1. : 100.;
+	  //scale_ttH = ( fitLabel.EqualTo("postFitS") && !blind ) ? 1. : 100.;
+	  scale_ttH = 100.;
 
 	  legend->AddEntry(h_bkg[bin_ttjets_other],Form("%s (%.1f)",label[bin_ttjets_other].Data(),h_bkg[bin_ttjets_other]->Integral()),"f");
 	  legend->AddEntry(h_bkg[bin_diboson],Form("%s (%.1f)",label[bin_diboson].Data(),h_bkg[bin_diboson]->Integral()),"f");
@@ -1323,9 +2107,9 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 
 	legend->AddEntry(errHist_1sig,Form("Sum MC (%.1f)",fitHist->Integral()),"f");
 
-	if( fitLabel.EqualTo("postFitS") && !blind ) legend->AddEntry(h_ttH,Form("t#bar{t}H125 (%.1f)",h_ttH->Integral()),"l");
-	else                                         legend->AddEntry(h_ttH,Form("t#bar{t}H125 (%.1f#times%.0f)",h_ttH->Integral(),scale_ttH),"l");
-
+	//if( fitLabel.EqualTo("postFitS") && !blind ) legend->AddEntry(h_ttH,Form("t#bar{t}H125 (%.1f)",h_ttH->Integral()),"l");
+	//else                                         legend->AddEntry(h_ttH,Form("t#bar{t}H125 (%.1f#times%.0f)",h_ttH->Integral(),scale_ttH),"l");
+	legend->AddEntry(h_ttH,Form("t#bar{t}H125 (%.1f#times%.0f)",h_ttH->Integral(),scale_ttH),"l");
 
 
 
@@ -1359,8 +2143,9 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 	double xmax = dataHist->GetBinLowEdge(numBins[iCat3]) + dataHist->GetBinWidth(numBins[iCat3]);
 
 
-	if( fitLabel.EqualTo("postFitS") && !blind ) hs->Add(h_ttH);
-	else                                         h_ttH->Scale( scale_ttH );
+	//if( fitLabel.EqualTo("postFitS") && !blind ) hs->Add(h_ttH);
+	//else                                         h_ttH->Scale( scale_ttH );
+	h_ttH->Scale( scale_ttH );
 
 
 	myC->cd(1);
@@ -1396,7 +2181,8 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 	dataHist->Draw("e1");
 	hs->Draw("histsame");
 	errHist_1sig->Draw("e2same");
-	if( !fitLabel.EqualTo("postFitS") || blind ) h_ttH->Draw("histsame");
+	//if( !fitLabel.EqualTo("postFitS") || blind ) h_ttH->Draw("histsame");
+	h_ttH->Draw("histsame");
 	dataHist->Draw("e1SAME");
 
 	if( useLegend ) legend->Draw();
@@ -1501,6 +2287,12 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 	delete hs;
 
       } // end loop over categories
+
+
+      BDT_cat_names.push_back(temp_BDT_cat_names);
+      BDT_chi2_value.push_back(temp_BDT_chi2_value);
+
+
     } // end conditional to loop over categories
 
     // delete quantities defined for each fit result
@@ -1510,73 +2302,159 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
   }// end loop over fitRes
 
 
-  /*
 
-  // debug info that is not currently implemented
-      TLine* l_nom = new TLine( 0,0,1,1 );
-      TLine* l_ave = new TLine( 0,0,1,1 );
-      TLine* l_ave_p1 = new TLine( 0,0,1,1 );
-      TLine* l_ave_m1 = new TLine( 0,0,1,1 );
+  if( nuisance_names_noMCstat_postFitS.size()>0 && nuisance_names_noMCstat_postFitB.size()>0 ){
+    int NumPulls_noMCstat_postFitS = int(nuisance_names_noMCstat_postFitS.size());
+    int NumPulls_noMCstat_postFitB = int(nuisance_names_noMCstat_postFitB.size());
+    TH2D* h_pulls_vert = new TH2D("h_pulls_vert",";Pull", 100, -2.5, 2.5, NumPulls_noMCstat_postFitS,0,NumPulls_noMCstat_postFitS);
 
-      l_nom->SetLineColor(kBlack);
-      l_ave->SetLineColor(kGreen);
-      l_ave_p1->SetLineColor(kRed);
-      l_ave_m1->SetLineColor(kBlue);
+    double use_y_postFitS[NumPulls_noMCstat_postFitS];
+    double use_yErr_postFitS[NumPulls_noMCstat_postFitS];
+    double pulls_noMCstat_postFitS[NumPulls_noMCstat_postFitS];
+    //double constraints_noMCstat_postFitS[NumPulls_noMCstat_postFitS];
+    double AsymErrorLo_noMCstat_postFitS[NumPulls_noMCstat_postFitS];
+    double AsymErrorHi_noMCstat_postFitS[NumPulls_noMCstat_postFitS];
 
-      l_nom->SetLineWidth(2);
-      l_ave->SetLineWidth(2);
-      l_ave_p1->SetLineWidth(2);
-      l_ave_m1->SetLineWidth(2);
+    double use_y_postFitB[NumPulls_noMCstat_postFitS];
+    double use_yErr_postFitB[NumPulls_noMCstat_postFitS];
+    double pulls_noMCstat_postFitB[NumPulls_noMCstat_postFitS];
+    //double constraints_noMCstat_postFitB[NumPulls_noMCstat_postFitS];
+    double AsymErrorLo_noMCstat_postFitB[NumPulls_noMCstat_postFitS];
+    double AsymErrorHi_noMCstat_postFitB[NumPulls_noMCstat_postFitS];
 
-      for( int iBin=0; iBin<numBins; iBin++ ){
+    for( int iPar=0; iPar<NumPulls_noMCstat_postFitS; iPar++ ){
+      use_y_postFitS[iPar] = iPar + 0.35;
+      use_yErr_postFitS[iPar] = 0.;
 
-	TString s_bin = Form("%d",iBin+1);
-	TString proj_name = "projection_bin"+s_bin+"_"+fitLabel+"_"+catName;
+      pulls_noMCstat_postFitS[iPar] = nuisance_pulls_noMCstat_postFitS[iPar];
+      //constraints_noMCstat_postFitS[iPar] = nuisance_constraints_noMCstat_postFitS[iPar];
 
-	TH1D* h_proj = (TH1D*)fluctHist[iCat][iBin]->Clone(proj_name);
+      double hiErr_postFitS = fabs(nuisance_AsymErrorHi_noMCstat_postFitS[iPar]);
+      double loErr_postFitS = fabs(nuisance_AsymErrorLo_noMCstat_postFitS[iPar]);
 
-	int nProjBins = h_proj->GetNbinsX();
-	std::cout << "  h_proj nbins = " << nProjBins << std::endl;
+      double maxError_postFitS = std::max<double>(std::max<double>(hiErr_postFitS, loErr_postFitS), nuisance_constraints_noMCstat_postFitS[iPar]);
 
-	double ave = errHist_1sig->GetBinContent(iBin+1);
-	double aveErr = errHist_1sig->GetBinError(iBin+1);
-	double nom = fitHist->GetBinContent(iBin+1);
+      if( fabs(hiErr_postFitS) < 0.001*maxError_postFitS ) hiErr_postFitS = nuisance_constraints_noMCstat_postFitS[iPar];
+      if( fabs(loErr_postFitS) < 0.001*maxError_postFitS ) loErr_postFitS = nuisance_constraints_noMCstat_postFitS[iPar];
 
-	double xminProj = std::max( h_proj->GetXaxis()->GetXmin(), ave-3*aveErr );
-	double xmaxProj = std::min( h_proj->GetXaxis()->GetXmax(), ave+3*aveErr );
+      AsymErrorLo_noMCstat_postFitS[iPar] = fabs(loErr_postFitS);
+      AsymErrorHi_noMCstat_postFitS[iPar] = fabs(hiErr_postFitS);
 
-	double ymaxProj = 1.05 * h_proj->GetMaximum();
+      h_pulls_vert->GetYaxis()->SetBinLabel(iPar+1,nuisance_names_noMCstat_postFitS[iPar].Data());
 
-	h_proj->GetXaxis()->SetRangeUser(xminProj,xmaxProj);
-	h_proj->GetYaxis()->SetRangeUser(0,ymaxProj);
 
-	h_proj->SetLineColor(kBlack);
-	h_proj->Draw("hist");
+      for( int jPar=0; jPar<NumPulls_noMCstat_postFitB; jPar++ ){
+	if( nuisance_names_noMCstat_postFitB[jPar].EqualTo(nuisance_names_noMCstat_postFitS[iPar]) ){
+	  use_y_postFitB[jPar] = iPar + 0.65;
+	  use_yErr_postFitB[jPar] = 0.;
+	  pulls_noMCstat_postFitB[jPar] = nuisance_pulls_noMCstat_postFitB[jPar];
+	  //constraints_noMCstat_postFitB[jPar] = nuisance_constraints_noMCstat_postFitB[jPar];
 
-	l_nom->DrawLine(nom,0,nom,ymaxProj);
-	l_ave->DrawLine(ave,0,ave,ymaxProj);
-	l_ave_p1->DrawLine(ave+aveErr,0,ave+aveErr,ymaxProj);
-	l_ave_m1->DrawLine(ave-aveErr,0,ave-aveErr,ymaxProj);
+	  double hiErr_postFitB = fabs(nuisance_AsymErrorHi_noMCstat_postFitB[jPar]);
+	  double loErr_postFitB = fabs(nuisance_AsymErrorLo_noMCstat_postFitB[jPar]);
 
-	printf("  bin = %d,\t nom = %.2f,\t ave = %.2f,\t ave - err = %.2f,\t ave+err = %.2f \n",iBin+1,nom,ave,ave-aveErr,ave+aveErr );
+	  double maxError_postFitB = std::max<double>(std::max<double>(hiErr_postFitB, loErr_postFitB), nuisance_constraints_noMCstat_postFitB[jPar]);
 
-	c1->Print("Images/projection_"+fitLabel+"_"+catName+"_bin"+s_bin+".png");
+	  if( fabs(hiErr_postFitB) < 0.001*maxError_postFitB ) hiErr_postFitB = nuisance_constraints_noMCstat_postFitB[jPar];
+	  if( fabs(loErr_postFitB) < 0.001*maxError_postFitB ) loErr_postFitB = nuisance_constraints_noMCstat_postFitB[jPar];
+
+	  AsymErrorLo_noMCstat_postFitB[jPar] = fabs(loErr_postFitB);
+	  AsymErrorHi_noMCstat_postFitB[jPar] = fabs(hiErr_postFitB);
+	}
       }
-
-      delete c1;
-      delete c2;
-      delete h_corr;
-
-      std::cout << "\t\t Finished debugging " << std::endl;
-
     }
 
-    //delete [] fluctHist;
-    delete myLine;
-    delete myC;
+    //TGraphAsymmErrors *gr_postFitS = new TGraphAsymmErrors(NumPulls_noMCstat_postFitS,pulls_noMCstat_postFitS,use_y_postFitS,constraints_noMCstat_postFitS,constraints_noMCstat_postFitS,use_yErr_postFitS,use_yErr_postFitS); 
+    TGraphAsymmErrors *gr_postFitS = new TGraphAsymmErrors(NumPulls_noMCstat_postFitS,pulls_noMCstat_postFitS,use_y_postFitS,AsymErrorLo_noMCstat_postFitS,AsymErrorHi_noMCstat_postFitS,use_yErr_postFitS,use_yErr_postFitS); 
+    gr_postFitS->SetMarkerSize(1);
+    gr_postFitS->SetMarkerStyle(20);
+    gr_postFitS->SetMarkerColor(kBlack);
+    gr_postFitS->SetLineColor(kBlack);
 
+
+    //TGraphAsymmErrors *gr_postFitB = new TGraphAsymmErrors(NumPulls_noMCstat_postFitB,pulls_noMCstat_postFitB,use_y_postFitB,constraints_noMCstat_postFitB,constraints_noMCstat_postFitB,use_yErr_postFitB,use_yErr_postFitB); 
+    TGraphAsymmErrors *gr_postFitB = new TGraphAsymmErrors(NumPulls_noMCstat_postFitB,pulls_noMCstat_postFitB,use_y_postFitB,AsymErrorLo_noMCstat_postFitB,AsymErrorHi_noMCstat_postFitB,use_yErr_postFitB,use_yErr_postFitB); 
+    gr_postFitB->SetMarkerSize(1);
+    gr_postFitB->SetMarkerStyle(21);
+    gr_postFitB->SetMarkerColor(kRed);
+    gr_postFitB->SetLineColor(kRed);
+
+    if( debug ){
+      TCanvas *c2 = new TCanvas("c2","",900,800);
+      h_pulls_vert->SetStats(0);
+      h_pulls_vert->Draw();
+      gr_postFitB->Draw("pe1same");
+      gr_postFitS->Draw("pe1same");
+
+      TLine* myLine1;
+      myLine1 = new TLine( 0., h_pulls_vert->GetYaxis()->GetXmin(), 0., h_pulls_vert->GetYaxis()->GetXmax());
+      myLine1->SetLineStyle(7);
+      myLine1->Draw();
+
+      TLegend *legend = new TLegend(0.3,0.955,0.94,0.99);
+
+      legend->SetFillColor(kWhite);
+      legend->SetLineColor(kWhite);
+      legend->SetShadowColor(kWhite);
+      legend->SetTextFont(42);
+      legend->SetTextSize(0.03);
+
+      legend->SetNColumns(2);
+
+      legend->AddEntry(gr_postFitB,"Post-Fit B","pe1");
+      legend->AddEntry(gr_postFitS,"Post-Fit S+B","pe1");
+
+      legend->Draw();
+
+      c2->GetPad(0)->SetLeftMargin(0.23);
+      c2->GetPad(0)->SetTopMargin(0.05);
+      c2->GetPad(0)->SetRightMargin(0.05);
+      c2->Print(debugDir+"/pulls_vert_compare_postFitB_postFitS.png");
+
+      delete c2;
+      delete myLine1;
+      delete legend;
+    }
+    delete gr_postFitS;
+    delete gr_postFitB;
+    delete h_pulls_vert;
   }
-  */
+
+
+  int numUseFitRes = BDT_cat_names.size();
+
+  if( numUseFitRes>0 && numUseFitRes<4 ){
+    int numUseCats   = BDT_cat_names[0].size();
+
+    if( numUseFitRes==1 ){
+      std::cout << "\\begin{tabular}{|l|c|} \\hline" << std::endl;
+      std::cout << "Category   & Pre-Fit \\\\  \\hline" << std::endl;
+    }
+    else if( numUseFitRes==2 ){
+      std::cout << "\\begin{tabular}{|l|c|c|} \\hline" << std::endl;
+      std::cout << "Category   & Pre-Fit & Post-Fit (B) \\\\  \\hline" << std::endl;
+    }
+    else if( numUseFitRes==3 ){
+      std::cout << "\\begin{tabular}{|l|c|c|c|} \\hline" << std::endl;
+      std::cout << "Category   & Pre-Fit & Post-Fit (B) & Post-Fit (S+B) \\\\  \\hline" << std::endl;
+    }
+
+
+    for( int iCat=0; iCat<numUseCats; iCat++ ){
+      TString newname = BDT_cat_names[0][iCat];
+      newname.ReplaceAll("_","\\_");
+      std::cout << newname;
+
+      for( int iRes=0; iRes<numUseFitRes; iRes++ ){
+	printf("\t & \t %.3f", BDT_chi2_value[iRes][iCat]);
+      }
+      std::cout << " \\\\" << std::endl;
+    }
+    std::cout << "\\hline" << std::endl;
+    std::cout << "\\end{tabular}" << std::endl;
+
+  } // end condition on at least one fit result
+
 
   file->Close();
   std::cout << "Done!" << std::endl;
