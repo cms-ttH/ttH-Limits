@@ -154,7 +154,7 @@ void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "
       else if( fitType==2 ) w->loadSnapshot("postfitS");
       else                  w->loadSnapshot("prefit");
 
-      //ttH_val_prefit = fitTTH->getVal();
+      ttH_val_prefit = fitTTH->getVal();
       ttH_err_prefit = fitTTH->getPropagatedError(*preFitFR);
     }
 
