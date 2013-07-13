@@ -1,3 +1,4 @@
+
 class LabelInfo : public TObject {
 
 public:
@@ -23,6 +24,7 @@ root -b -q head.C printNorms.C'("file.root")'
 
 
 ////
+Double_t getPropagatedErrorMinos(const RooAbsReal &var, const RooFitResult &fitRes);
 ////
 
 void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "ttH125", TString fitFileName = "mlfit.root", TString wsFileName = "wsTest.root") {
@@ -155,7 +157,8 @@ void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "
       else                  w->loadSnapshot("prefit");
 
       ttH_val_prefit = fitTTH->getVal();
-      ttH_err_prefit = fitTTH->getPropagatedError(*preFitFR);
+//       ttH_err_prefit = fitTTH->getPropagatedError(*preFitFR);
+      ttH_err_prefit = getPropagatedErrorMinos(*fitTTH,*preFitFR);
     }
 
     int iSample = 0;
@@ -197,7 +200,8 @@ void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "
         else if( fitType==2 ) w->loadSnapshot("postfitS");
         else                  w->loadSnapshot("prefit");
         preFitNorm = fitN->getVal();
-        preFitErr = fitN->getPropagatedError(*preFitFR);
+//         preFitErr = fitN->getPropagatedError(*preFitFR);
+        preFitErr = getPropagatedErrorMinos(*fitN,*preFitFR);
       }
 
       total_sumw2 += sumw2;
@@ -230,7 +234,8 @@ void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "
     else if( fitType==2 ) w->loadSnapshot("postfitS");
     else                  w->loadSnapshot("prefit");
     double preFitTotalN = fitTotal.getVal();
-    double preFitTotalErr = fitTotal.getPropagatedError(*preFitFR);
+//     double preFitTotalErr = fitTotal.getPropagatedError(*preFitFR);
+    double preFitTotalErr = getPropagatedErrorMinos(fitTotal,*preFitFR);
 
 
     if( iCat==0 ) table_labels.push_back("Total bkg");
@@ -412,3 +417,98 @@ void printNorms(TString dataFileName = "", int fitType=0, TString prefix_ttH = "
 
 
 }
+
+
+Double_t getPropagatedErrorMinos(const RooAbsReal &var, const RooFitResult &fr) {
+
+  // This code is stolen from RooAbsReal::getPropagatedError(), but
+  // modified to use the average of the asymmetric errors (e.g. those
+  // from MINOS) instead of the symmetric error (which ends up coming
+  // from HESSE).
+  //
+  // Calculate error on [var] by propagated errors on
+  // parameters with correlations as given by fit result The linearly
+  // propagated error is calculated as follows:
+  //
+  // error(x) = F_a(x) * Corr(a,a') F_a'(x)
+  //
+  // where F_a(x) = [ f(x,a+da) - f(x,a-da) ] / 2, with f(x) as [var]
+  // function and 'da' taken from the fit result (symmetrized MINOS
+  // errors if available).  Corr(a,a') = the correlation matrix from the
+  // fit result
+  //
+
+
+  // Clone var for internal use
+  RooAbsReal* cloneFunc = (RooAbsReal*) var.cloneTree() ;
+  RooArgSet* errorParams = cloneFunc->getObservables(fr.floatParsFinal()) ;
+  RooArgSet* nset = cloneFunc->getParameters(*errorParams) ;
+    
+  // Make list of parameter instances of cloneFunc in order of error matrix
+  RooArgList paramList ;
+  const RooArgList& fpf = fr.floatParsFinal() ;
+  vector<int> fpf_idx ;
+  for (Int_t i=0 ; i<fpf.getSize() ; i++) {
+    RooAbsArg* par = errorParams->find(fpf[i].GetName()) ;
+    if (par) {
+      paramList.add(*par) ;
+      fpf_idx.push_back(i) ;
+    }
+  }
+
+  vector<Double_t> plusVar, minusVar ;    
+  
+  // Create vector of plus,minus variations for each parameter  
+  TMatrixDSym V(paramList.getSize()==fr.floatParsFinal().getSize()?
+		fr.covarianceMatrix():
+		fr.reducedCovarianceMatrix(paramList)) ;
+  
+  for (Int_t ivar=0 ; ivar<paramList.getSize() ; ivar++) {
+    
+    RooRealVar& rrv = (RooRealVar&)fpf[fpf_idx[ivar]] ;
+    
+    Double_t cenVal = rrv.getVal() ;
+
+    const double thres = 0.00001;
+    Double_t errValUp = fabs(rrv.getAsymErrorHi());
+    Double_t errValDown = fabs(rrv.getAsymErrorLo());
+    errValUp = ( errValUp<thres*rrv.getError() ) ? rrv.getError() : errValUp;
+    errValDown = ( errValDown<thres*rrv.getError() ) ? rrv.getError() : errValDown;
+    
+    // Make Plus variation
+    ((RooRealVar*)paramList.at(ivar))->setVal(cenVal+errValUp) ;
+    plusVar.push_back(cloneFunc->getVal(nset)) ;
+    
+    // Make Minus variation
+    ((RooRealVar*)paramList.at(ivar))->setVal(cenVal-errValDown) ;
+    minusVar.push_back(cloneFunc->getVal(nset)) ;
+    
+    ((RooRealVar*)paramList.at(ivar))->setVal(cenVal) ;
+  }
+  
+  TMatrixDSym C(paramList.getSize()) ;      
+  for (int i=0 ; i<paramList.getSize() ; i++) {
+    for (int j=i ; j<paramList.getSize() ; j++) {
+      C(i,j) = V(i,j)/sqrt(V(i,i)*V(j,j)) ;
+      C(j,i) = C(i,j) ;
+    }
+  }
+  
+  // Make vector of variations
+  TVectorD F(plusVar.size()) ;
+  for (unsigned int k=0 ; k<plusVar.size() ; k++) {
+    F[k] = (plusVar[k]-minusVar[k])/2 ;
+  }
+
+  // Calculate error in linear approximation from variations and correlation coefficient
+  Double_t sum = F*(C*F) ;
+
+  delete cloneFunc ;
+  delete errorParams ;
+  delete nset ;
+
+  return sqrt(sum) ;
+}
+
+
+
