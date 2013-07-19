@@ -29,12 +29,13 @@
 #include <string>
 #include <sys/stat.h>
 #include <sstream>
+#include <cassert>
 
 using namespace std;
 
 
 
-void scaleDown (TH1* inputHisto,  TString cat, TString sample,  bool doScale) {
+void scaleDown (TH1* inputHisto,  TString givenName,  bool doScale) {
   // if (cat != "MVA_ljets_j5_t3" || sample != "ttH125" ||  !doScale)
   //     return;
 
@@ -42,7 +43,8 @@ void scaleDown (TH1* inputHisto,  TString cat, TString sample,  bool doScale) {
 
   if (!inputHisto) {
 
-    cout << "You gave me a null pointer for histo " << cat << " " << sample << endl;
+    cout << "You gave me a null pointer for histo "<< givenName << endl;
+    assert (false);
 
   }
   
@@ -57,12 +59,17 @@ void scaleDown (TH1* inputHisto,  TString cat, TString sample,  bool doScale) {
   //inputHisto->Rebin(inputHisto->GetNbinsX());
   
   cout << " f = " << inputHisto->Integral()
+       << " name = " << inputHisto->GetName()
        << endl;
+       
   
   //updateFile->cd();
-  inputHisto->Write(inputHisto->GetName(), TFile::kOverwrite);
+  
+  int writeResult = inputHisto->Write(givenName, TFile::kOverwrite);
   //cout << "Wrote out a new histo " << endl;
 
+  cout << " writeResult = " << writeResult << endl;
+  
 
 }
 
@@ -104,7 +111,12 @@ void scaleDownSignal (TString inputName, bool doScale = false) {
   //TFile * myFile = new TFile("base_OS_lessSignal.root", "UPDATE");
   //TFile * myFile = new TFile("oneBin_OS.root", "UPDATE");
 
-  TFile * myFile = new TFile (inputName, "UPDATE");
+  TFile * myFile = new TFile (inputName, "READ");
+
+  TFile * outFile= 0;
+
+  if (doScale)
+    outFile = new TFile ("clonedOutput.root", "RECREATE");
 
   vector<TString> samples;
   samples.push_back("ttH125");
@@ -118,18 +130,19 @@ void scaleDownSignal (TString inputName, bool doScale = false) {
   samples.push_back("ttbarW");
   samples.push_back("ttbarZ");
   samples.push_back("diboson");
+  samples.push_back("data_obs");
   
   
   vector<TString> channelNames;
   //channelNames.push_back ("MVA_e3je2t");
   //channelNames.push_back ("MVA_ge4je2t");
 
-  channelNames.push_back("MVA_TTL_1b_1nb");
-  channelNames.push_back("MVA_TTL_1b_2nb");
-  channelNames.push_back("MVA_TTL_1b_3+nb");
-  channelNames.push_back("MVA_TTL_2b_0nb");
-  channelNames.push_back("MVA_TTL_2b_1nb");
-  channelNames.push_back("MVA_TTL_2b_2+nb");
+//   channelNames.push_back("MVA_TTL_1b_1nb");
+//   channelNames.push_back("MVA_TTL_1b_2nb");
+//   channelNames.push_back("MVA_TTL_1b_3+nb");
+//   channelNames.push_back("MVA_TTL_2b_0nb");
+//   channelNames.push_back("MVA_TTL_2b_1nb");
+//   channelNames.push_back("MVA_TTL_2b_2+nb");
   channelNames.push_back ("MVA_ge3t");
   channelNames.push_back ("MVA_e3je2t");
   channelNames.push_back ("MVA_ge4je2t");
@@ -160,6 +173,7 @@ void scaleDownSignal (TString inputName, bool doScale = false) {
   
   suffixes.push_back("CMS_ttH_topPtcorr");
 
+  suffixes.push_back("Q2scale_ttH_ttbar");
   suffixes.push_back("Q2scale_ttH_ttbar0p");
   suffixes.push_back("Q2scale_ttH_ttbar1p");
   suffixes.push_back("Q2scale_ttH_ttbar2p");
@@ -201,16 +215,22 @@ void scaleDownSignal (TString inputName, bool doScale = false) {
       }
       
       TString baseName = samples[iSam]+ "_" + channelNames[iName];
-      cout << "Histo base name is " << baseName << endl;
+      cout << "Histo base name is " << baseName ;
       
-      TH1 * baseHist = (TH1*) myFile->Get(baseName);
+      TH1 * baseHist = (TH1*) myFile->Get(baseName)->Clone();
+      
+      if (doScale) baseHist->SetDirectory(outFile);
       
       if (baseHist==0) {
         cout << "Could not find " << baseName << endl;
         return;
       }
 
-      scaleDown (baseHist, channelNames[iName], samples[iSam], doScale);
+      cout << " i = " << baseHist->Integral()
+           << " dir = " << baseHist->GetDirectory()->GetName()
+           << endl;
+
+      scaleDown (baseHist, baseName, doScale);
       
       aRow.bins = baseHist->GetNbinsX();
       
@@ -223,11 +243,23 @@ void scaleDownSignal (TString inputName, bool doScale = false) {
         aRow.signalYield += baseHist->Integral();
       }
 
-      
-          
+      // you're done here
+      delete baseHist;
+
+      // don't do systematics for the data
+      if (samples[iSam] == "data_obs")
+        continue;
+
+
+
       
       for (unsigned iSuf = 0; iSuf < suffixes.size(); iSuf++){        
         for (unsigned iOther = 0; iOther < upDown.size(); iOther++){
+
+          if ( (suffixes[iSuf] == "Q2scale_ttH_ttbar") &&  samples[iSam] != "ttbar" )
+              continue;
+                          
+          
           
           if ( (suffixes[iSuf] == "Q2scale_ttH_ttbar0p")) {
             if ( samples[iSam] != "ttbar" ) {            
@@ -275,10 +307,10 @@ void scaleDownSignal (TString inputName, bool doScale = false) {
             
           }
 
-          if ( (suffixes[iSuf] == "CMS_ttH_CSVCErr1" || suffixes[iSuf] == "CMS_ttH_CSVCErr2")
-               && samples[iSam] != "ttbarPlusCCbar") {
-            continue;
-          }
+          // if ( (suffixes[iSuf] == "CMS_ttH_CSVCErr1" || suffixes[iSuf] == "CMS_ttH_CSVCErr2")
+          //                && ( samples[iSam] != "ttbarPlusCCbar" && ) {
+          //             continue;
+          //           }
           
 
           if ( suffixes[iSuf] == "Q2scale_ttH_ttbar_bb"
@@ -309,6 +341,9 @@ void scaleDownSignal (TString inputName, bool doScale = false) {
                && !channelNames[iName].Contains("TTL"))
             continue;
 
+
+          
+
           TString thisName = samples[iSam]+ "_"
             + channelNames[iName] + "_" + suffixes[iSuf] + upDown[iOther];
 
@@ -318,7 +353,7 @@ void scaleDownSignal (TString inputName, bool doScale = false) {
           TH1* pHisto = (TH1*) myFile->Get(thisName);
 
 
-          scaleDown(pHisto, channelNames[iName], samples[iSam], doScale);
+          scaleDown(pHisto, thisName, doScale);
           
           
           delete pHisto;
@@ -343,4 +378,5 @@ void scaleDownSignal (TString inputName, bool doScale = false) {
   }
   
   myFile->Close();
+  if (doScale) outFile->Close();
 }
