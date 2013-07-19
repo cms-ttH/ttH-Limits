@@ -90,8 +90,9 @@ line = r.TLine()
 tex = r.TLatex()
 tex.SetNDC()
 tex.SetTextFont(42)
+tex.SetTextSize(0.034)
 tex.DrawLatex(0.2, 0.9, "CMS Preliminary")
-tex.DrawLatex(0.6, 0.9, "#sqrt{s} = 8 TeV, L = 19.5 fb^{-1}")
+tex.DrawLatex(0.5, 0.9, "#sqrt{s} = 7 TeV, L = 5.0 fb^{-1}; #sqrt{s} = 8 TeV, L = 19.5 fb^{-1}")
 
 canvas.GetPad(0).RedrawAxis()
 

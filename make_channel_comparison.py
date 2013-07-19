@@ -67,6 +67,8 @@ for (n, (chan, label)) in enumerate(channels):
         xh1 = limit(exp_lines[3])
         xh2 = limit(exp_lines[4])
 
+        print label, x, o
+
         box.SetFillStyle(1001)
         box.SetFillColor(r.kYellow)
         box.DrawBox(xl2, n - 0.5, xh2, n + 0.5)
@@ -105,8 +107,9 @@ legend.Draw()
 tex = r.TLatex()
 tex.SetNDC()
 tex.SetTextFont(42)
+tex.SetTextSize(0.034)
 tex.DrawLatex(0.2, 0.9, "CMS Preliminary")
-tex.DrawLatex(0.6, 0.9, "#sqrt{s} = 8 TeV, L = 19.5 fb^{-1}")
+tex.DrawLatex(0.5, 0.9, "#sqrt{s} = 7 TeV, L = 5.0 fb^{-1}; #sqrt{s} = 8 TeV, L = 19.5 fb^{-1}")
 
 canvas.GetPad(0).RedrawAxis()
 
