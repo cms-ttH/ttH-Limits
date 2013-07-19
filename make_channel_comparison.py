@@ -7,12 +7,16 @@ for the plot is extracted from files with the name
 `limit_card_{alias}_125.log`, which are expected to contain regular
 `combine` output.
 """
-outfile = "/afs/crc.nd.edu/user/m/mwolf3/www/limit_cmp.pdf"
+outfile = "7TeV_limit_cmp.pdf"
 channels = [
-        ("TAU", "Hadronic #tau#tau"),
-        ("OSDIL", "Dilepton"),
+        ("Tau", "Hadronic #tau#tau"),
+        ("DIL", "Dilepton"),
+        ("ttH_7TeV", "7TeV LJ+DIL"),
+        ("ttH_Hgg", "#gamma#gamma"),
         ("LJ", "Lepton + Jets"),
-        ("LJ_OSDIL_TAU_MVA", "Combination")
+#        ("testaaa", "Combination"),## 8TeV bb/tautau
+#        ("ttH_8TeV", "Combination"),
+        ("ttH_all_obs", "Combination"),
         ]
 
 import ROOT as r
@@ -47,7 +51,7 @@ box = r.TBox()
 line = r.TLine()
 
 for (n, (chan, label)) in enumerate(channels):
-    with open("limit_card_{c}_125.log".format(c=chan)) as f:
+    with open("limit_{c}_125.log".format(c=chan)) as f:
         lines = f.readlines()
         obs_line = filter(lambda s: s.startswith("Observed Limit"), lines)[0]
         exp_lines = filter(lambda s: s.startswith("Expected "), lines)

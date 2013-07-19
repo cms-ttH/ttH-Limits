@@ -5,12 +5,17 @@ Currently, all customization and providing of data has to be done within
 this script.  See the following two variables to get started (`channels`
 contains lists of alias, y-axis label, ratio, error down, error up.)
 """
-outfile = "/afs/crc.nd.edu/user/m/mwolf3/www/limit_mu_cmp.pdf"
+outfile = "7TeV_limit_mu_cmp.pdf"
 channels = [
         ("TAU", "Hadronic #tau#tau", -0.733308, 5.24428, 6.13693),
         ("OSDIL", "Dilepton", 1.2266, 4.68643, 4.19684),
+        # ("7TeV", "7TeV LJ+DIL", -2.77342, 4.87313, 4.13827),
+        ("7TeV", "7TeV LJ+DIL", -2.82274, 4.9184, 4.15527),
+        ("2photon", "#gamma#gamma", 0.206946, 1.46224, 2.18212),
         ("LJ", "Lepton + Jets", -0.103221, 2.57988, 2.53175),
-        ("COMBI", "Combination", 0.851967, 2.40582, 2.47273)
+#        ("COMBI", "Combination", 0.46764, 1.30513, 1.62569), #8TeV
+        ("COMBI", "Combination", 0.740757, 1.30386, 1.3407), #all
+#        ("COMBI", "Combination", 0.851967, 2.40582, 2.47273) #8TeV bb/tautau
         ]
 
 import ROOT as r
