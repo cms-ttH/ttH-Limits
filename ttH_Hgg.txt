@@ -36,8 +36,8 @@ vtxEff shape      0.333333 0.333333 0 0.333333 0.333333 0.333333 0
 
 CMS_scale_j                 lnN   1.0581 1.0226 -   - 1.0463 1.0167 -
 CMS_res_j                 lnN   1.0176 1.0027 -   - 1.0129 1.0020 -
-CMS_eff_b                lnN   1.01    1.01  -   - 1.015    1.015    -
-lep_eff             lnN   -       1.015 -    -  -     -   -
+CMS_eff_b_8TeV                lnN   1.01    1.01  -   - 1.015    1.015    -
+CMS_ttH_eff_lep             lnN   -       1.015 -    -  -     -   -
 
 ggh_stat            lnN   - - -   1.25 - - -
 ggh_gluon_split     lnN   - - -   1.13  - - - 
