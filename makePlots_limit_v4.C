@@ -34,13 +34,13 @@
 const int LIM7TEV = 0x1;
 const int LIM8TEV = 0x2;
 
-void makePlots_limit_v4(TString limitFileName, std::string  pname, std::string  ptitle, int ana, float maxHeight = -1, bool addObs = true) {
+void makePlots_limit_v4(TString limitFileName, std::string  pname, std::string  ptitle, int ana, float maxHeight = -1, bool addObs = true, bool add_inj=true) {
   
   TCanvas *c1 = new TCanvas("c1");
   
 
   const int nMax = 100;
-  double x[nMax], y[nMax], y2[nMax], y_obs[nMax];
+  double x[nMax], y[nMax], y2[nMax], y_obs[nMax], y_inj[nMax];
   double ymin_1sig[nMax], ymax_1sig[nMax], ymin_2sig[nMax], ymax_2sig[nMax];
     
  
@@ -158,6 +158,34 @@ void makePlots_limit_v4(TString limitFileName, std::string  pname, std::string  
 
   }
 
+  ifstream injfile;
+  if (add_inj) {
+    injfile.open(limitFileName.ReplaceAll(".", "_inj.").Data());
+    if (!injfile) {
+      cerr << "Error: file " << limitFileName.ReplaceAll(".", "_inj.").Data() << " could not be opened" << endl;
+      return;
+    }
+
+    int j = 0;
+    TString injline = "";
+    while (injline.ReadLine(injfile)) {
+      if (injline.BeginsWith("#"))
+        continue;
+
+      float x_tmp = atof(injline.Data());
+      if (x[j] != x_tmp) {
+        cerr << "Error: injected and expected mass points are different!" << endl;
+        cerr << "x[" << j << "] = " << x[j] << " != " << x_tmp << endl;
+        return;
+      }
+
+      bool succ = injline.ReadLine(injfile);
+      while (succ && injline.BeginsWith("#")) succ = injline.ReadLine(injfile);
+      y_inj[j++] = atof(injline.Data());
+    }
+    injfile.close();
+  }
+
   std::cout << "\\hline" << std::endl
             << "\\end{tabular}}" << std::endl;
 
@@ -169,7 +197,7 @@ void makePlots_limit_v4(TString limitFileName, std::string  pname, std::string  
 
 
 
-  TLatex *CMSInfoLatex = new TLatex(0.11, 0.91, ptitle.c_str());
+  TLatex *CMSInfoLatex = new TLatex(0.11, 0.91, ("CMS preliminary          " + ptitle).c_str());
   CMSInfoLatex->SetNDC();
   CMSInfoLatex->SetTextFont(42);
 
@@ -180,18 +208,19 @@ void makePlots_limit_v4(TString limitFileName, std::string  pname, std::string  
 
   double textSize = 0.04;
   double offset = 0.0;
+  textSize = 0.03;
   if (ana == (LIM7TEV|LIM8TEV)) {
-    textSize = 0.03;
-    offset = 0.07;
     lumiinfo += "; ";
+    offset = 0.07;
   }
+  offset = -0.07;
 
   if (ana & LIM8TEV) {
     lumiinfo += "#sqrt{s} = 8 TeV, L = 19.5 fb^{-1}";
   }
 
 
-  TLatex *LUMIInfoLatex = new TLatex(0.43-offset, 0.91, lumiinfo);
+  TLatex *LUMIInfoLatex = new TLatex(0.54-offset, 0.91, lumiinfo);
   LUMIInfoLatex->SetNDC();
   LUMIInfoLatex->SetTextFont(42);
 
@@ -222,6 +251,11 @@ void makePlots_limit_v4(TString limitFileName, std::string  pname, std::string  
   grshade_2sig->SetLineColor(1);
   grshade_2sig->SetLineStyle(2);
 
+  TGraph *gr_inj = new TGraph(n, x, y_inj);
+  gr_inj->SetLineWidth(2);
+  gr_inj->SetLineStyle(2);
+  gr_inj->SetLineColor(kRed);
+
   gr->SetLineWidth(2);
   gr->SetLineStyle(2);
 
@@ -235,8 +269,8 @@ void makePlots_limit_v4(TString limitFileName, std::string  pname, std::string  
   h_dummy->SetTitle(";m_{H} (GeV);95% CL limit on #sigma/#sigma_{SM}");
 
 
-  TLegend *legend     = new TLegend(0.17,0.65,0.42,0.88);
-  TLegend *legend_obs = new TLegend(0.17,0.59,0.42,0.88);
+  TLegend *legend     = new TLegend(0.17,0.65,0.42,0.87);
+  TLegend *legend_obs = new TLegend(0.17,0.59,0.45,0.87);
 
   legend->SetFillColor(kWhite);
   legend->SetLineColor(kWhite);
@@ -254,6 +288,7 @@ void makePlots_limit_v4(TString limitFileName, std::string  pname, std::string  
   legend_obs->SetTextSize(0.04);
 
   if (addObs) legend_obs->AddEntry(gr_obs, "Observed ","lp");
+  legend_obs->AddEntry(gr_inj, "ttH(125) injected", "l");
   legend_obs->AddEntry(grshade_1sig,"Expected #pm 1#sigma","fl");
   legend_obs->AddEntry(grshade_2sig,"Expected #pm 2#sigma","fl");
 
@@ -273,6 +308,8 @@ void makePlots_limit_v4(TString limitFileName, std::string  pname, std::string  
   grshade_2sig->Draw("f");
   grshade_1sig->Draw("f");
   gr->Draw("l");
+  if (add_inj)
+    gr_inj->Draw("l");
   if (addObs) gr_obs->Draw("pl");
 
 
@@ -302,11 +339,14 @@ void makePlots_limit_v4(TString limitFileName, std::string  pname, std::string  
     TString plotname = dirprefix;
     plotname += "/";
     plotname += pname;
-    plotname += "_ttH_mH_limit_";
-    if (addObs) {
-      plotname += "ExpAndObs";
+    plotname += "_ttH_mH_limit_Exp";
+    if (addObs || add_inj) {
+      if (addObs)
+        plotname += "AndObs";
+      if (add_inj)
+        plotname += "AndInj";
     } else {
-      plotname += "ExpOnly";
+      plotname += "Only";
     }
     plotname += "_shape";
     c1->Print(plotname+".pdf");
