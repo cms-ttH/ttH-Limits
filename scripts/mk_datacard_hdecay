@@ -59,7 +59,7 @@ Recently Tested
 import optparse
 import ROOT as r
 
-from BEAN.DatacardMaker.datacard_hdecay import *
+from ttH.Limits.datacard_hdecay import *
 
 r.gROOT.SetBatch()
 
