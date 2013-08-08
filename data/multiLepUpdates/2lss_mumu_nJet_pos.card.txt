@@ -1,0 +1,27 @@
+## Datacard for cut file bins/2lss_mumu.txt
+shapes *        * 2lss_mumu_nJet_pos.input.root x_$PROCESS x_$PROCESS_$SYSTEMATIC
+##----------------------------------
+bin         2lss_mumu_nJet_pos
+observation 52.9338932037
+##----------------------------------
+##----------------------------------
+bin              2lss_mumu_nJet_pos   2lss_mumu_nJet_pos   2lss_mumu_nJet_pos   2lss_mumu_nJet_pos   2lss_mumu_nJet_pos   2lss_mumu_nJet_pos   2lss_mumu_nJet_pos   2lss_mumu_nJet_pos   2lss_mumu_nJet_pos 
+process                         ttH                FR_dy                FR_wj                FR_tt                   ZZ                   WZ                  VVV                  TTZ                  TTW 
+process                           0                    3                    4                    6                    7                    8                    9                   10                   11 
+rate                          3.973                0.701                1.648               21.916                0.429                4.052                0.611                2.944               16.662 
+##----------------------------------
+Mistag       lnN                  -                    -                    -                    -                  1.2                  1.2                  1.2                    -                    - 
+norm         lnN                1.1                    -                    -                    -                    -                    -                    -                    -                    - 
+QF           lnN                  -                    -                    -                    -                    -                    -                    -                    -                    - 
+TTZ0       shape                  -                    -                    -                    -                    -                    -                    -                    1                    - 
+TTZ1       shape                  -                    -                    -                    -                    -                    -                    -                    1                    - 
+TTZ2       shape                  -                    -                    -                    -                    -                    -                    -                    1                    - 
+shape0     shape                  1                    -                    -                    -                    -                    -                    -                    -                    - 
+shape1     shape                  1                    -                    -                    -                    -                    -                    -                    -                    - 
+shape2     shape                  1                    -                    -                    -                    -                    -                    -                    -                    - 
+TTW0       shape                  -                    -                    -                    -                    -                    -                    -                    -                    1 
+TTW1       shape                  -                    -                    -                    -                    -                    -                    -                    -                    1 
+TTW2       shape                  -                    -                    -                    -                    -                    -                    -                    -                    1 
+FR0        shape                  -                    1                    1                    1                    -                    -                    -                    -                    - 
+FR1        shape                  -                    1                    1                    1                    -                    -                    -                    -                    - 
+FR2        shape                  -                    1                    1                    1                    -                    -                    -                    -                    - 

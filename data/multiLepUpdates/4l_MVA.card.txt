@@ -1,0 +1,27 @@
+## Datacard for cut file bins/4l.txt
+shapes *        * 4l_MVA.input.root x_$PROCESS x_$PROCESS_$SYSTEMATIC
+##----------------------------------
+bin         4l_MVA
+observation 6.96698075533
+##----------------------------------
+##----------------------------------
+bin               4l_MVA    4l_MVA    4l_MVA    4l_MVA    4l_MVA    4l_MVA    4l_MVA    4l_MVA    4l_MVA 
+process              ttH     FR_dy     FR_tt        ZZ        WZ       VVV      TTWW       TTZ       TTW 
+process                0         1         2         5         6         8         9        10        11 
+rate               0.861     0.052     1.134     2.849     0.048     0.030     0.049     1.881     0.064 
+##----------------------------------
+Mistag       lnN       -         -         -       1.2       1.2       1.2         -         -         - 
+norm         lnN     1.1         -         -         -         -         -         -         -         - 
+QF           lnN       -         -         -         -         -         -         -         -         - 
+TTZ0       shape       -         -         -         -         -         -         -         1         - 
+TTZ1       shape       -         -         -         -         -         -         -         1         - 
+TTZ2       shape       -         -         -         -         -         -         -         1         - 
+shape0     shape       1         -         -         -         -         -         -         -         - 
+shape1     shape       1         -         -         -         -         -         -         -         - 
+shape2     shape       1         -         -         -         -         -         -         -         - 
+TTW0       shape       -         -         -         -         -         -         1         -         1 
+TTW1       shape       -         -         -         -         -         -         1         -         1 
+TTW2       shape       -         -         -         -         -         -         1         -         1 
+FR0        shape       -         1         1         -         -         -         -         -         - 
+FR1        shape       -         1         1         -         -         -         -         -         - 
+FR2        shape       -         1         1         -         -         -         -         -         - 
