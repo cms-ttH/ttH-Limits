@@ -2,9 +2,10 @@
 
 ## Setup
 
-In your CMSSW area, use
+In your CMSSW (release 6.1.1 or higher) area, use
 
     cd $CMSSW_BASE/src
+    addpkg HiggsAnalysis/CombinedLimit V03-01-08
     mkdir -p ttH
     git clone https://github.com/cms-ttH/ttH-Limits.git ttH/Limits
     scram b -j32
