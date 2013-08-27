@@ -8,7 +8,15 @@ In your CMSSW (release 6.1.1 or higher) area, use
     addpkg HiggsAnalysis/CombinedLimit V03-01-08
     mkdir -p ttH
     git clone https://github.com/cms-ttH/ttH-Limits.git ttH/Limits
+    # using ldap
+    git clone https://git.cern.ch/reps/ttH-Limits-data ttH/Limits/data
+    # using kerberos
+    git clone https://:@git.cern.ch/kerberos/ttH-Limits-data ttH/Limits/data
     scram b -j32
+
+The latter two git commands clone our [limit data repository](https://git.cern.ch/web/?p=ttH-Limits-data.git;a=summary),
+which has restricted access.
+These steps may be changed to use a submodule at a later point.
 
 ## Useful Links
 
