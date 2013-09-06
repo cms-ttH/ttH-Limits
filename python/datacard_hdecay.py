@@ -208,17 +208,33 @@ def get_samples(file, discriminant):
             if disc != discriminant:
                 continue
 
- 
+            ## NEW
+            includeSig = True
             m = signal_re.match(sample)
-            if m:
+            #log.write(" 0a k.GetName() = {k} \n".format(k=k.GetName()))
+            if m and m2 and "h" in m2.group(2):
+            #if m:
                 #log.write(" 1 signal = {s}, disc = {d}, cat = {c}\n".format(s=sample, d=disc, c=cat))
                 #sample = m.group(1)
-                sample = m.group(1) + "_" + m2.group(2)
+                #sample = m.group(1) + "_" + m2.group(2)
+                sample = m.group(1) + "_" + decay
                 #log.write(" 2 sample = {s}, disc = {d}, cat = {c}\n".format(s=sample, d=disc, c=cat))
 
+                ## NEW
+                sig_name = sample
+                sig_name = sig_name.replace("ttH","ttH125")
+                sig_hist = file.Get("{s}_{d}_{c}".format(s=sig_name, d=disc, c=cat))
+
+                sum_sig = sig_hist.Integral()
+                if not sum_sig>0 :
+                    includeSig = False
+            
             if sample not in samples:
                 samples[sample] = set()
-            samples[sample].add(cat)
+            #samples[sample].add(cat)
+            ## NEW
+            if includeSig :
+                samples[sample].add(cat)
 
         
     return samples
@@ -427,48 +443,56 @@ def split_systematics(file, disc, samples, btag_mode=B_CAT_SHAPE):
         return new_sys
 
     for (s, cats) in samples.items():
-        s = s + "125" if s == "ttH" else s
+        #s = s + "125" if s == "ttH" else s
+        s = s.replace("ttH","ttH125") if "ttH" in s else s
         for c in cats:
             stub = "_".join((s, disc, c))
+            #log.write(" file.Get({s})".format(s=stub))
             orig = file.Get(stub)
             sum = orig.Integral()
-            for kind in ("eff", "fake"):
-                for dir in ("Up", "Down"):
-                    try:
-                        # Get rate uncertainty from the shape uncertainty
-                        shape_old = file.Get("{s}_CMS_{k}_b{dir}".format(s=stub, k=kind, dir=dir))
-                        shape_sum = shape_old.Integral()
-                        rate = orig.Clone("{s}_CMS_{k}_bRate{dir}".format(s=stub, k=kind, dir=dir))
-                        rate.Scale((shape_sum / sum) if sum > 0 else 1)
-                        file.WriteObject(rate, rate.GetName())
+            kind = "scale"
+            #for kind in ("scale"):
+            for dir in ("Up", "Down"):
+                try:
+                    # Get rate uncertainty from the shape uncertainty
+                    shape_old = file.Get("{s}_CMS_{k}_j{dir}".format(s=stub, k=kind, dir=dir))
+                    #log.write(" file.Get(\"{s}_CMS_{k}_j{dir}\"".format(s=stub, k=kind, dir=dir))
+                    shape_sum = shape_old.Integral()
+                    rate = orig.Clone("{s}_CMS_{k}_jRate{dir}".format(s=stub, k=kind, dir=dir))
+                    rate.Scale((shape_sum / sum) if sum > 0 else 1)
+                    file.WriteObject(rate, rate.GetName())
+                    
+                    # Treat shape uncertainties, if desired
+                    if btag_mode == B_SHAPE:
+                        shape = shape_old.Clone("{s}_CMS_{k}_jShape{dir}".format(s=stub, k=kind, dir=dir))
+                    elif btag_mode == B_CAT_SHAPE:
+                        shape = shape_old.Clone("{s}_{c}_{k}_jShape{dir}".format(s=stub, c=c, k=kind, dir=dir))
+                    else:
+                        continue
 
-                        # Treat shape uncertainties, if desired
-                        if btag_mode == B_SHAPE:
-                            shape = shape_old.Clone("{s}_CMS_{k}_bShape{dir}".format(s=stub, k=kind, dir=dir))
-                        elif btag_mode == B_CAT_SHAPE:
-                            shape = shape_old.Clone("{s}_{c}_{k}_bShape{dir}".format(s=stub, c=c, k=kind, dir=dir))
-                        else:
-                            continue
+                    shape_sum = shape.Integral()
+                    shape.Scale((sum / shape_sum) if shape_sum > 0 else 1)
 
-                        shape_sum = shape.Integral()
-                        shape.Scale((sum / shape_sum) if shape_sum > 0 else 1)
-
-                        file.WriteObject(shape, shape.GetName())
-                    except:
-                        log.write("Can't create b-tag shape uncertainties for '{s}'"
+                    file.WriteObject(shape, shape.GetName())
+                except:
+                    log.write("Can't create b-tag shape uncertainties for '{s}'"
                                 "in '{c}'\n".format(s=c, c=c))
-                if btag_mode == B_SHAPE and 'all' not in done:
-                    new_sys.append((
-                        "CMS_{k}_bShape".format(k=kind),
-                        "shape",
-                        dict([(sam, "1") for sam in samples.keys()])))
-                elif btag_mode == B_CAT_SHAPE and c not in done:
-                    new_sys.append((
-                        "{c}_{k}_bShape".format(c=c, k=kind),
-                        "shape",
-                        dict([(sam, "1") for sam in samples.keys()])))
-            done.add('all')
-            done.add(c)
+            #new_sys.append((
+            #    "CMS_{k}_jRate".format(k=kind),
+            #    "shape",
+            #    dict([(sam, "1") for sam in samples.keys()])))                   
+            if btag_mode == B_SHAPE and 'all' not in done:
+                new_sys.append((
+                    "CMS_{k}_jShape".format(k=kind),
+                    "shape",
+                    dict([(sam, "1") for sam in samples.keys()])))
+            elif btag_mode == B_CAT_SHAPE and c not in done:
+                new_sys.append((
+                    "{c}_{k}_jShape".format(c=c, k=kind),
+                    "shape",
+                    dict([(sam, "1") for sam in samples.keys()])))
+        done.add('all')
+        done.add(c)
     # For debugging
     #log.write("DEBUG: We are appending these systematics\n")
     #for (a,b,c) in new_sys:
@@ -550,7 +574,7 @@ shapes ttH_hww * {f} ttH$MASS_hww_{d}_$CHANNEL ttH$MASS_hww_{d}_$CHANNEL_$SYSTEM
 shapes ttH_hzz * {f} ttH$MASS_hzz_{d}_$CHANNEL ttH$MASS_hzz_{d}_$CHANNEL_$SYSTEMATIC
 shapes ttH_htt * {f} ttH$MASS_htt_{d}_$CHANNEL ttH$MASS_htt_{d}_$CHANNEL_$SYSTEMATIC
 shapes ttH_hgg * {f} ttH$MASS_hgg_{d}_$CHANNEL ttH$MASS_hgg_{d}_$CHANNEL_$SYSTEMATIC
-shapes ttH_hjj * {f} ttH$MASS_hjj_{d}_$CHANNEL ttH$MASS_hjj_{d}_$CHANNEL_$SYSTEMATIC
+shapes ttH_hgluglu * {f} ttH$MASS_hgluglu_{d}_$CHANNEL ttH$MASS_hgluglu_{d}_$CHANNEL_$SYSTEMATIC
 shapes ttH_hzg * {f} ttH$MASS_hzg_{d}_$CHANNEL ttH$MASS_hzg_{d}_$CHANNEL_$SYSTEMATIC
 ---------------
 bin {bs}
@@ -616,7 +640,7 @@ rate {rs}
                         ofile.write(" -")
                         # Print for everything _except_ for b-tag shape or ANN
                         # uncertainties with inappropriate category
-                        if not (not unc.startswith(c) and ("bShape" in unc or "ANNbin" in unc)):
+                        if not (not unc.startswith(c) and ("jShape" in unc or "ANNbin" in unc)):
                             log.write("Integral zero for {s}, {c}, {u}: disabling "
                                     "systematics\n".format(s=s, c=c, u=unc))
                     except:
@@ -637,7 +661,7 @@ rate {rs}
 
                         # Don't complain if we consider category-specific
                         # uncertainties and are in the wrong category
-                        if ("bShape" in unc or "ANNbin" in unc or "Prompt" in unc or "Flip" in unc) and not unc.startswith(c):
+                        if ("jShape" in unc or "ANNbin" in unc or "Prompt" in unc or "Flip" in unc) and not unc.startswith(c):
                             barf = False
 
                         if barf:
@@ -752,7 +776,7 @@ def create_datacard(ifile, ofile, disc, all_categories,
 
     # Filter out b-tag rate uncertainties
     if btag_mode == B_OFF:
-        systematics = filter(lambda (u, t, vs): "bRate" not in u, systematics)
+        systematics = filter(lambda (u, t, vs): "jRate" not in u, systematics)
 
     new_cats = set()
     for (s, cs) in cats.items():

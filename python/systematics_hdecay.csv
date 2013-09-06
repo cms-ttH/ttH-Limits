@@ -1,8 +1,10 @@
-Uncertainty           , Type  , ttH_hbb , ttH_hcc , ttH_hww , ttH_hzz , ttH_htt , ttH_hgg , ttH_hjj , ttH_hzg , ttbar , ttbarPlusB , ttbarPlusBBbar , ttbarPlusCCbar , singlet , wjets , zjets , ttbarW , ttbarZ , diboson
+Uncertainty           , Type  , ttH_hbb , ttH_hcc , ttH_hww , ttH_hzz , ttH_htt , ttH_hgg , ttH_hgluglu , ttH_hzg , ttbar , ttbarPlusB , ttbarPlusBBbar , ttbarPlusCCbar , singlet , wjets , zjets , ttbarW , ttbarZ , diboson
 lumi                  , lnN   , x     , x     , x     , x     , x     , x     , x     , x     , x     , x          , x              , x              , x       , x     , x     , x      , x      , x
 QCDscale_ttH          , lnN   , 1.125 , 1.125 , 1.125 , 1.125 , 1.125 , 1.125 , 1.125 , 1.125 , -     , -          , -              , -              , -       , -     , -     , -      , -      , -
-QCDscale_ttbar        , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , 1.030  , 1.030     , 1.030          , 1.030          , 1.02    , -     , -     , 1.15   , 1.15   , -
-pdf_gg                , lnN   , 1.08  , 1.08  , 1.08  , 1.08  , 1.08  , 1.08  , 1.08  , 1.08  , 1.026  , 1.026     , 1.026          , 1.026          , -       , -     , -     , -      , 1.09   , -
+QCDscale_ttbar        , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , 1.030  , 1.030     , 1.030          , 1.030          , 1.02    , -     , -     , -      , -      , -
+QCDscale_ttW          , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -      , -         , -              , -              , -       , -     , -     , 1.1    , -   , -
+QCDscale_ttZ          , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -      , -         , -              , -              , -       , -     , -     , -      , 1.11   , -
+pdf_gg                , lnN   , 0.92  , 0.92  , 0.92  , 0.92  , 0.92  , 0.92  , 0.92  , 0.92  , 0.974  , 0.974     , 0.974          , 0.974          , -       , -     , -     , -      , 0.91   , -
 pdf_qqbar             , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , -       , 1.048 , 1.042 , 1.07   , -      , -
 pdf_qg                , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , 1.046   , -     , -     , -      , -      , -
 QCDscale_V            , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , -       , 1.013 , 1.012 , -      , -      , -
