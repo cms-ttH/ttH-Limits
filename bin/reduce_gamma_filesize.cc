@@ -1,21 +1,33 @@
 // Script to reduce the filesize of the gamma gamma limit file:
 //
-// Usage: compile and run in appropriate directory
+// Usage: compile and run with appropriate input/output filenames
 //
-// Contains hard-coded paths to the input and output files;  Change these
-// accordingly.  Also has hard-coded category and mass-point filters.
-//
-// Compile with: c++ $(root-config --cflags --ldflags --libs) -I/pscratch/osg/app/cmssoft/cms/slc5_amd64_gcc472/cms/cmssw/CMSSW_6_1_1/external/slc5_amd64_gcc472/bin/../../../../../../lcg/roofit/5.34.03-cms4/include -L/pscratch/osg/app/cmssoft/cms/slc5_amd64_gcc472/cms/cmssw/CMSSW_6_1_1/external/slc5_amd64_gcc472/bin/../../../../../../lcg/roofit/5.34.03-cms4/lib -lRooFit -lRooStats -lRooFitCore reduce_gamma_filesize.cc -o reduce_gamma_filesize
+// Caveat: hard-coded category and mass-point filters.
+#include <iostream>
+
 #include "RooAbsData.h"
 #include "RooAbsPdf.h"
 #include "RooWorkspace.h"
 #include "TFile.h"
 
 int
-main()
+main(int argc, char *argv[])
 {
-   TFile infile("orig.root");
-   TFile outfile("CMS-HGG_sigdata_interpolated_interpolated.root", "RECREATE");
+   if (argc != 3) {
+      std::cerr << "usage: reduce_gamma_filesize infile outfile\n" << std::endl;
+      return 1;
+   }
+
+   TFile infile(argv[1]);
+   TFile outfile(argv[2], "RECREATE");
+
+   if (!infile.IsOpen()) {
+      std::cerr << "could not open input file" << std::endl;
+      return 1;
+   } else if (!outfile.IsOpen()) {
+      std::cerr << "could not open output file" << std::endl;
+      return 1;
+   }
 
    RooWorkspace *inws, *ws;
 
@@ -26,9 +38,12 @@ main()
       std::string name = data->GetName();
       if (name.find("cat6") != std::string::npos || name.find("cat7") != std::string::npos) {
          auto pos = name.find("mass_m1");
+         // Let all masses starting with 125 slip through
+         auto finegrain = name.find("125");
          // Filter out additional mass points (keep 5 GeV steps) - but only do
          // so where needed (first check)
-         if (pos == std::string::npos || (name[pos + 9] != '.' && (name[pos + 8] == '5' || name[pos + 8] == '0')))
+         if (pos == std::string::npos || finegrain != std::string::npos ||
+               (name[pos + 9] != '.' && (name[pos + 8] == '5' || name[pos + 8] == '0')))
             ws->import(*data);
       }
    }

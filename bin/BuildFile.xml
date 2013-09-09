@@ -1,0 +1,4 @@
+<bin file="reduce_gamma_filesize.cc" name="reduce_gamma_filesize">
+  <use name="root"/>
+  <use name="roofit"/>
+</bin>
