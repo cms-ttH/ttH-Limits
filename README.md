@@ -18,6 +18,13 @@ The latter two git commands clone our [limit data repository](https://git.cern.c
 which has restricted access.
 These steps may be changed to use a submodule at a later point.
 
+## Notes
+
+### Reducing H → gg filesizes
+
+After running `scram`, run `reduce_gamma_filesize in.root out.root` to
+reduce the filesize of the gamma files to an acceptable level.
+
 ## Useful Links
 
 * [CMS TWiki on datacard generation](https://twiki.cern.ch/twiki/bin/viewauth/CMS/NovaDatacardMaker)
