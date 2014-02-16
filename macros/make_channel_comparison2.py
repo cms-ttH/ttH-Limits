@@ -10,9 +10,14 @@ for the plot is extracted from files with the name
 outfile = "limit_cmp_all.pdf"
 channels = [
         ("combination", "Combination"),
-        ("leptons", "Leptons (e,#mu)"),
-        ("hadrons", "Hadrons (b,#tau_{h})"),
-        ("photons", "Photons"),
+        ("2lss", "Same-Sign 2l"),
+        ("3l", "3l"),
+        ("4l", "4l"),
+        ("tt", "Hadronic #tau#tau"),
+        ("bb","b#bar{b}"),
+##         ("bb_8TeV","b#bar{b} (8 TeV)"),
+##         ("bb_7TeV","b#bar{b} (7 TeV)"),
+        ("photons", "#gamma#gamma"),
         ]
 
 import ROOT as r
@@ -29,10 +34,10 @@ canvas.SetBottomMargin(.15)
 canvas.SetLeftMargin(.2)
 canvas.SetRightMargin(.05)
 canvas.SetTopMargin(.12)
-legend = r.TLegend(0.6, 0.3, 0.9, 0.65)
+legend = r.TLegend(0.72, 0.68, 0.9, 0.87)
 legend.SetBorderSize(0)
 
-dummy = r.TH1F("dummy", ";95% CL limit on #sigma/#sigma_{SM} at m_{H} = 125.7 GeV;", 100, 0, 20.5)
+dummy = r.TH1F("dummy", ";95% CL limit on #sigma/#sigma_{SM} at m_{H} = 125.7 GeV;", 100, 0.8, 80.5)
 dummy.GetXaxis().SetTitleSize(0.05)
 dummy.GetYaxis().SetRangeUser(-0.5, len(channels) - 0.5)
 dummy.GetYaxis().Set(len(channels), -0.5, len(channels) - 0.5)
@@ -48,6 +53,8 @@ expSig = r.TGraphAsymmErrors(len(channels))
 box = r.TBox()
 line = r.TLine()
 
+tableLines = []
+tableLines2 = []
 for (n, (chan, label)) in enumerate(channels):
     with open("limit_{c}_125.7.log".format(c=chan)) as f:
         lines = f.readlines()
@@ -64,8 +71,6 @@ for (n, (chan, label)) in enumerate(channels):
         x = limit(exp_lines[2])
         xh1 = limit(exp_lines[3])
         xh2 = limit(exp_lines[4])
-
-        print label, x, o
 
         box.SetFillStyle(1001)
         box.SetFillColor(r.kYellow)
@@ -84,17 +89,25 @@ for (n, (chan, label)) in enumerate(channels):
         lines = f.readlines()
         exp_line_sig = filter(lambda s: s.startswith("Observed Limit"), lines)[0]
 
-        obs.SetPoint(n, limit(obs_line), n)
-        expSig.SetPoint(n, limit(exp_lines[2]), n)
-
-        x = limit(exp_line_sig)
-
-        print label, x,
+        xs = limit(exp_line_sig)
 
         line.SetLineWidth(2)
         line.SetLineStyle(r.kDashed)
         line.SetLineColor(r.kRed)
-        line.DrawLine(x, n - 0.5, x, n + 0.5)
+        line.DrawLine(xs, n - 0.5, xs, n + 0.5)
+
+    tableLines.append('%s & %.1f & %.1f & %.1f & %.1f & %.1f & %.1f & %.1f \\\\ ' % (label, o, xs, xl2, xl1, x, xh1, xh2))
+    tableLines2.append('%s & %.1f & %.1f & %.1f \\\\' % (label, o, xs, x))
+
+
+for l in reversed(tableLines):
+    print l
+
+print '\n-----\n'
+
+for l in reversed(tableLines2):
+    print l
+
 
 obs.SetMarkerStyle(21)
 obs.SetMarkerColor(r.kBlack)
@@ -123,7 +136,7 @@ legend.AddEntry(expSig,"Expected (sig. inj.)", "l")
 legend.AddEntry(obs, "Observed", "lp")
 legend.SetFillColor(0)
 legend.SetTextFont(42)
-legend.SetTextSize(0.05)
+legend.SetTextSize(0.035)
 legend.Draw()
 
 tex = r.TLatex()
@@ -133,6 +146,11 @@ tex.SetTextSize(0.034)
 tex.DrawLatex(0.2, 0.9, "CMS Preliminary")
 tex.DrawLatex(0.5, 0.9, "#sqrt{s} = 7 TeV, L = 5.0 fb^{-1}; #sqrt{s} = 8 TeV, L = 19.5 fb^{-1}")
 
+div = r.TLine()
+div.SetLineWidth(2)
+div.DrawLine(0.8,0.5,80.5,0.5)
+
+canvas.GetPad(0).SetLogx()
 canvas.GetPad(0).RedrawAxis()
 
 canvas.SaveAs(outfile)
