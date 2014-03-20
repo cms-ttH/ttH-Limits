@@ -5,17 +5,16 @@ Currently, all customization and providing of data has to be done within
 this script.  See the following two variables to get started (`channels`
 contains lists y-axis label and filename to read the fit result from)
 """
-outfile = "limit_mu_cmp_all.pdf"
+outfile  = "limit_mu_cmp_all.pdf"
+outfile2 = "limit_mu_cmp_all.png"
 channels = [
-    ('Combination', 'mlfit_combination_125.7.root'),
-    ('Same-Sign 2l', 'mlfit_2lss_125.7.root'),
-    ('3l', 'mlfit_3l_125.7.root'),
-    ('4l', 'mlfit_4l_125.7.root'),
-    ('Hadronic #tau#tau', 'mlfit_tt_125.7.root'),
-##     ('b#bar{b} (8 TeV)', 'mlfit_bb_8TeV_125.7.root'),
-##     ('b#bar{b} (7 TeV)', 'mlfit_bb_7TeV_125.7.root'),
-    ('b#bar{b}', 'mlfit_bb_125.7.root'),
-    ('#gamma#gamma', 'mlfit_gg_125.7.root'),
+    ('Combination', 'mlfit.root'),
+    ('Same-Sign 2l', 'mlfit.root'),
+    ('3l', 'mlfit.root'),
+    ('4l', 'mlfit.root'),
+    ('#tau_{h}#tau_{h}', 'mlfit.root'),
+    ('b#bar{b}', 'mlfit.root'),
+    ('#gamma#gamma', 'mlfit.root'),
     ]
 
 import ROOT as r
@@ -40,7 +39,7 @@ ratio.SetMarkerSize(2)
 ratio.SetLineWidth(4)
 ratio.SetLineColor(r.kRed)
 
-dummy = r.TH1F("dummy", ";Best fit #sigma/#sigma_{SM} at m_{H} = 125.7 GeV;", 100, -100, 100)
+dummy = r.TH1F("dummy", ";Best fit #sigma/#sigma_{SM} at m_{H} = 125.6 GeV;", 100, -100, 100)
 dummy.GetXaxis().SetTitleSize(0.05)
 dummy.GetYaxis().SetRangeUser(-0.5, len(channels) - 0.5)
 dummy.GetYaxis().Set(len(channels), -0.5, len(channels) - 0.5)
@@ -51,27 +50,63 @@ xMax = 0
 tableLines = []
 for (n, (label, fileName)) in enumerate(channels):
 
-    # Open the ROOT file and pull out the fit result
-    file = r.TFile.Open(fileName)
-    fr = file.Get('fit_s')
-    pars = r.RooArgSet(fr.floatParsFinal())
-    mu = pars.find('r')
+    ## Open the ROOT file and pull out the fit result
+    #file = r.TFile.Open(fileName)
+    #fr = file.Get('fit_s')
+    #pars = r.RooArgSet(fr.floatParsFinal())
+    #mu = pars.find('r')
 
-    muVal = mu.getVal()
-    muErrLo = mu.getErrorLo()
-    muErrHi = mu.getErrorHi()
-
-    if muVal+muErrLo < xMin:
-        xMin = muVal+muErrLo
-
-    if muVal+muErrHi > xMax:
-        xMax = muVal+muErrHi
+    #muVal = mu.getVal()
+    #muErrLo = mu.getErrorLo()
+    #muErrHi = mu.getErrorHi()
 
     if label == 'Four-Lepton':
         muVal = -4.2
         muErrLo = -1.8
         muErrHi = 4.4
         print 'WARNING: Hand-setting 4l results to match PAS!!!'
+
+    if label == 'Combination': 
+        muVal = 2.79
+        muErrLo = -0.92
+        muErrHi = 1.02
+        #print 'FAKE values for now'
+        
+    if label == 'Same-Sign 2l':
+        muVal = 5.31
+        muErrLo = -1.82
+        muErrHi = 2.14
+        
+    if label == '3l':
+        muVal = 3.13
+        muErrLo = -1.96
+        muErrHi = 2.43
+        
+    if label == '4l':
+        muVal = -4.71
+        muErrLo = -1.29
+        muErrHi = 5.03
+        
+    if label == 'Hadronic #tau#tau':
+        muVal = -1.34
+        muErrLo = -5.47
+        muErrHi = 6.33
+        
+    if label == 'b#bar{b}':
+        muVal = 0.67
+        muErrLo = -1.87
+        muErrHi = 1.86
+
+    if label == '#gamma#gamma':
+        muVal = 2.69
+        muErrLo = -1.83
+        muErrHi = 2.60
+
+    if muVal+muErrLo < xMin:
+        xMin = muVal+muErrLo
+
+    if muVal+muErrHi > xMax:
+        xMax = muVal+muErrHi
 
     print label,muVal,muErrLo,muErrHi
 
@@ -132,8 +167,9 @@ tex = r.TLatex()
 tex.SetNDC()
 tex.SetTextFont(42)
 tex.SetTextSize(0.034)
-tex.DrawLatex(0.2, 0.9, "CMS Preliminary")
-tex.DrawLatex(0.5, 0.9, "#sqrt{s} = 7 TeV, L = 5.0 fb^{-1}; #sqrt{s} = 8 TeV, L = 19.5 fb^{-1}")
+tex.DrawLatex(0.2, 0.9, "CMS")
+#tex.DrawLatex(0.2, 0.9, "CMS Preliminary")
+tex.DrawLatex(0.5, 0.9, "#sqrt{s} = 7 TeV, L = 5.0 fb^{-1}; #sqrt{s} = 8 TeV, L = 19.7 fb^{-1}")
 
 div = r.TLine()
 div.SetLineWidth(2)
@@ -143,8 +179,10 @@ div.DrawLine(dummy.GetXaxis().GetBinLowEdge(dummy.GetXaxis().GetFirst()),
              0.5)
 
 canvas.GetPad(0).RedrawAxis()
+canvas.RedrawAxis()
 
 canvas.SaveAs(outfile)
+canvas.SaveAs(outfile2)
 
 print '\n\n-----\n'
 
