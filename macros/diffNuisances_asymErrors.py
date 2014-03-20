@@ -48,13 +48,15 @@ fpf_s = fit_s.floatParsFinal()
 pulls = []
 for i in range(fpf_s.getSize()):
     nuis_s = fpf_s.at(i)
-    name   = nuis_s.GetName();
+    name   = nuis_s.GetName()
     nuis_b = fpf_b.find(name)
     nuis_p = prefit.find(name)
     row = []
-    flag = False;
+    flag = False
     mean_p, sigma_p = 0,0
+    
     if nuis_p == None:
+        #print "name = %s, val_s = %.3f, err_s = %.3f" % (name,nuis_s.getVal(),nuis_s.getError())
         if not options.abs: continue
         row += [ "[%.2f, %.2f]" % (nuis_s.getMin(), nuis_s.getMax()) ]
     else:

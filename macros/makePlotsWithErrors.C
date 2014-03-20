@@ -66,7 +66,7 @@ public:
   ClassDef(LabelInfo,1);
 };
 
-void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLegend=true, bool debug=false, TString fitFileName = "mlfit.root", TString wsFileName = "wsTest.root", bool plotBDTFits_=true, bool plotSoverBCombined_=true, bool plotCategoryYieldCombined_=true ) {
+void makePlotsWithErrors( TString dataFileName = "", TString dataFileName7TeV = "", bool blind=true, bool useLegend=true, bool debug=false, TString fitFileName = "mlfit.root", TString wsFileName = "wsTest.root", bool plotBDTFits_=true, bool plotSoverBCombined_=true, bool plotCategoryYieldCombined_=true ) {
 
 
   TString histoFilename = "HistoFiles/generateToys_histo.root";
@@ -80,7 +80,7 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 
   TH1D* h_numToys = (TH1D*)file->Get("h_numToys");
 
-  TString imageDir = "Images";
+  TString imageDir = "Images/Images_2014_02_19_7and8TeV_ttH_allChan_postFitPlots";
   struct stat st;
   if( stat(imageDir.Data(),&st) != 0 )  mkdir(imageDir.Data(),0777);
 
@@ -124,6 +124,7 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
   int bin_data = 13;
 
   Color_t color[22];
+  /*
   color[0] = kBlack;
   //old
   color[bin_diboson] = kCyan;
@@ -144,6 +145,28 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
   color[bin_ttV] = kBlue-10;
 
   color[bin_ewk] = kAzure+2;
+*/
+
+  color[0] = kBlack;
+  //old
+  color[bin_diboson] = kCyan;
+  color[bin_zjets]   = kGreen+2;
+  color[bin_wjets]   = kAzure+1;
+  color[bin_ttW]     = kBlue-9;
+  color[bin_ttZ]     = color[bin_ttW];
+
+  //new
+  color[bin_ttH]     = kBlue+2;
+
+  color[bin_ttjets_bbbar]  = kRed+3;
+  color[bin_ttjets_b]      = kRed-2;
+  color[bin_ttjets_ccbar]  = kRed+1;
+  color[bin_ttjets_other]  = kRed-7;
+
+  color[bin_singlet] = kMagenta;
+  color[bin_ttV] = kBlue-10;
+
+  color[bin_ewk] = kAzure+2;
 
 
 
@@ -156,7 +179,7 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
   label[bin_ttjets_ccbar]  = "t#bar{t} + c#bar{c}";
   label[bin_ttjets_other]  = "t#bar{t} + lf";
 
-  label[bin_ttH] = "t#bar{t}H(125)";
+  label[bin_ttH] = "t#bar{t}H(125.6)";
 
   label[bin_ewk] = "EWK";
   label[bin_ttV] = "t#bar{t} + W,Z";
@@ -169,31 +192,49 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 
   //These are the list of possible categories
   TList allCategories;
-  allCategories.Add(new LabelInfo("ljets_jge6_t2","Lepton + #geq6 jets + 2 b-tags"));
-  allCategories.Add(new LabelInfo("ljets_j4_t3","Lepton + 4 jets + 3 b-tags"));
-  allCategories.Add(new LabelInfo("ljets_j5_t3","Lepton + 5 jets + 3 b-tags"));
-  allCategories.Add(new LabelInfo("ljets_jge6_t3","Lepton + #geq6 jets + 3 b-tags"));
-  allCategories.Add(new LabelInfo("ljets_j4_t4","Lepton + 4 jets + 4 b-tags"));
-  allCategories.Add(new LabelInfo("ljets_j5_tge4","Lepton + 5 jets + #geq4 b-tags"));
-  allCategories.Add(new LabelInfo("ljets_jge6_tge4","Lepton + #geq6 jets + #geq4 b-tags"));
-  allCategories.Add(new LabelInfo("e3je2t","Dilepton + 3 jets + 2 b-tags"));
-  allCategories.Add(new LabelInfo("ge4je2t","Dilepton + #geq4 jets + 2 b-tags"));
-  allCategories.Add(new LabelInfo("ge3t","Dilepton + #geq3 b-tags"));
+  // 7 TeV LJ + OSDIL
+  allCategories.Add(new LabelInfo("hbb_7TeV_ljets_jge6_t2","Lepton + #geq6 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_7TeV_ljets_j4_t3","Lepton + 4 jets + 3 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_7TeV_ljets_j5_t3","Lepton + 5 jets + 3 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_7TeV_ljets_jge6_t3","Lepton + #geq6 jets + 3 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_7TeV_ljets_j4_t4","Lepton + 4 jets + 4 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_7TeV_ljets_j5_tge4","Lepton + 5 jets + #geq4 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_7TeV_ljets_jge6_tge4","Lepton + #geq6 jets + #geq4 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_7TeV_e2je2t","Dilepton + 2 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_7TeV_ge3t","Dilepton + #geq3 b-tags"));
 
-  // Get real tau category titles
-  allCategories.Add(new LabelInfo("TTL_1b_1nb","Lep + #tau_{h}#tau_{h} + 2 jets + 1 b-tag"));
-  allCategories.Add(new LabelInfo("TTL_1b_2nb","Lep + #tau_{h}#tau_{h} + 3 jets + 1 b-tag"));
-  allCategories.Add(new LabelInfo("TTL_1b_3+nb","Lep + #tau_{h}#tau_{h} + #geq4 jets + 1 b-tag"));
-  allCategories.Add(new LabelInfo("TTL_2b_0nb","Lep + #tau_{h}#tau_{h} + 2 jets + 2 b-tags"));
-  allCategories.Add(new LabelInfo("TTL_2b_1nb","Lep + #tau_{h}#tau_{h} + 3 jets + 2 b-tags"));
-  allCategories.Add(new LabelInfo("TTL_2b_2+nb","Lep + #tau_{h}#tau_{h} + #geq4 jets + 2 b-tags"));
+  // 8 TeV LJ + OSDIL
+  allCategories.Add(new LabelInfo("hbb_8TeV_ljets_jge6_t2","Lepton + #geq6 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_ljets_j4_t3","Lepton + 4 jets + 3 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_ljets_j5_t3","Lepton + 5 jets + 3 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_ljets_jge6_t3","Lepton + #geq6 jets + 3 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_ljets_j4_t4","Lepton + 4 jets + 4 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_ljets_j5_tge4","Lepton + 5 jets + #geq4 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_ljets_jge6_tge4","Lepton + #geq6 jets + #geq4 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_e3je2t","Dilepton + 3 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_ge4je2t","Dilepton + #geq4 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_ge3t","Dilepton + #geq3 b-tags"));
 
-  // Add SS because why not
-  allCategories.Add(new LabelInfo("SS_ge4je1t","SS_ge4je1t"));
-  allCategories.Add(new LabelInfo("SS_e3jge2t","SS_e3jge2t"));
-  allCategories.Add(new LabelInfo("SS_ge4jge2t","SS_ge4jge2t"));
+  // 8 TeV TAU
+  allCategories.Add(new LabelInfo("htt_8TeV_TTL_1b_1nb","Lep + #tau_{h}#tau_{h} + 2 jets + 1 b-tag"));
+  allCategories.Add(new LabelInfo("htt_8TeV_TTL_1b_2nb","Lep + #tau_{h}#tau_{h} + 3 jets + 1 b-tag"));
+  allCategories.Add(new LabelInfo("htt_8TeV_TTL_1b_3+nb","Lep + #tau_{h}#tau_{h} + #geq4 jets + 1 b-tag"));
+  allCategories.Add(new LabelInfo("htt_8TeV_TTL_2b_0nb","Lep + #tau_{h}#tau_{h} + 2 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("htt_8TeV_TTL_2b_1nb","Lep + #tau_{h}#tau_{h} + 3 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("htt_8TeV_TTL_2b_2+nb","Lep + #tau_{h}#tau_{h} + #geq4 jets + 2 b-tags"));
+
 
   std::vector<TString> axis_labels;
+  axis_labels.push_back("#splitline{LJ}{6j2t}");
+  axis_labels.push_back("#splitline{LJ}{4j3t}");
+  axis_labels.push_back("#splitline{LJ}{5j3t}");
+  axis_labels.push_back("#splitline{LJ}{6j3t}");
+  axis_labels.push_back("#splitline{LJ}{4j4t}");
+  axis_labels.push_back("#splitline{LJ}{5j4t}");
+  axis_labels.push_back("#splitline{LJ}{6j4t}");
+  axis_labels.push_back("#splitline{DIL}{2j2t}");
+  axis_labels.push_back("#splitline{DIL}{3t}");
+
   axis_labels.push_back("#splitline{LJ}{6j2t}");
   axis_labels.push_back("#splitline{LJ}{4j3t}");
   axis_labels.push_back("#splitline{LJ}{5j3t}");
@@ -220,6 +261,7 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
   //This file has the actual fit results
   TFile *fitFile = TFile::Open( fitFileName );
   TFile *dataFile = TFile::Open(dataFileName);
+  TFile *dataFile7TeV = TFile::Open(dataFileName7TeV);
 
 
   TList categories;
@@ -242,11 +284,27 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 
   TString era = "8TeV";
 
-  std::string cmsinfo = "CMS Preliminary,  #sqrt{s} = 8 TeV, L = 19.5 fb^{-1}";
-  TLatex CMSInfoLatex(0.47, 0.91, cmsinfo.c_str());
+  std::string cmsinfo =   "CMS                             #sqrt{s} = 8 TeV, L = 19.3 fb^{-1}"; //DPUIGH
+  //std::string cmsinfo = "CMS Preliminary      #sqrt{s} = 8 TeV, L = 19.3 fb^{-1}"; //SBOUTLE
+  //std::string cmsinfo = "CMS Preliminary,  #sqrt{s} = 8 TeV, L = 19.3 fb^{-1}";
+  TLatex CMSInfoLatex(0.14, 0.91, cmsinfo.c_str()); //SBOUTLE
+  //TLatex CMSInfoLatex(0.47, 0.91, cmsinfo.c_str());
   CMSInfoLatex.SetNDC();
   CMSInfoLatex.SetTextFont(42);
-  CMSInfoLatex.SetTextSize(0.035);
+  CMSInfoLatex.SetTextSize(0.055); //SBOUTLE
+
+
+  std::string cmsinfo7TeV =   "CMS                             #sqrt{s} = 7 TeV, L = 5.0 fb^{-1}"; //SBOUTLE
+  //std::string cmsinfo7TeV = "CMS Preliminary      #sqrt{s} = 7 TeV, L = 5.0 fb^{-1}"; //SBOUTLE
+  //std::string cmsinfo = "CMS Preliminary,  #sqrt{s} = 8 TeV, L = 19.3 fb^{-1}";
+  TLatex CMSInfoLatex7TeV(0.14, 0.91, cmsinfo7TeV.c_str()); //SBOUTLE
+  //TLatex CMSInfoLatex(0.47, 0.91, cmsinfo.c_str());
+  CMSInfoLatex7TeV.SetNDC();
+  CMSInfoLatex7TeV.SetTextFont(42);
+  CMSInfoLatex7TeV.SetTextSize(0.055); //SBOUTLE
+
+
+  //CMSInfoLatex.SetTextSize(0.035);
 
   //Suppress the printout from making plots
   //gErrorIgnoreLevel = 2000;
@@ -458,10 +516,13 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
     }
 
 
-    TLatex FitinfoLatex(0.45, 0.95, fitinfo.c_str());
+    //TLatex FitinfoLatex(0.45, 0.97, fitinfo.c_str());
+    TLatex FitinfoLatex(0.44, 0.97, fitinfo.c_str());//ccn
     FitinfoLatex.SetNDC();
     FitinfoLatex.SetTextFont(42);
-    FitinfoLatex.SetTextSize(0.035);
+    //FitinfoLatex.SetTextSize(0.04); //ccn: use for S/B plot all others use 0.045
+    FitinfoLatex.SetTextSize(0.045);//ccn
+
 
 
 
@@ -483,8 +544,15 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
       TString catLabel = category1->label;
       TString catName  = category1->name;
 
+      TString dataCatName = catName;
+      if( dataCatName.Contains("ch1_") ) dataCatName.ReplaceAll("ch1_","");
+      if( dataCatName.Contains("hbb_7TeV_") ) dataCatName.ReplaceAll("hbb_7TeV_","");
+      if( dataCatName.Contains("hbb_8TeV_") ) dataCatName.ReplaceAll("hbb_8TeV_","");
+      if( dataCatName.Contains("htt_8TeV_") ) dataCatName.ReplaceAll("htt_8TeV_","");
+
       //Roofit plots histogram vs "bin number;" turn this into a histogram over ANN output
-      TH1 *dataHist = (TH1 *)dataFile->Get("data_obs_MVA_"+catName);
+      //TH1 *dataHist = (TH1 *)dataFile->Get("data_obs_MVA_"+catName);
+      TH1 *dataHist = ( catName.BeginsWith("hbb_7TeV_") ) ? (TH1 *)dataFile7TeV->Get("data_obs_CFMlpANN_"+dataCatName) : (TH1 *)dataFile->Get("data_obs_MVA_"+dataCatName);
       TH1 *fitHist = (TH1 *)dataHist->Clone("pdf_bin"+catName+"_"+fitLabel+"_Clone_temp");
       numBins[iCat1] = fitHist->GetNbinsX();
 
@@ -812,14 +880,19 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
       ratioErr_SoverB_1sig->GetYaxis()->SetNdivisions(50000+404);
       ratioErr_SoverB_1sig->GetYaxis()->SetLabelSize(0.1); //make y label bigger
       ratioErr_SoverB_1sig->GetXaxis()->SetLabelSize(0.1); //make y label bigger
-      ratioErr_SoverB_1sig->GetXaxis()->SetTitleOffset(1.1);
+      ratioErr_SoverB_1sig->GetXaxis()->SetTitleOffset(0.9); //SBOUTLE
+      //ratioErr_SoverB_1sig->GetXaxis()->SetTitleOffset(1.1);
       ratioErr_SoverB_1sig->GetXaxis()->SetTitle(h_data_SoverB->GetXaxis()->GetTitle()); //make y label bigger
-      ratioErr_SoverB_1sig->GetXaxis()->SetLabelSize(0.12);
-      ratioErr_SoverB_1sig->GetXaxis()->SetLabelOffset(0.04);
-      ratioErr_SoverB_1sig->GetXaxis()->SetTitleSize(0.12);
+      ratioErr_SoverB_1sig->GetXaxis()->SetLabelSize(0.12); //SBOUTLE
+      //ratioErr_SoverB_1sig->GetXaxis()->SetLabelSize(0.1);
+      ratioErr_SoverB_1sig->GetXaxis()->SetLabelOffset(0.02);//SBOUTLE
+      //ratioErr_SoverB_1sig->GetXaxis()->SetLabelOffset(0.04);
+      ratioErr_SoverB_1sig->GetXaxis()->SetTitleSize(0.14); //SBOUTLE
+      //ratioErr_SoverB_1sig->GetXaxis()->SetTitleSize(0.12);
       ratioErr_SoverB_1sig->GetYaxis()->SetTitle("Data/MC");
       ratioErr_SoverB_1sig->GetYaxis()->SetTitleSize(0.1);
-      ratioErr_SoverB_1sig->GetYaxis()->SetTitleOffset(.45);
+      ratioErr_SoverB_1sig->GetYaxis()->CenterTitle();
+      ratioErr_SoverB_1sig->GetYaxis()->SetTitleOffset(0.45);
       myC->cd(2);
       gPad->SetTopMargin(small);
       gPad->SetTickx();
@@ -838,17 +911,18 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 
       legend->AddEntry(h_data_SoverB,label[bin_data].Data(),"lpe");
       legend->AddEntry(errHist_SoverB_1sig,"Sum MC","f");
-      legend->AddEntry(h_sig_SoverB,"t#bar{t}H125","f");
+      legend->AddEntry(h_sig_SoverB,"t#bar{t}H125.6","f");
 
 
 
-      TLegend *legend_ratio = new TLegend(0.14,0.87,0.34,0.97);
+      TLegend *legend_ratio = new TLegend(0.14,0.87,0.48,0.97);
 
       legend_ratio->SetFillColor(kWhite);
       legend_ratio->SetLineColor(kWhite);
       legend_ratio->SetShadowColor(kWhite);
       legend_ratio->SetTextFont(42);
-      legend_ratio->SetTextSize(0.055);
+      //legend_ratio->SetTextSize(0.055);
+      legend_ratio->SetTextSize(0.10);//ccn
 
       if( !fitLabel.EqualTo("preFit") ){
 	legend_ratio->SetNColumns(2);
@@ -865,7 +939,8 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 
       h_data_SoverB->SetTitle(";;Events");
       h_data_SoverB->GetYaxis()->SetTitleSize(0.05);
-      h_data_SoverB->GetYaxis()->SetTitleOffset(1.);
+      h_data_SoverB->GetYaxis()->SetTitleOffset(1.1); //SBOUTLE
+      //h_data_SoverB->GetYaxis()->SetTitleOffset(1.);
 
       double xmin = h_data_SoverB->GetBinLowEdge(1);
       double xmax = h_data_SoverB->GetBinLowEdge(numBinsSoverB) + h_data_SoverB->GetBinWidth(numBinsSoverB);
@@ -892,17 +967,20 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
       double chi2 = h_data_SoverB->Chi2Test(h_bkg_SoverB_blind,"UWP");
 
       TString str_chi2 = ( !fitLabel.EqualTo("postFitS") ) ? Form("B-only p-value (#chi^{2}) = %.3f",chi2) : Form("S+B p-value (#chi^{2}) = %.3f",chi2);
-      TLatex Chi2Latex(0.47, 0.91, str_chi2);
+      TLatex Chi2Latex(0.59, 0.91, str_chi2);
       Chi2Latex.SetNDC();
       Chi2Latex.SetTextFont(42);
-      Chi2Latex.SetTextSize(0.055);
+      //Chi2Latex.SetTextSize(0.055);
+      Chi2Latex.SetTextSize(0.09);//ccn
 
 
-      TString selectioninfo = "ttH(bb,#tau#tau): LJ + OSDIL + TAU";//"Lepton + #geq6 jets + 2 tags";
-      TLatex SELECTIONInfoLatex(0.12, 0.91, selectioninfo);
+      TString selectioninfo = "ttH(bb,#tau#tau): LJ + DIL + TAU";//"Lepton + #geq6 jets + 2 tags";
+      //TLatex SELECTIONInfoLatex(0.12, 0.91, selectioninfo);
+      TLatex SELECTIONInfoLatex(0.60, 0.84, selectioninfo);//ccn
       SELECTIONInfoLatex.SetNDC();
       SELECTIONInfoLatex.SetTextFont(42);
-      SELECTIONInfoLatex.SetTextSize(0.035);
+      //SELECTIONInfoLatex.SetTextSize(0.035);
+      SELECTIONInfoLatex.SetTextSize(0.05);//ccn
 
 
 
@@ -915,7 +993,7 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
       if( useLegend ) legend->Draw();
 
       CMSInfoLatex.Draw();
-      SELECTIONInfoLatex.Draw();
+      //SELECTIONInfoLatex.Draw();
       FitinfoLatex.Draw();
 
 
@@ -1042,10 +1120,11 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
       TH1D* h_sig_category_yield = (TH1D*)file->Get(Form("sig_category_yield_%s",fitLabel.Data()));
 
       h_data_category_yield->SetLineColor(1);
-      h_data_category_yield->SetLineWidth(2);
+      h_data_category_yield->SetLineWidth(4);
+      //h_data_category_yield->SetLineWidth(2);
       h_data_category_yield->SetMarkerStyle(20);
-      h_data_category_yield->SetMarkerSize(0.75);
-
+      //h_data_category_yield->SetMarkerSize(0.75);
+      h_data_category_yield->SetMarkerSize(1.4);//ccn
 
 
       TH1* h_bkg[NumBkgs];
@@ -1092,7 +1171,13 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 	TString catLabel = category3->label;
 	TString catName  = category3->name;
 
-	TH1 *sigHist_original = (TH1 *)dataFile->Get("ttH125_MVA_"+catName)->Clone("ttH125_original_yield_"+catName+"_"+fitLabel);
+	TString dataCatName = catName;
+	if( dataCatName.Contains("ch1_") ) dataCatName.ReplaceAll("ch1_","");
+	if( dataCatName.Contains("hbb_7TeV_") ) dataCatName.ReplaceAll("hbb_7TeV_","");
+	if( dataCatName.Contains("hbb_8TeV_") ) dataCatName.ReplaceAll("hbb_8TeV_","");
+	if( dataCatName.Contains("htt_8TeV_") ) dataCatName.ReplaceAll("htt_8TeV_","");
+
+	TH1 *sigHist_original = ( catName.BeginsWith("hbb_7TeV_") ) ? (TH1 *)dataFile7TeV->Get("ttH125.6_CFMlpANN_"+dataCatName)->Clone("ttH125.6_original_"+dataCatName+"_"+fitLabel) : (TH1 *)dataFile->Get("ttH125.6_MVA_"+dataCatName)->Clone("ttH125.6_original_"+dataCatName+"_"+fitLabel);
 	integral_ttH_original += sigHist_original->Integral();
       }
 
@@ -1361,13 +1446,18 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
       ratioErr_category_yield_1sig->SetMinimum(ratioMin);
       ratioErr_category_yield_1sig->SetMaximum(ratioMax);
       ratioErr_category_yield_1sig->GetYaxis()->SetNdivisions(50000+404);
+      ratioErr_category_yield_1sig->GetYaxis()->CenterTitle();
       ratioErr_category_yield_1sig->GetYaxis()->SetLabelSize(0.1); //make y label bigger
-      ratioErr_category_yield_1sig->GetXaxis()->SetLabelSize(0.1); //make y label bigger
-      ratioErr_category_yield_1sig->GetXaxis()->SetTitleOffset(1.1);
+      ratioErr_category_yield_1sig->GetXaxis()->SetLabelSize(0.1); //make x label bigger
+      ratioErr_category_yield_1sig->GetXaxis()->SetTitleOffset(1.1); //ccn
+      //ratioErr_category_yield_1sig->GetXaxis()->SetTitleOffset(0.9); //SBOUTLE
+      //ratioErr_category_yield_1sig->GetXaxis()->SetTitleOffset(1.1);
       ratioErr_category_yield_1sig->GetXaxis()->SetTitle(h_data_category_yield->GetXaxis()->GetTitle()); //make y label bigger
       ratioErr_category_yield_1sig->GetXaxis()->SetLabelSize(0.12);
+      ratioErr_category_yield_1sig->GetXaxis()->SetLabelOffset(0.02); //SBOUTLE
       //ratioErr_category_yield_1sig->GetXaxis()->SetLabelOffset(0.04);
-      ratioErr_category_yield_1sig->GetXaxis()->SetTitleSize(0.12);
+      ratioErr_category_yield_1sig->GetXaxis()->SetTitleSize(0.13); //SBOUTLE
+      //ratioErr_category_yield_1sig->GetXaxis()->SetTitleSize(0.12);
       ratioErr_category_yield_1sig->GetYaxis()->SetTitle("Data/MC");
       ratioErr_category_yield_1sig->GetYaxis()->SetTitleSize(0.1);
       ratioErr_category_yield_1sig->GetYaxis()->SetTitleOffset(.45);
@@ -1408,17 +1498,19 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 
       //if( fitLabel.EqualTo("postFitS") && !blind ) legend->AddEntry(h_ttH,Form("t#bar{t}H125 (%.1f)",h_ttH->Integral()),"l");
       //else                                         legend->AddEntry(h_ttH,Form("t#bar{t}H125 (%.1f#times%.0f)",h_ttH->Integral(),scale_ttH),"l");
-      legend->AddEntry(h_ttH,Form("t#bar{t}H125 (%.1f#times%.0f)",h_ttH->Integral(),scale_ttH),"l");
+      legend->AddEntry(h_ttH,Form("t#bar{t}H125.6 (%.1f#times%.0f)",h_ttH->Integral(),scale_ttH),"l");
 
 
 
-      TLegend *legend_ratio = new TLegend(0.14,0.87,0.34,0.97);
+      //TLegend *legend_ratio = new TLegend(0.14,0.87,0.34,0.97);
+      TLegend *legend_ratio = new TLegend(0.14,0.77,0.48,0.97);//ccn
 
       legend_ratio->SetFillColor(kWhite);
       legend_ratio->SetLineColor(kWhite);
       legend_ratio->SetShadowColor(kWhite);
       legend_ratio->SetTextFont(42);
-      legend_ratio->SetTextSize(0.055);
+      //legend_ratio->SetTextSize(0.055);
+      legend_ratio->SetTextSize(0.10);//ccn
 
       if( !fitLabel.EqualTo("preFit") ){
 	legend_ratio->SetNColumns(2);
@@ -1435,7 +1527,8 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 
       h_data_category_yield->SetTitle(";;Events");
       h_data_category_yield->GetYaxis()->SetTitleSize(0.05);
-      h_data_category_yield->GetYaxis()->SetTitleOffset(1.);
+      h_data_category_yield->GetYaxis()->SetTitleOffset(1.1); //SBOUTLE
+      //h_data_category_yield->GetYaxis()->SetTitleOffset(1.);
 
       double xmin = h_data_category_yield->GetBinLowEdge(1);
       double xmax = h_data_category_yield->GetBinLowEdge(numCats) + h_data_category_yield->GetBinWidth(numCats);
@@ -1462,18 +1555,20 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
       double chi2 = h_data_category_yield->Chi2Test(h_bkg_category_yield_blind,"UWP");
 
       TString str_chi2 = ( !fitLabel.EqualTo("postFitS") ) ? Form("B-only p-value (#chi^{2}) = %.3f",chi2) : Form("S+B p-value (#chi^{2}) = %.3f",chi2);
-      TLatex Chi2Latex(0.7, 0.91, str_chi2);
+      TLatex Chi2Latex(0.67, 0.88, str_chi2);
       Chi2Latex.SetNDC();
       Chi2Latex.SetTextFont(42);
-      Chi2Latex.SetTextSize(0.055);
+      //Chi2Latex.SetTextSize(0.055);
+      Chi2Latex.SetTextSize(0.09);//ccn
 
 
-
-      TString selectioninfo = "ttH(bb,#tau#tau): LJ + OSDIL + TAU";//"Lepton + #geq6 jets + 2 tags";
-      TLatex SELECTIONInfoLatex(0.12, 0.91, selectioninfo);
+      //ccn: Fig 28?
+      TString selectioninfo = "ttH(bb,#tau#tau): LJ + DIL + TAU";//"Lepton + #geq6 jets + 2 tags";
+      TLatex SELECTIONInfoLatex(0.60, 0.84, selectioninfo);
       SELECTIONInfoLatex.SetNDC();
       SELECTIONInfoLatex.SetTextFont(42);
-      SELECTIONInfoLatex.SetTextSize(0.035);
+      //SELECTIONInfoLatex.SetTextSize(0.035);
+      SELECTIONInfoLatex.SetTextSize(0.05);//ccn
 
 
       //if( fitLabel.EqualTo("postFitS") && !blind ) hs->Add(h_ttH);
@@ -1485,6 +1580,7 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 
 
       h_data_category_yield->SetMinimum(3);
+      h_data_category_yield->GetYaxis()->SetLabelSize(0.05);//ccn - make y-axis labels bigger
       h_data_category_yield->Draw("e1");
       hs->Draw("histsame");
       errHist_category_yield_1sig->Draw("e2same");
@@ -1511,10 +1607,13 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
       myLine_channel2->Draw();
 
 
-      TLatex CMSInfoLatex_wide(0.57, 0.91, cmsinfo.c_str());
+      //ccn Fig 28?
+      //TLatex CMSInfoLatex_wide(0.57, 0.91, cmsinfo.c_str());
+      TLatex CMSInfoLatex_wide(0.14, 0.91, cmsinfo.c_str());//ccn
       CMSInfoLatex_wide.SetNDC();
       CMSInfoLatex_wide.SetTextFont(42);
-      CMSInfoLatex_wide.SetTextSize(0.035);
+      //CMSInfoLatex_wide.SetTextSize(0.035);
+      CMSInfoLatex_wide.SetTextSize(0.055);//ccn
 
 
       CMSInfoLatex_wide.Draw();
@@ -1673,20 +1772,29 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 	std::cout << "\n\t\t " << fitLabel << "\t category = " << catLabel << std::endl;
       
 	TString selectioninfo = catLabel;//"Lepton + #geq6 jets + 2 tags";
-	TLatex SELECTIONInfoLatex(0.12, 0.91, selectioninfo);
+	TLatex SELECTIONInfoLatex(0.45, 0.84, selectioninfo); //SBOUTLE
+	//TLatex SELECTIONInfoLatex(0.12, 0.91, selectioninfo);
 	SELECTIONInfoLatex.SetNDC();
 	SELECTIONInfoLatex.SetTextFont(42);
-	SELECTIONInfoLatex.SetTextSize(0.035);
+	//SELECTIONInfoLatex.SetTextSize(0.035);
+	SELECTIONInfoLatex.SetTextSize(0.05); //SBOUTLE
 
+	TString dataCatName = catName;
+	if( dataCatName.Contains("ch1_") ) dataCatName.ReplaceAll("ch1_","");
+	if( dataCatName.Contains("hbb_7TeV_") ) dataCatName.ReplaceAll("hbb_7TeV_","");
+	if( dataCatName.Contains("hbb_8TeV_") ) dataCatName.ReplaceAll("hbb_8TeV_","");
+	if( dataCatName.Contains("htt_8TeV_") ) dataCatName.ReplaceAll("htt_8TeV_","");
 
-	TH1 *dataHist = (TH1 *)dataFile->Get("data_obs_MVA_"+catName)->Clone("dataHist"+catName+"_"+fitLabel);
+	TH1 *dataHist = ( catName.BeginsWith("hbb_7TeV_") ) ? (TH1 *)dataFile7TeV->Get("data_obs_CFMlpANN_"+dataCatName) : (TH1 *)dataFile->Get("data_obs_MVA_"+dataCatName);
 	dataHist->SetLineColor(1);
-	dataHist->SetLineWidth(2);
+	dataHist->SetLineWidth(4); // SBOUTLE
+	//dataHist->SetLineWidth(2);
 	dataHist->SetMarkerStyle(20);
-	dataHist->SetMarkerSize(0.75);
+	dataHist->SetMarkerSize(1.2); //SBOUTLE
+	//dataHist->SetMarkerSize(0.75);
 
 
-	TH1 *sigHist_original = (TH1 *)dataFile->Get("ttH125_MVA_"+catName)->Clone("ttH125_original_"+catName+"_"+fitLabel);
+	TH1 *sigHist_original = ( catName.BeginsWith("hbb_7TeV_") ) ? (TH1 *)dataFile7TeV->Get("ttH125.6_CFMlpANN_"+dataCatName)->Clone("ttH125.6_original_"+catName+"_"+fitLabel) : (TH1 *)dataFile->Get("ttH125.6_MVA_"+dataCatName)->Clone("ttH125.6_original_"+catName+"_"+fitLabel);
 
 	TH1* h_bkg[NumBkgs];
 
@@ -1726,12 +1834,113 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 	  nProc++;
 	}
 
-	TString normName_ttH = "n_exp_final_bin"+catName+"_proc_ttH";
-	RooAbsReal *fitTTH = w->function(normName_ttH);
 
+	//////
 
-	TH1* sigTempHist = w->pdf("shapeSig_"+catName+"_ttH_morph")->createHistogram("CMS_th1x");
-	sigTempHist->Scale(fitTTH->getVal());
+	TH1* sigTempHist = NULL;
+	if( catName.BeginsWith("hbb_7TeV_") ){
+	  TString normName_ttH = "n_exp_final_bin"+catName+"_proc_ttH";
+	  RooAbsReal *fitTTH = w->function(normName_ttH);
+
+	  sigTempHist = w->pdf("shapeSig_"+catName+"_ttH_morph")->createHistogram("CMS_th1x");
+	  sigTempHist->Scale(fitTTH->getVal());
+	}
+	else {
+	  // hbb
+	  TString normName_ttH_bb = "n_exp_final_bin"+catName+"_proc_ttH_hbb";
+	  RooAbsReal *fitTTH_bb = w->function(normName_ttH_bb);
+
+	  //TH1* sigTempHist_bb = w->pdf("shapeSig_"+catName+"_ttH_hbb_morph")->createHistogram("CMS_th1x");
+	  TH1* sigTempHist_bb = NULL;
+	  if( w->pdf("shapeSig_"+catName+"_ttH_hbb_morph")!=NULL ){
+	    sigTempHist_bb = w->pdf("shapeSig_"+catName+"_ttH_hbb_morph")->createHistogram("CMS_th1x");
+	    sigTempHist_bb->Scale(fitTTH_bb->getVal());
+	  }
+
+	  // hcc
+	  TString normName_ttH_cc = "n_exp_final_bin"+catName+"_proc_ttH_hcc";
+	  RooAbsReal *fitTTH_cc = w->function(normName_ttH_cc);
+
+	  TH1* sigTempHist_cc = NULL;
+	  if( fitTTH_cc!=NULL ){
+	    sigTempHist_cc = w->pdf("shapeSig_"+catName+"_ttH_hcc_morph")->createHistogram("CMS_th1x");
+	    sigTempHist_cc->Scale(fitTTH_cc->getVal());
+	  }
+
+	  // hgg
+	  TString normName_ttH_gg = "n_exp_final_bin"+catName+"_proc_ttH_hgg";
+	  RooAbsReal *fitTTH_gg = w->function(normName_ttH_gg);
+
+	  TH1* sigTempHist_gg = NULL;
+	  if( fitTTH_gg!=NULL ){
+	    sigTempHist_gg = w->pdf("shapeSig_"+catName+"_ttH_hgg_morph")->createHistogram("CMS_th1x");
+	    sigTempHist_gg->Scale(fitTTH_gg->getVal());
+	  }
+
+	  // hgluglu
+	  TString normName_ttH_gluglu = "n_exp_final_bin"+catName+"_proc_ttH_hgluglu";
+	  RooAbsReal *fitTTH_gluglu = w->function(normName_ttH_gluglu);
+
+	  TH1* sigTempHist_gluglu = NULL;
+	  if( fitTTH_gluglu!=NULL ){
+	    sigTempHist_gluglu = w->pdf("shapeSig_"+catName+"_ttH_hgluglu_morph")->createHistogram("CMS_th1x");
+	    sigTempHist_gluglu->Scale(fitTTH_gluglu->getVal());
+	  }
+
+	  // htt
+	  TString normName_ttH_tt = "n_exp_final_bin"+catName+"_proc_ttH_htt";
+	  RooAbsReal *fitTTH_tt = w->function(normName_ttH_tt);
+
+	  TH1* sigTempHist_tt = NULL;
+	  if( fitTTH_tt !=NULL ){
+	    sigTempHist_tt = w->pdf("shapeSig_"+catName+"_ttH_htt_morph")->createHistogram("CMS_th1x");
+	    sigTempHist_tt->Scale(fitTTH_tt->getVal());
+	  }
+
+	  // hww
+	  TString normName_ttH_ww = "n_exp_final_bin"+catName+"_proc_ttH_hww";
+	  RooAbsReal *fitTTH_ww = w->function(normName_ttH_ww);
+
+	  TH1* sigTempHist_ww = NULL;
+	  if( fitTTH_ww!=NULL ){
+	    sigTempHist_ww = w->pdf("shapeSig_"+catName+"_ttH_hww_morph")->createHistogram("CMS_th1x");
+	    sigTempHist_ww->Scale(fitTTH_ww->getVal());
+	  }
+
+	  // hzg
+	  TString normName_ttH_zg = "n_exp_final_bin"+catName+"_proc_ttH_hzg";
+	  RooAbsReal *fitTTH_zg = w->function(normName_ttH_zg);
+
+	  TH1* sigTempHist_zg = NULL;
+	  if( fitTTH_zg!=NULL ){
+	    sigTempHist_zg = w->pdf("shapeSig_"+catName+"_ttH_hzg_morph")->createHistogram("CMS_th1x");
+	    sigTempHist_zg->Scale(fitTTH_zg->getVal());
+	  }
+
+	  // hzz
+	  TString normName_ttH_zz = "n_exp_final_bin"+catName+"_proc_ttH_hzz";
+	  RooAbsReal *fitTTH_zz = w->function(normName_ttH_zz);
+
+	  TH1* sigTempHist_zz = NULL;
+	  if( fitTTH_zz!=NULL ){
+	    sigTempHist_zz = w->pdf("shapeSig_"+catName+"_ttH_hzz_morph")->createHistogram("CMS_th1x");
+	    sigTempHist_zz->Scale(fitTTH_zz->getVal());
+	  }
+
+	  sigTempHist = (TH1*)sigTempHist_bb->Clone("CMS_th1x");
+	  if( sigTempHist_cc!=NULL ) sigTempHist->Add(sigTempHist_cc);
+	  if( sigTempHist_gg!=NULL ) sigTempHist->Add(sigTempHist_gg);
+	  if( sigTempHist_gluglu!=NULL ) sigTempHist->Add(sigTempHist_gluglu);
+	  if( sigTempHist_tt!=NULL ) sigTempHist->Add(sigTempHist_tt);
+	  if( sigTempHist_ww!=NULL ) sigTempHist->Add(sigTempHist_ww);
+	  if( sigTempHist_zg!=NULL ) sigTempHist->Add(sigTempHist_zg);
+	  if( sigTempHist_zz!=NULL ) sigTempHist->Add(sigTempHist_zz);
+	}
+	//////
+
+	//////
+	//////
+
 
 	TH1* h_ttH = (TH1 *)dataHist->Clone("pdf_bin"+catName+"_ttH_"+fitLabel+"Clone");
 	h_ttH->Reset();
@@ -1787,12 +1996,13 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 	THStack *hs = new THStack("hs"+catName+"_"+fitLabel,"");
 
 	if( isTauCat ){
-	  hs->Add(h_bkg[bin_diboson]);
-	  hs->Add(h_bkg[bin_ttjets_other]);
-	  hs->Add(h_bkg[bin_wjets]);
-	  hs->Add(h_bkg[bin_zjets]);
-	  hs->Add(h_bkg[bin_singlet]);
+	  hs->Add(h_ewk_bkg);
+	  //hs->Add(h_bkg[bin_diboson]);
+	  //hs->Add(h_bkg[bin_wjets]);
+	  //hs->Add(h_bkg[bin_zjets]);
 	  hs->Add(h_ttbarV_bkg);
+	  hs->Add(h_bkg[bin_singlet]);
+	  hs->Add(h_bkg[bin_ttjets_other]);
 	}
 	else {
 	  hs->Add(h_ewk_bkg);
@@ -2051,16 +2261,27 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 	ratioErr_1sig->SetMinimum(ratioMin);
 	ratioErr_1sig->SetMaximum(ratioMax);
 	ratioErr_1sig->GetYaxis()->SetNdivisions(50000+404);
+	ratioErr_1sig->GetYaxis()->CenterTitle();
 	ratioErr_1sig->GetYaxis()->SetLabelSize(0.1); //make y label bigger
 	ratioErr_1sig->GetXaxis()->SetLabelSize(0.1); //make y label bigger
-	ratioErr_1sig->GetXaxis()->SetTitleOffset(1.1);
+	ratioErr_1sig->GetXaxis()->SetTitleOffset(0.9);
+	//ratioErr_1sig->GetXaxis()->SetTitleOffset(1.1);
 	ratioErr_1sig->GetXaxis()->SetTitle(dataHist->GetXaxis()->GetTitle()); //make y label bigger
 	ratioErr_1sig->GetXaxis()->SetLabelSize(0.12);
-	ratioErr_1sig->GetXaxis()->SetLabelOffset(0.04);
-	ratioErr_1sig->GetXaxis()->SetTitleSize(0.12);
+	ratioErr_1sig->GetXaxis()->SetLabelOffset(0.02); //SBOUTLE
+	//ratioErr_1sig->GetXaxis()->SetLabelOffset(0.04);
+	ratioErr_1sig->GetXaxis()->SetTitleSize(0.14); //SBOUTLE
+	//ratioErr_1sig->GetXaxis()->SetTitleSize(0.12);
 	ratioErr_1sig->GetYaxis()->SetTitle("Data/MC");
 	ratioErr_1sig->GetYaxis()->SetTitleSize(0.1);
 	ratioErr_1sig->GetYaxis()->SetTitleOffset(.45);
+
+	ratioErr_1sig->GetYaxis()->SetTitleFont(62);
+	ratioErr_1sig->GetXaxis()->SetTitleFont(62);
+
+	ratioErr_1sig->GetYaxis()->SetLabelFont(62);
+	ratioErr_1sig->GetXaxis()->SetLabelFont(62);
+
 	myC->cd(2);
 	gPad->SetTopMargin(small);
 	gPad->SetTickx();
@@ -2078,12 +2299,13 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 	legend->SetNColumns(3);
 
 	//double scale_ttH = ( fitLabel.EqualTo("postFitS") && !blind ) ? 1. : 30.; // fitHist->Integral() / h_ttH->Integral()
-	double scale_ttH = 30.; // fitHist->Integral() / h_ttH->Integral()
+	//double scale_ttH = 30.; // fitHist->Integral() / h_ttH->Integral()
+	double scale_ttH = ( fitLabel.EqualTo("postFitS") ) ? 10. : 30.; // fitHist->Integral() / h_ttH->Integral()
 
 
 	if( isTauCat ){
 	  //scale_ttH = ( fitLabel.EqualTo("postFitS") && !blind ) ? 1. : 100.;
-	  scale_ttH = 100.;
+	  //scale_ttH = 30.;
 
 	  legend->AddEntry(h_bkg[bin_ttjets_other],Form("%s (%.1f)",label[bin_ttjets_other].Data(),h_bkg[bin_ttjets_other]->Integral()),"f");
 	  legend->AddEntry(h_bkg[bin_diboson],Form("%s (%.1f)",label[bin_diboson].Data(),h_bkg[bin_diboson]->Integral()),"f");
@@ -2109,18 +2331,19 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 
 	//if( fitLabel.EqualTo("postFitS") && !blind ) legend->AddEntry(h_ttH,Form("t#bar{t}H125 (%.1f)",h_ttH->Integral()),"l");
 	//else                                         legend->AddEntry(h_ttH,Form("t#bar{t}H125 (%.1f#times%.0f)",h_ttH->Integral(),scale_ttH),"l");
-	legend->AddEntry(h_ttH,Form("t#bar{t}H125 (%.1f#times%.0f)",h_ttH->Integral(),scale_ttH),"l");
+	legend->AddEntry(h_ttH,Form("t#bar{t}H125.6 (%.1f#times%.0f)",h_ttH->Integral(),scale_ttH),"l");
 
 
 
 	//TLegend *legend_ratio = new TLegend(0.14,0.15,0.89,0.19);
-	TLegend *legend_ratio = new TLegend(0.14,0.87,0.34,0.97);
+	TLegend *legend_ratio = new TLegend(0.14,0.87,0.48,0.97);
 
 	legend_ratio->SetFillColor(kWhite);
 	legend_ratio->SetLineColor(kWhite);
 	legend_ratio->SetShadowColor(kWhite);
 	legend_ratio->SetTextFont(42);
-	legend_ratio->SetTextSize(0.055);
+	//legend_ratio->SetTextSize(0.055);
+	legend_ratio->SetTextSize(0.10);//ccn
 
 	if( !fitLabel.EqualTo("preFit") ){
 	  legend_ratio->SetNColumns(2);
@@ -2132,15 +2355,23 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 	  legend_ratio->AddEntry(ratioErr_1sig,"Stat+Syst Uncertainty","f");
 	}
 
-	ratioErr_1sig->SetTitle(";MVA output;Data/MC");
+	//ratioErr_1sig->SetTitle(";MVA output;Data/MC");
+	ratioErr_1sig->SetTitle(";BDT output;Data/MC"); //SBOUTLE
 
 
 	dataHist->SetTitle(";;Events");
 	dataHist->GetYaxis()->SetTitleSize(0.05);
-	dataHist->GetYaxis()->SetTitleOffset(1.);
+	dataHist->GetYaxis()->SetTitleOffset(1.1); //SBOUTLE
+	//dataHist->GetYaxis()->SetTitleOffset(1.);
 
 	double xmin = dataHist->GetBinLowEdge(1);
 	double xmax = dataHist->GetBinLowEdge(numBins[iCat3]) + dataHist->GetBinWidth(numBins[iCat3]);
+
+	dataHist->GetYaxis()->SetTitleFont(62);
+	dataHist->GetXaxis()->SetTitleFont(62);
+
+	dataHist->GetYaxis()->SetLabelFont(62);
+	dataHist->GetXaxis()->SetLabelFont(62);
 
 
 	//if( fitLabel.EqualTo("postFitS") && !blind ) hs->Add(h_ttH);
@@ -2170,10 +2401,11 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 
 
 	TString str_chi2 = Form("p-value (#chi^{2}) = %.3f",chi2);
-	TLatex Chi2Latex(0.47, 0.91, str_chi2);
+	TLatex Chi2Latex(0.59, 0.91, str_chi2);
 	Chi2Latex.SetNDC();
 	Chi2Latex.SetTextFont(42);
-	Chi2Latex.SetTextSize(0.055);
+	//Chi2Latex.SetTextSize(0.055);
+	Chi2Latex.SetTextSize(0.09);//ccn
 
 
 
@@ -2187,9 +2419,10 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 
 	if( useLegend ) legend->Draw();
 
-	CMSInfoLatex.Draw();
+	if( catName.BeginsWith("hbb_7TeV_") ) CMSInfoLatex7TeV.Draw();
+	else                             CMSInfoLatex.Draw();
 	SELECTIONInfoLatex.Draw();
-	FitinfoLatex.Draw();
+	//FitinfoLatex.Draw();
 
 
 	myC->cd(2);
@@ -2211,8 +2444,16 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
 
 	Chi2Latex.Draw();
 
-	myC->SaveAs(imageDir+"/dataToMC_"+era+"_plotWithErrors_"+fitLabel+"_"+catName+".png");
-	myC->SaveAs(imageDir+"/dataToMC_"+era+"_plotWithErrors_"+fitLabel+"_"+catName+".pdf");
+	TString saveName = catName;
+	if( saveName.Contains("hbb_7TeV_") )      saveName.ReplaceAll("hbb_7TeV_","");
+	else if( saveName.Contains("hbb_8TeV_") ) saveName.ReplaceAll("hbb_8TeV_","");
+	else if( saveName.Contains("htt_8TeV_") ) saveName.ReplaceAll("htt_8TeV_","");
+
+	if( catName.Contains("hbb_7TeV_") ) era = "7TeV";
+	else                           era = "8TeV";
+
+	myC->SaveAs(imageDir+"/dataToMC_"+era+"_finalMVA_"+fitLabel+"_"+saveName+".png");
+	myC->SaveAs(imageDir+"/dataToMC_"+era+"_finalMVA_"+fitLabel+"_"+saveName+".pdf");
 
 
 
@@ -2380,7 +2621,7 @@ void makePlotsWithErrors( TString dataFileName = "", bool blind=true, bool useLe
     gr_postFitB->SetLineColor(kRed);
 
     if( debug ){
-      TCanvas *c2 = new TCanvas("c2","",900,800);
+      TCanvas *c2 = new TCanvas("c2","",900,1400);
       h_pulls_vert->SetStats(0);
       h_pulls_vert->Draw();
       gr_postFitB->Draw("pe1same");

@@ -37,7 +37,8 @@ const int LIM8TEV = 0x2;
 void makePlots_limit_v4(TString limitFileName, std::string  pname, std::string  ptitle, int ana, float maxHeight = -1, bool addObs = true, bool add_inj=true) {
   
   TCanvas *c1 = new TCanvas("c1");
-  
+  c1->SetRightMargin(.05);
+
 
   const int nMax = 100;
   double x[nMax], y[nMax], y2[nMax], y_obs[nMax], y_inj[nMax];
@@ -197,37 +198,34 @@ void makePlots_limit_v4(TString limitFileName, std::string  pname, std::string  
 
 
 
-  TLatex *CMSInfoLatex = new TLatex(0.11, 0.91, ("CMS preliminary          " + ptitle).c_str());
+  TLatex *CMSInfoLatex = new TLatex(0.11, 0.92, "CMS");
+  //TLatex *CMSInfoLatex = new TLatex(0.11, 0.92, "CMS Preliminary");
   CMSInfoLatex->SetNDC();
   CMSInfoLatex->SetTextFont(42);
 
-  TString lumiinfo = " ";
-  if (ana & LIM7TEV) {
-    lumiinfo += "#sqrt{s} = 7 TeV, L = 5.0 fb^{-1}";
-  }
+  TLatex *ChannelInfoLatex = new TLatex(0.41, 0.92, ptitle.c_str());
+  ChannelInfoLatex->SetNDC();
+  ChannelInfoLatex->SetTextFont(42);
 
-  double textSize = 0.04;
-  double offset = 0.0;
-  textSize = 0.03;
-  if (ana == (LIM7TEV|LIM8TEV)) {
-    lumiinfo += "; ";
-    offset = 0.07;
-  }
-  offset = -0.07;
+  TString lumiinfo7TeV = "#sqrt{s} = 7 TeV, L =   5.0 fb^{-1}";
+  TString lumiinfo8TeV = "#sqrt{s} = 8 TeV, L = 19.7 fb^{-1}";
 
-  if (ana & LIM8TEV) {
-    lumiinfo += "#sqrt{s} = 8 TeV, L = 19.5 fb^{-1}";
-  }
+  double textSize = 0.05;
 
 
-  TLatex *LUMIInfoLatex = new TLatex(0.54-offset, 0.91, lumiinfo);
-  LUMIInfoLatex->SetNDC();
-  LUMIInfoLatex->SetTextFont(42);
+  TLatex *LUMIInfoLatex7TeV = new TLatex(0.68, 0.95, lumiinfo7TeV);
+  LUMIInfoLatex7TeV->SetNDC();
+  LUMIInfoLatex7TeV->SetTextFont(42);
+
+  TLatex *LUMIInfoLatex8TeV = new TLatex(0.68, 0.91, lumiinfo8TeV);
+  LUMIInfoLatex8TeV->SetNDC();
+  LUMIInfoLatex8TeV->SetTextFont(42);
 
   //Set to same size
-  CMSInfoLatex->SetTextSize(textSize);
-  LUMIInfoLatex->SetTextSize(textSize);
-
+  CMSInfoLatex->SetTextSize(0.055);
+  LUMIInfoLatex7TeV->SetTextSize(0.04);
+  LUMIInfoLatex8TeV->SetTextSize(0.04);
+  ChannelInfoLatex->SetTextSize(0.055);
 
   TH1D* h_dummy = new TH1D("h_dummy","",100, xMin, xMax );
 
@@ -268,9 +266,14 @@ void makePlots_limit_v4(TString limitFileName, std::string  pname, std::string  
 
   h_dummy->SetTitle(";m_{H} (GeV);95% CL limit on #sigma/#sigma_{SM}");
 
+  h_dummy->GetYaxis()->SetTitleSize(0.05);
+  h_dummy->GetXaxis()->SetTitleSize(0.05);
 
-  TLegend *legend     = new TLegend(0.17,0.65,0.42,0.87);
-  TLegend *legend_obs = new TLegend(0.17,0.59,0.45,0.87);
+  h_dummy->GetYaxis()->SetTitleOffset(0.8);
+  h_dummy->GetXaxis()->SetTitleOffset(0.8);
+
+  TLegend *legend     = new TLegend(0.17,0.65,0.47,0.87);
+  TLegend *legend_obs = new TLegend(0.17,0.59,0.47,0.89);
 
   legend->SetFillColor(kWhite);
   legend->SetLineColor(kWhite);
@@ -282,13 +285,14 @@ void makePlots_limit_v4(TString limitFileName, std::string  pname, std::string  
   legend->AddEntry(grshade_2sig,"Expected #pm 2#sigma","fl");
 
   legend_obs->SetFillColor(kWhite);
-  legend_obs->SetLineColor(kWhite);
+  //legend_obs->SetLineColor(kWhite);
   legend_obs->SetShadowColor(kWhite);
   legend_obs->SetTextFont(42);
   legend_obs->SetTextSize(0.04);
 
   if (addObs) legend_obs->AddEntry(gr_obs, "Observed ","lp");
-  legend_obs->AddEntry(gr_inj, "ttH(125) injected", "l");
+  //legend_obs->AddEntry(gr_inj, "ttH(125.7) injected", "l");
+  legend_obs->AddEntry(gr_inj, "Expected (sig. inj.)", "l");
   legend_obs->AddEntry(grshade_1sig,"Expected #pm 1#sigma","fl");
   legend_obs->AddEntry(grshade_2sig,"Expected #pm 2#sigma","fl");
 
@@ -325,7 +329,10 @@ void makePlots_limit_v4(TString limitFileName, std::string  pname, std::string  
   else        legend->Draw();
 
   CMSInfoLatex->Draw();
-  LUMIInfoLatex->Draw();
+  LUMIInfoLatex8TeV->Draw();
+  if( ana == (LIM7TEV|LIM8TEV) ) LUMIInfoLatex7TeV->Draw();
+  ChannelInfoLatex->Draw();
+
 
   TString dirprefix = "plots";
 

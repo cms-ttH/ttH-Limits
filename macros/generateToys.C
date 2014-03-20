@@ -77,7 +77,7 @@ TMatrix getUpperTriangularMatrix( RooFitResult *fitRes );
 //*****************************************************************************
 
 
-void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", int nToys=500, int nJobs=1, int jobN=1, bool debug=false, TString fitFileName = "mlfit.root", TString wsFileName = "wsTest.root" ) {
+void generateToys( TString dataFileName = "", TString dataFileName7TeV = "", TString fitTypeName = "preFit", int nToys=500, int nJobs=1, int jobN=1, bool debug=false, TString fitFileName = "mlfit.root", TString wsFileName = "wsTest.root" ) {
 
   RooRandom::randomGenerator()->SetSeed(jobN);
 
@@ -109,40 +109,55 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
 
   //These are the list of possible categories
   TList allCategories;
-  allCategories.Add(new LabelInfo("ljets_jge6_t2","Lepton + #geq6 jets + 2 b-tags"));
-  allCategories.Add(new LabelInfo("ljets_j4_t3","Lepton + 4 jets + 3 b-tags"));
-  allCategories.Add(new LabelInfo("ljets_j5_t3","Lepton + 5 jets + 3 b-tags"));
-  allCategories.Add(new LabelInfo("ljets_jge6_t3","Lepton + #geq6 jets + 3 b-tags"));
-  allCategories.Add(new LabelInfo("ljets_j4_t4","Lepton + 4 jets + 4 b-tags"));
-  allCategories.Add(new LabelInfo("ljets_j5_tge4","Lepton + 5 jets + #geq4 b-tags"));
-  allCategories.Add(new LabelInfo("ljets_jge6_tge4","Lepton + #geq6 jets + #geq4 b-tags"));
-  allCategories.Add(new LabelInfo("e3je2t","Dilepton + 3 jets + 2 b-tags"));
-  allCategories.Add(new LabelInfo("ge4je2t","Dilepton + #geq4 jets + 2 b-tags"));
-  allCategories.Add(new LabelInfo("ge3t","Dilepton + #geq3 b-tags"));
+  // 7 TeV LJ + OSDIL
+  allCategories.Add(new LabelInfo("hbb_7TeV_ljets_jge6_t2","Lepton + #geq6 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_7TeV_ljets_j4_t3","Lepton + 4 jets + 3 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_7TeV_ljets_j5_t3","Lepton + 5 jets + 3 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_7TeV_ljets_jge6_t3","Lepton + #geq6 jets + 3 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_7TeV_ljets_j4_t4","Lepton + 4 jets + 4 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_7TeV_ljets_j5_tge4","Lepton + 5 jets + #geq4 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_7TeV_ljets_jge6_tge4","Lepton + #geq6 jets + #geq4 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_7TeV_e2je2t","Dilepton + 2 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_7TeV_ge3t","Dilepton + #geq3 b-tags"));
 
-  // Get real tau category titles
-  allCategories.Add(new LabelInfo("TTL_1b_1nb","Lep + #tau_{h}#tau_{h} + 2 jets + 1 b-tag"));
-  allCategories.Add(new LabelInfo("TTL_1b_2nb","Lep + #tau_{h}#tau_{h} + 3 jets + 1 b-tag"));
-  allCategories.Add(new LabelInfo("TTL_1b_3+nb","Lep + #tau_{h}#tau_{h} + #geq4 jets + 1 b-tag"));
-  allCategories.Add(new LabelInfo("TTL_2b_0nb","Lep + #tau_{h}#tau_{h} + 2 jets + 2 b-tags"));
-  allCategories.Add(new LabelInfo("TTL_2b_1nb","Lep + #tau_{h}#tau_{h} + 3 jets + 2 b-tags"));
-  allCategories.Add(new LabelInfo("TTL_2b_2+nb","Lep + #tau_{h}#tau_{h} + #geq4 jets + 2 b-tags"));
+  // 8 TeV LJ + OSDIL
+  allCategories.Add(new LabelInfo("hbb_8TeV_ljets_jge6_t2","Lepton + #geq6 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_ljets_j4_t3","Lepton + 4 jets + 3 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_ljets_j5_t3","Lepton + 5 jets + 3 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_ljets_jge6_t3","Lepton + #geq6 jets + 3 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_ljets_j4_t4","Lepton + 4 jets + 4 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_ljets_j5_tge4","Lepton + 5 jets + #geq4 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_ljets_jge6_tge4","Lepton + #geq6 jets + #geq4 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_e3je2t","Dilepton + 3 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_ge4je2t","Dilepton + #geq4 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("hbb_8TeV_ge3t","Dilepton + #geq3 b-tags"));
+
+  // 8 TeV TAU
+  allCategories.Add(new LabelInfo("htt_8TeV_TTL_1b_1nb","Lep + #tau_{h}#tau_{h} + 2 jets + 1 b-tag"));
+  allCategories.Add(new LabelInfo("htt_8TeV_TTL_1b_2nb","Lep + #tau_{h}#tau_{h} + 3 jets + 1 b-tag"));
+  allCategories.Add(new LabelInfo("htt_8TeV_TTL_1b_3+nb","Lep + #tau_{h}#tau_{h} + #geq4 jets + 1 b-tag"));
+  allCategories.Add(new LabelInfo("htt_8TeV_TTL_2b_0nb","Lep + #tau_{h}#tau_{h} + 2 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("htt_8TeV_TTL_2b_1nb","Lep + #tau_{h}#tau_{h} + 3 jets + 2 b-tags"));
+  allCategories.Add(new LabelInfo("htt_8TeV_TTL_2b_2+nb","Lep + #tau_{h}#tau_{h} + #geq4 jets + 2 b-tags"));
 
   // Add SS because why not
-  allCategories.Add(new LabelInfo("SS_ge4je1t","SS_ge4je1t"));
-  allCategories.Add(new LabelInfo("SS_e3jge2t","SS_e3jge2t"));
-  allCategories.Add(new LabelInfo("SS_ge4jge2t","SS_ge4jge2t"));
+  //allCategories.Add(new LabelInfo("SS_ge4je1t","SS_ge4je1t"));
+  //allCategories.Add(new LabelInfo("SS_e3jge2t","SS_e3jge2t"));
+  //allCategories.Add(new LabelInfo("SS_ge4jge2t","SS_ge4jge2t"));
 
 
+  std::cout << " Get workspace " << std::endl;
   //This file has the pdf with everything set to the values before the fit
   TFile *wsFile = TFile::Open( wsFileName );
   RooWorkspace *w = (RooWorkspace *)wsFile->Get("w");
 
+  std::cout << " Got workspace.  Get fit and histo files" << std::endl;
   //This file has the actual fit results
   TFile *fitFile = TFile::Open( fitFileName );
   TFile *dataFile = TFile::Open(dataFileName);
+  TFile *dataFile7TeV = TFile::Open(dataFileName7TeV);
 
-
+  std::cout << " Add only found categories" << std::endl;
   TList categories;
   TIter nextCat(&allCategories);
   LabelInfo *cat = 0;
@@ -152,7 +167,7 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
   }
 
   int numCats = categories.GetEntries();//.GetSize();
-
+  std::cout << " We found " << numCats << " categories" << std::endl;
 
   //These are the list of possible categories
   TList fitResults;
@@ -225,11 +240,10 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
 
 
 
-
-
     //Now get the fit central value
     w->saveSnapshot(fitLabel,RooArgSet(fitFR->floatParsFinal()),kTRUE);
     w->loadSnapshot(fitLabel);
+
 
 
     int numBins_most = 20;
@@ -253,7 +267,7 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
     TH1D* h_category_yield_bkg  = new TH1D(Form("h_category_yield_bkg_%s",fitLabel.Data()),";category",numCats,0,numCats);
     TH1D* h_category_yield_sig  = new TH1D(Form("h_category_yield_sig_%s",fitLabel.Data()),";category",numCats,0,numCats);
 
-
+    std::cout << " Finish setting up plots.\n Begin looping over categories." << std::endl;
 
     TIter nextCat1(&categories);
     LabelInfo *category1 = 0;
@@ -262,10 +276,20 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
       TString catLabel = category1->label;
       TString catName  = category1->name;
 
+      TString dataCatName = catName;
+      if( dataCatName.Contains("ch1_") ) dataCatName.ReplaceAll("ch1_","");
+      if( dataCatName.Contains("hbb_7TeV_") ) dataCatName.ReplaceAll("hbb_7TeV_","");
+      if( dataCatName.Contains("hbb_8TeV_") ) dataCatName.ReplaceAll("hbb_8TeV_","");
+      if( dataCatName.Contains("htt_8TeV_") ) dataCatName.ReplaceAll("htt_8TeV_","");
+
+      std::cout << "\t catLabel = " << catLabel << ",\t catName = " << catName << ",\t dataCatName = " << dataCatName << std::endl;
+
       //Roofit plots histogram vs "bin number;" turn this into a histogram over ANN output
-      TH1 *dataHist = (TH1 *)dataFile->Get("data_obs_MVA_"+catName);
+      TH1 *dataHist = ( catName.BeginsWith("hbb_7TeV_") ) ? (TH1 *)dataFile7TeV->Get("data_obs_CFMlpANN_"+dataCatName) : (TH1 *)dataFile->Get("data_obs_MVA_"+dataCatName);
       TH1 *fitHist = (TH1 *)dataHist->Clone("pdf_bin"+catName+"_"+fitLabel+"Clone_temp");
       numBins[iCat1] = fitHist->GetNbinsX();
+
+      std::cout << "\t begin loop over processes" << std::endl;
 
       //Calculate the total in the fit...
       RooArgSet fitArgs;
@@ -274,6 +298,7 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
       //std::cout << "\t Filling individual sample components" << std::endl;
       while ((process = (LabelInfo *)nextProcess())) {
 	TString procName = process->name;
+
 	//Construct the name of the normalization variable.
 	TString normName = "n_exp_final_bin"+catName+"_proc_"+procName;
 	RooAbsReal *fitN = w->function(normName);
@@ -284,20 +309,116 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
       fitTotal_cat[iCat1] = new RooAddition(Form("fitTotal_cat%d",iCat1),"fitTotal",fitArgs);
 
 
+
       //Make a normalized plot...
       TH1 *fitTempHist = w->pdf("pdf_bin"+catName+"_bonly")->createHistogram("CMS_th1x");
       fitTempHist->Scale(fitTotal_cat[iCat1]->getVal());
       for (int iBin = 0; iBin < numBins[iCat1]; iBin++) {
-	if( fitHist->GetBinContent(iBin+1)<1 ) fitHist->SetBinContent(iBin+1,fitTempHist->GetBinContent(iBin+1));
+	//if( fitHist->GetBinContent(iBin+1)<1 ) fitHist->SetBinContent(iBin+1,fitTempHist->GetBinContent(iBin+1));
+	if( fitTempHist->GetBinContent(iBin+1)>0 ) fitHist->SetBinContent(iBin+1,fitTempHist->GetBinContent(iBin+1));
       }
 
 
-      TString normName_ttH = "n_exp_final_bin"+catName+"_proc_ttH";
-      RooAbsReal *fitTTH = w->function(normName_ttH);
+      TH1* sigTempHist = NULL;
+      if( catName.BeginsWith("hbb_7TeV_") ){
+	TString normName_ttH = "n_exp_final_bin"+catName+"_proc_ttH";
+	RooAbsReal *fitTTH = w->function(normName_ttH);
 
+	sigTempHist = w->pdf("shapeSig_"+catName+"_ttH_morph")->createHistogram("CMS_th1x");
+	sigTempHist->Scale(fitTTH->getVal());
+      }
+      else {
+	// hbb
+	TString normName_ttH_bb = "n_exp_final_bin"+catName+"_proc_ttH_hbb";
+	RooAbsReal *fitTTH_bb = w->function(normName_ttH_bb);
 
-      TH1* sigTempHist = w->pdf("shapeSig_"+catName+"_ttH_morph")->createHistogram("CMS_th1x");
-      sigTempHist->Scale(fitTTH->getVal());
+	//TH1* sigTempHist_bb = w->pdf("shapeSig_"+catName+"_ttH_hbb_morph")->createHistogram("CMS_th1x");
+	TH1* sigTempHist_bb = NULL;
+	if( w->pdf("shapeSig_"+catName+"_ttH_hbb_morph")!=NULL ){
+	  sigTempHist_bb = w->pdf("shapeSig_"+catName+"_ttH_hbb_morph")->createHistogram("CMS_th1x");
+	  sigTempHist_bb->Scale(fitTTH_bb->getVal());
+	}
+
+	// hcc
+	TString normName_ttH_cc = "n_exp_final_bin"+catName+"_proc_ttH_hcc";
+	RooAbsReal *fitTTH_cc = w->function(normName_ttH_cc);
+
+	TH1* sigTempHist_cc = NULL;
+	if( fitTTH_cc!=NULL ){
+	  sigTempHist_cc = w->pdf("shapeSig_"+catName+"_ttH_hcc_morph")->createHistogram("CMS_th1x");
+	  sigTempHist_cc->Scale(fitTTH_cc->getVal());
+	}
+
+	// hgg
+	TString normName_ttH_gg = "n_exp_final_bin"+catName+"_proc_ttH_hgg";
+	RooAbsReal *fitTTH_gg = w->function(normName_ttH_gg);
+
+	TH1* sigTempHist_gg = NULL;
+	if( fitTTH_gg!=NULL ){
+	  sigTempHist_gg = w->pdf("shapeSig_"+catName+"_ttH_hgg_morph")->createHistogram("CMS_th1x");
+	  sigTempHist_gg->Scale(fitTTH_gg->getVal());
+	}
+
+	// hgluglu
+	TString normName_ttH_gluglu = "n_exp_final_bin"+catName+"_proc_ttH_hgluglu";
+	RooAbsReal *fitTTH_gluglu = w->function(normName_ttH_gluglu);
+
+	TH1* sigTempHist_gluglu = NULL;
+	if( fitTTH_gluglu!=NULL ){
+	  sigTempHist_gluglu = w->pdf("shapeSig_"+catName+"_ttH_hgluglu_morph")->createHistogram("CMS_th1x");
+	  sigTempHist_gluglu->Scale(fitTTH_gluglu->getVal());
+	}
+
+	// htt
+	TString normName_ttH_tt = "n_exp_final_bin"+catName+"_proc_ttH_htt";
+	RooAbsReal *fitTTH_tt = w->function(normName_ttH_tt);
+
+	TH1* sigTempHist_tt = NULL;
+	if( fitTTH_tt !=NULL ){
+	  sigTempHist_tt = w->pdf("shapeSig_"+catName+"_ttH_htt_morph")->createHistogram("CMS_th1x");
+	  sigTempHist_tt->Scale(fitTTH_tt->getVal());
+	}
+
+	// hww
+	TString normName_ttH_ww = "n_exp_final_bin"+catName+"_proc_ttH_hww";
+	RooAbsReal *fitTTH_ww = w->function(normName_ttH_ww);
+
+	TH1* sigTempHist_ww = NULL;
+	if( fitTTH_ww!=NULL ){
+	  sigTempHist_ww = w->pdf("shapeSig_"+catName+"_ttH_hww_morph")->createHistogram("CMS_th1x");
+	  sigTempHist_ww->Scale(fitTTH_ww->getVal());
+	}
+
+	// hzg
+	TString normName_ttH_zg = "n_exp_final_bin"+catName+"_proc_ttH_hzg";
+	RooAbsReal *fitTTH_zg = w->function(normName_ttH_zg);
+
+	TH1* sigTempHist_zg = NULL;
+	if( fitTTH_zg!=NULL ){
+	  sigTempHist_zg = w->pdf("shapeSig_"+catName+"_ttH_hzg_morph")->createHistogram("CMS_th1x");
+	  sigTempHist_zg->Scale(fitTTH_zg->getVal());
+	}
+
+	// hzz
+	TString normName_ttH_zz = "n_exp_final_bin"+catName+"_proc_ttH_hzz";
+	RooAbsReal *fitTTH_zz = w->function(normName_ttH_zz);
+
+	TH1* sigTempHist_zz = NULL;
+	if( fitTTH_zz!=NULL ){
+	  sigTempHist_zz = w->pdf("shapeSig_"+catName+"_ttH_hzz_morph")->createHistogram("CMS_th1x");
+	  sigTempHist_zz->Scale(fitTTH_zz->getVal());
+	}
+
+	sigTempHist = (TH1*)sigTempHist_bb->Clone("CMS_th1x");
+	if( sigTempHist_cc!=NULL ) sigTempHist->Add(sigTempHist_cc);
+	if( sigTempHist_gg!=NULL ) sigTempHist->Add(sigTempHist_gg);
+	if( sigTempHist_gluglu!=NULL ) sigTempHist->Add(sigTempHist_gluglu);
+	if( sigTempHist_tt!=NULL ) sigTempHist->Add(sigTempHist_tt);
+	if( sigTempHist_ww!=NULL ) sigTempHist->Add(sigTempHist_ww);
+	if( sigTempHist_zg!=NULL ) sigTempHist->Add(sigTempHist_zg);
+	if( sigTempHist_zz!=NULL ) sigTempHist->Add(sigTempHist_zz);
+      }
+
 
       for (int iBin = 0; iBin < numBins[iCat1]; iBin++) {
 	double signal = sigTempHist->GetBinContent(iBin+1);
@@ -311,7 +432,8 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
 	h_bkg_SoverB->Fill(fillLogSoverB,fitTempHist->GetBinContent(iBin+1));
 	h_sig_SoverB->Fill(fillLogSoverB,sigTempHist->GetBinContent(iBin+1));
 
-	if( signal/background>0.1 ) printf("%s\t%s\t%d\t S/B = %.2f\t S = %.1f\t B = %.1f\n",fitLabel.Data(),catName.Data(),iBin,signal/background,signal,background);
+	//if( signal/background>0.1 ) printf("%s\t%s\t%d\t S/B = %.2f\t S = %.1f\t B = %.1f\n",fitLabel.Data(),catName.Data(),iBin,signal/background,signal,background);
+	//printf("%s\t%s\t%d\t S/B = %.2f\t S = %.1f\t B = %.1f\n",fitLabel.Data(),catName.Data(),iBin,signal/background,signal,background);
       }
 
 
@@ -395,7 +517,7 @@ void generateToys( TString dataFileName = "", TString fitTypeName = "preFit", in
 	  double fillLogSoverB = TMath::Max( logSoverB, minLogSoverB );
 	  fillLogSoverB = TMath::Min( fillLogSoverB, maxLogSoverB );
 	  temp_SoverB->Fill(fillLogSoverB,temp->GetBinContent(iBin+1));
-	  //if( temp_SoverB->FindBin(fillLogSoverB)==numBinsSoverB ) printf("%d\t%s\t%s\t%d\t log(S/B) = %.2f,\t content = %.1f,\t total = %.1f \n",iToy,fitLabel.Data(),catName.Data(),iBin,logSoverB,temp->GetBinContent(iBin+1),temp_SoverB->GetBinContent(temp_SoverB->FindBin(fillLogSoverB)));
+	  if( debug && temp_SoverB->FindBin(fillLogSoverB)==numBinsSoverB ) printf("%d\t%s\t%s\t%d\t log(S/B) = %.2f,\t content = %.1f,\t total = %.1f \n",iToy,fitLabel.Data(),catName.Data(),iBin,logSoverB,temp->GetBinContent(iBin+1),temp_SoverB->GetBinContent(temp_SoverB->FindBin(fillLogSoverB)));
 	}
 
 	iCat2++;

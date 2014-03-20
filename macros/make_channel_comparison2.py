@@ -8,16 +8,17 @@ for the plot is extracted from files with the name
 `combine` output.
 """
 outfile = "limit_cmp_all.pdf"
+outfile2 = "limit_cmp_all.png"
 channels = [
-        ("combination", "Combination"),
-        ("2lss", "Same-Sign 2l"),
-        ("3l", "3l"),
-        ("4l", "4l"),
-        ("tt", "Hadronic #tau#tau"),
-        ("bb","b#bar{b}"),
+        ("bb_tt_lep_gg_7and8TeV", "Combination"),
+        ("lep_2lss_8TeV", "Same-Sign 2l"),
+        ("lep_3l_8TeV", "3l"),
+        ("lep_4l_8TeV", "4l"),
+        ("htt_8TeV", "#tau_{h}#tau_{h}"),
+        ("bb_7and8TeV","b#bar{b}"),
 ##         ("bb_8TeV","b#bar{b} (8 TeV)"),
 ##         ("bb_7TeV","b#bar{b} (7 TeV)"),
-        ("photons", "#gamma#gamma"),
+        ("gg_7and8TeV", "#gamma#gamma"),
         ]
 
 import ROOT as r
@@ -37,7 +38,7 @@ canvas.SetTopMargin(.12)
 legend = r.TLegend(0.72, 0.68, 0.9, 0.87)
 legend.SetBorderSize(0)
 
-dummy = r.TH1F("dummy", ";95% CL limit on #sigma/#sigma_{SM} at m_{H} = 125.7 GeV;", 100, 0.8, 80.5)
+dummy = r.TH1F("dummy", ";95% CL limit on #sigma/#sigma_{SM} at m_{H} = 125.6 GeV;", 100, 0.8, 80.5)
 dummy.GetXaxis().SetTitleSize(0.05)
 dummy.GetYaxis().SetRangeUser(-0.5, len(channels) - 0.5)
 dummy.GetYaxis().Set(len(channels), -0.5, len(channels) - 0.5)
@@ -56,7 +57,8 @@ line = r.TLine()
 tableLines = []
 tableLines2 = []
 for (n, (chan, label)) in enumerate(channels):
-    with open("limit_{c}_125.7.log".format(c=chan)) as f:
+    with open("Output/condor_Asymptotic_ttH_{c}_OBS_125.6.out".format(c=chan)) as f:
+#    with open("limit_{c}_125.6.log".format(c=chan)) as f:
         lines = f.readlines()
         obs_line = filter(lambda s: s.startswith("Observed Limit"), lines)[0]
         exp_lines = filter(lambda s: s.startswith("Expected "), lines)
@@ -85,7 +87,8 @@ for (n, (chan, label)) in enumerate(channels):
         line.SetLineStyle(r.kSolid)
         line.DrawLine(o, n - 0.5, o, n + 0.5)
 
-    with open("limit_{c}_125.7_sig.log".format(c=chan)) as f:
+    with open("Output/condor_Asymptotic_ttH_{c}_INJ_125.6.out".format(c=chan)) as f:
+#    with open("limit_{c}_125.6_sig.log".format(c=chan)) as f:
         lines = f.readlines()
         exp_line_sig = filter(lambda s: s.startswith("Observed Limit"), lines)[0]
 
@@ -96,7 +99,8 @@ for (n, (chan, label)) in enumerate(channels):
         line.SetLineColor(r.kRed)
         line.DrawLine(xs, n - 0.5, xs, n + 0.5)
 
-    tableLines.append('%s & %.1f & %.1f & %.1f & %.1f & %.1f & %.1f & %.1f \\\\ ' % (label, o, xs, xl2, xl1, x, xh1, xh2))
+    #tableLines.append('%s & %.1f & %.1f & %.1f & %.1f & %.1f & %.1f & %.1f \\\\ ' % (label, o, xs, xl2, xl1, x, xh1, xh2))
+    tableLines.append('%s & %.1f & %.1f & %.1f & [%.1f,%.1f] & [%.1f,%.1f] \\\\ ' % (label, o, xs, x, xl1, xh1, xl2, xh2))
     tableLines2.append('%s & %.1f & %.1f & %.1f \\\\' % (label, o, xs, x))
 
 
@@ -143,8 +147,9 @@ tex = r.TLatex()
 tex.SetNDC()
 tex.SetTextFont(42)
 tex.SetTextSize(0.034)
-tex.DrawLatex(0.2, 0.9, "CMS Preliminary")
-tex.DrawLatex(0.5, 0.9, "#sqrt{s} = 7 TeV, L = 5.0 fb^{-1}; #sqrt{s} = 8 TeV, L = 19.5 fb^{-1}")
+tex.DrawLatex(0.2, 0.9, "CMS")
+#tex.DrawLatex(0.2, 0.9, "CMS Preliminary")
+tex.DrawLatex(0.5, 0.9, "#sqrt{s} = 7 TeV, L = 5.0 fb^{-1}; #sqrt{s} = 8 TeV, L = 19.7 fb^{-1}")
 
 div = r.TLine()
 div.SetLineWidth(2)
@@ -154,3 +159,4 @@ canvas.GetPad(0).SetLogx()
 canvas.GetPad(0).RedrawAxis()
 
 canvas.SaveAs(outfile)
+canvas.SaveAs(outfile2)
