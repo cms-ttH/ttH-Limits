@@ -610,7 +610,7 @@ def create_datacard(ifile, ofile, disc, all_categories,
     all_uncertainties = map(lambda (u, t, vs): u, systematics)
     systematics = filter(lambda (u, t, vs): u not in disabled_systematics, systematics)
     systematics += split_systematics(ifile, disc, cats, btag_mode)
-    systematics += get_ann_systematics(ifile, disc, all_categories, cats, is_8_tev=is_8_tev)
+#    systematics += get_ann_systematics(ifile, disc, all_categories, cats, is_8_tev=is_8_tev)
 
     # Filter out b-tag rate uncertainties
     if btag_mode == B_OFF:
