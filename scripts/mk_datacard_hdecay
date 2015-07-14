@@ -18,6 +18,7 @@ Note that the input ROOT file _will_ be modified!
 
 Workflow / Customization
 ========================
+* To disable certain samples, use -S option, (newly added)
 * To add new systematics, edit `systematics.csv`
 * To change categories:
   - edit the definition of `all_categories` at the very end of this file
@@ -67,11 +68,11 @@ r.gROOT.SetBatch()
 # latter two are optional.
 all_categories = map(split_category_string,
         "ljets_j4_t3:4:0 ljets_j4_t4:4:0 ljets_j5_t3:5:1 ljets_j5_tge4:5:1 " \
-        "ljets_jge6_t2:6:2 ljets_jge6_t3:6:2 ljets_jge6_tge4:6:2 ".split())
-#        "ge3t:3:1 e3je2t:3:1 ge4je2t:4:2 " \
-#        "SS_ge4je1t:4:1 SS_e3jge2t:3:0 SS_ge4jge2t:3:1 " \
-#        "TTL_1b_1nb:4:0 TTL_1b_2nb:5:1 TTL_1b_3+nb:6:2 " \
-#        "TTL_2b_0nb:4:0 TTL_2b_1nb:5:1 TTL_2b_2+nb:6:2".split())
+        "ljets_jge6_t2:6:2 ljets_jge6_t3:6:2 ljets_jge6_tge4:6:2 " \
+        "ge3t:3:1 e3je2t:3:1 ge4je2t:4:2 " \
+        "SS_ge4je1t:4:1 SS_e3jge2t:3:0 SS_ge4jge2t:3:1 " \
+        "TTL_1b_1nb:4:0 TTL_1b_2nb:5:1 TTL_1b_3+nb:6:2 " \
+        "TTL_2b_0nb:4:0 TTL_2b_1nb:5:1 TTL_2b_2+nb:6:2".split())
 
 # Indicate systematics that concern only certain categories.  This is a
 # dictionary with the uncertainty as key and an anonymous function as
@@ -99,6 +100,9 @@ parser.add_option("-c", "--categories", dest="categories",
 parser.add_option("-s", "--disable-systematic", dest="nosys",
         help="disable uncertainties in SYS (separated by whitespace).",
         metavar="SYS", default="")
+parser.add_option("-S", "--disable-sample", dest="nosample",
+        help="disable samples (separated by whitespace).",
+        metavar="SAMPLE", default="")
 parser.add_option("-b", "--btag-mode", dest="btag",
         help="set b-tag uncertainty treatment to MODE.  (Allowed "
         "values: off, rate, shape, category)", metavar="MODE",
@@ -134,5 +138,6 @@ else:
 f = r.TFile(args[0], "UPDATE")
 create_datacard(f, ofile, opts.disc, categories,
         disabled_systematics=opts.nosys.split(),
+        disabled_samples=opts.nosample.split(),
         limited_systematics=limited_systematics,
         btag_mode=btag_mode, print_summary=True)
