@@ -563,7 +563,7 @@ rate {rs}
     return active_unc
 
 def create_datacard(ifile, ofile, disc, all_categories,
-        disabled_systematics=[], limited_systematics={},
+        disabled_systematics=[], disabled_samples=[], limited_systematics={},
         btag_mode=B_CAT_SHAPE, print_summary=False):
     """Create a datacard for `ifile` (an open ROOT file) using the
     discriminant `disc` and categories, jet multiplicities, parton counts
@@ -591,7 +591,7 @@ def create_datacard(ifile, ofile, disc, all_categories,
 
     # Retrieve list of samples (ordered) from systematics file
     samples = get_systematics(sysfile, samples=True)
-
+    samplesAll = samples
     # Get available categories for every sample
     all_samples = get_samples(ifile, disc)
 
@@ -605,6 +605,7 @@ def create_datacard(ifile, ofile, disc, all_categories,
 
     # Enumerate samples for combine
     # nums = dict([(s, n) for (n, s) in enumerate(samples)])
+    samples = filter(lambda s: s not in disabled_samples, samples)
     samples = enumerate(samples)
 
     systematics = get_systematics(sysfile, overrides=overrides, rename=rename)
@@ -648,8 +649,8 @@ def create_datacard(ifile, ofile, disc, all_categories,
 
     cstring = " ".join(map(lambda c: c if c in category_names else "[" + c + "]",
         all_category_names)).replace("] [", " ")
-    sstring = " ".join(map(lambda (n, s): s if s in all_samples.keys() else "[" + s + "]",
-        samples)).replace("] [", " ")
+    sstring = " ".join(map(lambda s: s if s in all_samples.keys() and s not in disabled_samples else "[" + s + "]",
+        samplesAll)).replace("] [", " ")
     ustring = " ".join(map(lambda u: u if u in active_unc else "[" + u + "]",
         all_uncertainties)).replace("] [", " ")
 
