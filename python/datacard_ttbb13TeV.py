@@ -89,10 +89,12 @@ def get_ann_systematics(file, discriminant, categories, samples, data_sample="da
 
                 other_frac = math.sqrt(bkg_err**2 - val_err**2)
 
-                #Changed from data_err/3 -> data_err/5 and sig/bkg < 0.02 -> 0.01 - KPL
-                if val < .01 or bkg_err < data_err / 5. or other_frac / bkg_err > .95 \
-                        or sig / bkg < .01:
-                    continue
+                pruneBinByBin=False
+                if pruneBinByBin:
+                  #Changed from data_err/3 -> data_err/5 and sig/bkg < 0.02 -> 0.01 - KPL
+                  if val < .01 or bkg_err < data_err / 5. or other_frac / bkg_err > .95 \
+                          or sig / bkg < .01:
+                      continue
 
                 #if True:
                 #    continue
@@ -584,10 +586,10 @@ def create_datacard(ifile, ofile, disc, all_categories,
     overrides = {
             "lumi": "1.044" if is_13_tev else "1.022",
             "CMS_ttH_eff_lep": "1.014" if is_13_tev else "1.018",
-            "CMS_ttH_QCDscale_ttb": "1.5",
-            "CMS_ttH_QCDscale_tt2b": "1.5",
-            "CMS_ttH_QCDscale_ttbb": "1.5",
-            "CMS_ttH_QCDscale_ttcc": "1.5"}
+            "CMS_ttH_QCDscale_ttb": "1.417",
+            "CMS_ttH_QCDscale_tt2b": "1.417",
+            "CMS_ttH_QCDscale_ttbb": "1.417",
+            "CMS_ttH_QCDscale_ttcc": "1.417"}
 
     # Retrieve list of samples (ordered) from systematics file
     samples = get_systematics(sysfile, samples=True)
