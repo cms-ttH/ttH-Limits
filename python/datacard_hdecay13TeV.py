@@ -446,7 +446,7 @@ def split_systematics(file, disc, samples, btag_mode=B_CAT_SHAPE):
 
     for (s, cats) in samples.items():
         #s = s if s == "ttH" else s
-        s = s. if "ttH" in s else s
+        s = s if "ttH" in s else s
         for c in cats:
             stub = "_".join((s, disc, c))
             #log.write(" file.Get({s})".format(s=stub))

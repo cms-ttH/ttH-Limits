@@ -73,7 +73,7 @@ def get_ann_systematics(file, discriminant, categories, samples, data_sample="da
                 continue
 
             hist = file.Get("{s}_{d}_{c}".format(s=file_s, d=discriminant, c=c))
-
+            print hist
             for b in range(1, hist.GetNbinsX() + 1):
                 data = data_hist.GetBinContent(b)
                 data_err = data_hist.GetBinError(b)
@@ -86,7 +86,7 @@ def get_ann_systematics(file, discriminant, categories, samples, data_sample="da
 
                 val = hist.GetBinContent(b)
                 val_err = hist.GetBinError(b)
-
+                print b, bkg_err, val_err
                 other_frac = math.sqrt(bkg_err**2 - val_err**2)
 
                 pruneBinByBin=False
