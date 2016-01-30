@@ -730,7 +730,7 @@ def create_datacard(ifile, ofile, disc, all_categories,
     defined in `all_categories`.
     """
     print os.path.dirname(__file__)
-    sysfile = os.path.join(os.path.dirname(__file__), "systematics_hdecay.csv")
+    sysfile = os.path.join(os.path.dirname(__file__), "systematics_hdecay13TeV.csv")
     all_category_names = map(lambda (c, j, p): c, all_categories)
 
     is_13_tev = True

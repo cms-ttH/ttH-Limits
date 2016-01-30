@@ -60,7 +60,7 @@ Recently Tested
 import optparse
 import ROOT as r
 
-from ttH.Limits.datacard_hdecay import *
+from ttH.Limits.datacard_hdecay13TeV import *
 
 r.gROOT.SetBatch()
 
