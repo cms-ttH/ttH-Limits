@@ -123,8 +123,8 @@ def get_integral(file, discriminant, category, sample="data_obs", uncertainty=""
         uncertainty = "_" + uncertainty
     h = file.Get("{s}_{d}_{c}{u}".format(s=sample, d=discriminant, c=category, u=uncertainty))
     i = h.Integral()
-    if i == 0. and throw:
-        raise IntegralException("The integral for {s}, {d}, {c}, {u} in {f} is zero!".format(
+    if i <= 0. and throw:
+        raise IntegralException("The integral for {s}, {d}, {c}, {u} in {f} is zero or even negativ!".format(
             s=sample, d=discriminant, c=category, u=uncertainty, f=file.GetName()))
     return fmt.format(n=h.Integral())
 
