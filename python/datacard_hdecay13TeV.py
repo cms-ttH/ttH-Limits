@@ -23,7 +23,13 @@ B_CAT_SHAPE = 4 # Split into shape by category and rate
 #         this makes the sample extraction focus on the non-systematic
 #         histograms
 sample_re = re.compile(r'([^_]+(?:_obs)?)_([^_]+)_(.*)(?!(?:Up|Down)$)')
+sample2_re = re.compile(r'([^_]+(?:_obs)?)_([^_]+)_([^_]+)_(.*)(?!(?:Up|Down)$)')
+#sample_re = re.compile(r'([^_]+(?:_obs)?)_([^_]+)_(.*)(?!(?:Up||Down))')
+#sample_re = re.compile(r'([^_]+(?:_obs)?)_([^_]+)_([^_]+)_(.*)(?!(?:Up|Down)$)')
+signal1_re = re.compile(r'([^_]+(?:_obs)?)_([^_]+)_([^_]+)_(.*)(?!(?:Up|Down)$)')
 signal_re = re.compile(r'(ttH).*')
+#signal_re = re.compile(r'^(ttH).*_([^_]+)_([^_]+)_(.*)(?!(?:Up|Down)$)')
+#signal_re = re.compile(r'^(ttH).*')
 
 # This expression splits into 3 groups:
 #   category_name:jet_multiplicity:parton_count
@@ -56,6 +62,9 @@ def get_ann_systematics(file, discriminant, categories, samples, data_sample="da
         # Build background sum
         for (s, cats) in samples.items():
             s = s if s == "ttH" else s
+            if "ttH" in s:
+                continue
+            
             if s in (data_sample, signal_sample) or c not in cats:
                 continue
 
@@ -68,6 +77,9 @@ def get_ann_systematics(file, discriminant, categories, samples, data_sample="da
         # Loop over samples for category and find low stats bins
         for (s, cats) in samples.items():
             file_s = s if s == "ttH" else s
+
+            if "ttH" in s:
+                continue
 
             if c not in cats:
                 continue
@@ -91,17 +103,17 @@ def get_ann_systematics(file, discriminant, categories, samples, data_sample="da
 
                 pruneBinByBin=False
                 if pruneBinByBin:
-                  #Changed from data_err/3 -> data_err/5 and sig/bkg < 0.02 -> 0.01 - KPL
+                #Changed from data_err/3 -> data_err/5 and sig/bkg < 0.02 -> 0.01 - KPL
                   if val < .01 or bkg_err < data_err / 5. or other_frac / bkg_err > .95 \
-                          or sig / bkg < .01:
-                      continue
+                        or sig / bkg < .01:
+                    continue
 
                 #if True:
                 #    continue
 
                 # FIXME Subtract 1 from bin name for comparability with
                 # original C macro
-                sys_name = "CMS_ttH_{s}_{c}_{e}_BDTbin{b:d}".format(
+                sys_name = "{s}_{c}_{e}_ANNbin{b:d}".format(
                         s=s, c=c, e="13TeV" if is_13_tev else "7TeV", b=b - 1)
 
                 stub = "{s}_{d}_{c}_".format(s=file_s, d=discriminant, c=c)
@@ -138,19 +150,95 @@ def get_samples(file, discriminant):
 
     for k in file.GetListOfKeys():
         m = sample_re.match(k.GetName())
+        m2 = sample2_re.match(k.GetName())
+        r = signal1_re.match(k.GetName())
+
+##         if r:
+##             #if "ttH" not in r.group(1):
+##             #    continue
+
+##             sample, decay, disc, cat = r.groups()
+
+##             if disc != discriminant:
+##                 continue
+
+##             r = signal_re.match(sample)
+##             if r:
+##                 #log.write(" 1 signal = {s}, decay = {y}, disc = {d}, cat = {c}\n".format(s=sample, y=decay, d=disc, c=cat))
+##                 sample = r.group(1)
+
+##             sample += "_"+decay
+
+##             if sample not in samples:
+##                 samples[sample] = set()
+##             samples[sample].add(cat)
+
+##         if m:
+##             #if "ttH" in m.group(1):
+##             #    continue
+
+##             sample, disc, cat = m.groups()
+
+##             if disc != discriminant:
+##                 continue
+
+##             log.write(" 0 background = {s}, disc = {d}, cat = {c}\n".format(s=sample, d=disc, c=cat))
+            
+##             if sample not in samples:
+##                 samples[sample] = set()
+##             samples[sample].add(cat)
+
         if m:
-            sample, disc, cat = m.groups()
+
+            if "h"==m.group(1):
+                continue
+            
+            #log.write(" 0 sample = {s}, two = {d}\n".format(s=m2.group(1),d=m2.group(2)))
+            #if "ttH" not in m.group(1):
+            #    continue
+
+            if "ttH" in m.group(1) and "h" in m.group(2):
+                #log.write("here 1\n")
+                sample, decay, disc, cat = m2.groups()
+                #log.write(" 0 sample = {s}, decay = {y}, disc = {d}, cat = {c}\n".format(s=sample, y=decay, d=disc, c=cat))
+            else :
+                #log.write("here 2\n")
+                sample, disc, cat = m.groups()
+                #log.write(" 0 sample = {s}, disc = {d}, cat = {c}\n".format(s=sample, d=disc, c=cat))
+            #sample, disc, cat = m.groups()
 
             if disc != discriminant:
                 continue
 
+            ## NEW
+            includeSig = True
             m = signal_re.match(sample)
-            if m:
-                sample = m.group(1)
+            #log.write(" 0a k.GetName() = {k} \n".format(k=k.GetName()))
+            if m and m2 and "h" in m2.group(2):
+            #if m:
+                #log.write(" 1 signal = {s}, disc = {d}, cat = {c}\n".format(s=sample, d=disc, c=cat))
+                #sample = m.group(1)
+                #sample = m.group(1) + "_" + m2.group(2)
+                sample = m.group(1) + "_" + decay
+                #log.write(" 2 sample = {s}, disc = {d}, cat = {c}\n".format(s=sample, d=disc, c=cat))
 
+                ## NEW
+                sig_name = sample
+                sig_name = sig_name
+                sig_hist = file.Get("{s}_{d}_{c}".format(s=sig_name, d=disc, c=cat))
+
+                sum_sig = sig_hist.Integral()
+                if not sum_sig>0 :
+                    includeSig = False
+            
             if sample not in samples:
                 samples[sample] = set()
-            samples[sample].add(cat)
+            #samples[sample].add(cat)
+            ## NEW
+            if includeSig :
+                samples[sample].add(cat)
+
+        
     return samples
 
 def get_systematics(file, overrides={}, rename=lambda u: u, samples=False):
@@ -357,48 +445,56 @@ def split_systematics(file, disc, samples, btag_mode=B_CAT_SHAPE):
         return new_sys
 
     for (s, cats) in samples.items():
-        s = s if s == "ttH" else s
+        #s = s if s == "ttH" else s
+        s = s. if "ttH" in s else s
         for c in cats:
             stub = "_".join((s, disc, c))
+            #log.write(" file.Get({s})".format(s=stub))
             orig = file.Get(stub)
             sum = orig.Integral()
-            for kind in ("eff", "fake"):
-                for dir in ("Up", "Down"):
-                    try:
-                        # Get rate uncertainty from the shape uncertainty
-                        shape_old = file.Get("{s}_CMS_{k}_b{dir}".format(s=stub, k=kind, dir=dir))
-                        shape_sum = shape_old.Integral()
-                        rate = orig.Clone("{s}_CMS_{k}_bRate{dir}".format(s=stub, k=kind, dir=dir))
-                        rate.Scale((shape_sum / sum) if sum > 0 else 1)
-                        file.WriteObject(rate, rate.GetName())
+            kind = "scale"
+            #for kind in ("scale"):
+            for dir in ("Up", "Down"):
+                try:
+                    # Get rate uncertainty from the shape uncertainty
+                    shape_old = file.Get("{s}_CMS_{k}_j{dir}".format(s=stub, k=kind, dir=dir))
+                    #log.write(" file.Get(\"{s}_CMS_{k}_j{dir}\"".format(s=stub, k=kind, dir=dir))
+                    shape_sum = shape_old.Integral()
+                    rate = orig.Clone("{s}_CMS_{k}_jRate{dir}".format(s=stub, k=kind, dir=dir))
+                    rate.Scale((shape_sum / sum) if sum > 0 else 1)
+                    file.WriteObject(rate, rate.GetName())
+                    
+                    # Treat shape uncertainties, if desired
+                    if btag_mode == B_SHAPE:
+                        shape = shape_old.Clone("{s}_CMS_{k}_jShape{dir}".format(s=stub, k=kind, dir=dir))
+                    elif btag_mode == B_CAT_SHAPE:
+                        shape = shape_old.Clone("{s}_{c}_{k}_jShape{dir}".format(s=stub, c=c, k=kind, dir=dir))
+                    else:
+                        continue
 
-                        # Treat shape uncertainties, if desired
-                        if btag_mode == B_SHAPE:
-                            shape = shape_old.Clone("{s}_CMS_{k}_bShape{dir}".format(s=stub, k=kind, dir=dir))
-                        elif btag_mode == B_CAT_SHAPE:
-                            shape = shape_old.Clone("{s}_{c}_{k}_bShape{dir}".format(s=stub, c=c, k=kind, dir=dir))
-                        else:
-                            continue
+                    shape_sum = shape.Integral()
+                    shape.Scale((sum / shape_sum) if shape_sum > 0 else 1)
 
-                        shape_sum = shape.Integral()
-                        shape.Scale((sum / shape_sum) if shape_sum > 0 else 1)
-
-                        file.WriteObject(shape, shape.GetName())
-                    except:
-                        log.write("Can't create b-tag shape uncertainties for '{s}'"
+                    file.WriteObject(shape, shape.GetName())
+                except:
+                    log.write("Can't create b-tag shape uncertainties for '{s}'"
                                 "in '{c}'\n".format(s=c, c=c))
-                if btag_mode == B_SHAPE and 'all' not in done:
-                    new_sys.append((
-                        "CMS_{k}_bShape".format(k=kind),
-                        "shape",
-                        dict([(sam, "1") for sam in samples.keys()])))
-                elif btag_mode == B_CAT_SHAPE and c not in done:
-                    new_sys.append((
-                        "{c}_{k}_bShape".format(c=c, k=kind),
-                        "shape",
-                        dict([(sam, "1") for sam in samples.keys()])))
-            done.add('all')
-            done.add(c)
+            #new_sys.append((
+            #    "CMS_{k}_jRate".format(k=kind),
+            #    "shape",
+            #    dict([(sam, "1") for sam in samples.keys()])))                   
+            if btag_mode == B_SHAPE and 'all' not in done:
+                new_sys.append((
+                    "CMS_{k}_jShape".format(k=kind),
+                    "shape",
+                    dict([(sam, "1") for sam in samples.keys()])))
+            elif btag_mode == B_CAT_SHAPE and c not in done:
+                new_sys.append((
+                    "{c}_{k}_jShape".format(c=c, k=kind),
+                    "shape",
+                    dict([(sam, "1") for sam in samples.keys()])))
+        done.add('all')
+        done.add(c)
     # For debugging
     #log.write("DEBUG: We are appending these systematics\n")
     #for (a,b,c) in new_sys:
@@ -407,7 +503,7 @@ def split_systematics(file, disc, samples, btag_mode=B_CAT_SHAPE):
     return new_sys
 
 def write_datacard(file, discriminant, categories, cats, samples, systematics,
-        limited_systematics={}, ofile=log):
+        limited_systematics={}, ofile=log, is13TeV=True):
     """
     """
     filename = file.GetName()
@@ -423,12 +519,47 @@ def write_datacard(file, discriminant, categories, cats, samples, systematics,
         bins += cats[s]
 
     sprocs = "".join(map(lambda (n, s): (" " + s) * len(cats[s]), samples))
-    nprocs = "".join(map(lambda (n, s): (" " + str(n)) * len(cats[s]), samples))
 
-    rates = ["-1"] * len(cats["ttH"])
-    for (n, s) in samples[1:]:
+    ## OLD
+    #nprocs = "".join(map(lambda (n, s): (" " + str(n)) * len(cats[s]), samples))
+    
+    ## NEW
+    nprocs = []
+    iProcess = 0
+    last_s = "ttH"
+    for (n, s) in samples:
         for c in cats[s]:
-            rates.append(str(get_integral(file, discriminant, c, s, fmt="{n:.6}")))
+            #log.write("\t sample = {ss},\t process = {pp}\n".format(ss=s,pp=iProcess))
+            if "ttH" in s:
+                #nprocs += "0"
+                nprocs.append("0")
+                ##nprocs += "".join((" 0") * len(cats[s]))
+            else:
+                if s != last_s :
+                    iProcess += 1
+                #nprocs += str(iProcess)
+                nprocs.append(str(iProcess))
+                ##nprocs += "%s" % (iProcess)
+                ##nprocs += "".join((" %s" % (iProcess)) * len(cats[s]))
+                last_s = s
+
+    nprocs = " ".join(nprocs)
+
+    ## OLD
+    #rates = ["-1"] * len(cats["ttH"])
+    #for (n, s) in samples[1:]:
+    #    for c in cats[s]:
+    #        rates.append(str(get_integral(file, discriminant, c, s, fmt="{n:.6}")))
+
+    ## NEW
+    rates = []
+    for (n, s) in samples:
+        for c in cats[s]:
+            #log.write("Samples: {cs}\n".format(cs=s))
+            if "ttH" in s:
+                rates.append("-1");
+            else:
+                rates.append(str(get_integral(file, discriminant, c, s, fmt="{n:.6}")))
 
     # Print preamble
     ofile.write("""imax * # number of channels
@@ -439,7 +570,14 @@ bin {c}
 observation {o}
 ---------------
 shapes * * {f} $PROCESS_{d}_$CHANNEL $PROCESS_{d}_$CHANNEL_$SYSTEMATIC
-shapes ttH * {f} $PROCESS_{d}_$CHANNEL $PROCESS_{d}_$CHANNEL_$SYSTEMATIC
+shapes ttH_hbb * {f} ttH_hbb_{d}_$CHANNEL ttH_hbb_{d}_$CHANNEL_$SYSTEMATIC
+shapes ttH_hcc * {f} ttH_hcc_{d}_$CHANNEL ttH_hcc_{d}_$CHANNEL_$SYSTEMATIC
+shapes ttH_hww * {f} ttH_hww_{d}_$CHANNEL ttH_hww_{d}_$CHANNEL_$SYSTEMATIC
+shapes ttH_hzz * {f} ttH_hzz_{d}_$CHANNEL ttH_hzz_{d}_$CHANNEL_$SYSTEMATIC
+shapes ttH_htt * {f} ttH_htt_{d}_$CHANNEL ttH_htt_{d}_$CHANNEL_$SYSTEMATIC
+shapes ttH_hgg * {f} ttH_hgg_{d}_$CHANNEL ttH_hgg_{d}_$CHANNEL_$SYSTEMATIC
+shapes ttH_hgluglu * {f} ttH_hgluglu_{d}_$CHANNEL ttH_hgluglu_{d}_$CHANNEL_$SYSTEMATIC
+shapes ttH_hzg * {f} ttH_hzg_{d}_$CHANNEL ttH_hzg_{d}_$CHANNEL_$SYSTEMATIC
 ---------------
 bin {bs}
 process {ps}
@@ -468,9 +606,29 @@ rate {rs}
         ofile.write("{u} {t}".format(u=unc, t=type))
         for (n, s) in samples:
             if debugUncert: log.write("This is sample %s (also %s) \n" % (s,n))
-            file_s = s if s == "ttH" else s
+            ## OLD
+            #file_s = s if s == "ttH" else s
+            ## NEW
+            s_new = s
+            #log.write(" was = {ss}\n".format(ss=s_new))
+            if "ttH" in s:
+                #log.write(" HELLO WORLD n")
+                #s_new = s + "_M125"
+                s_new = s_new
+            #log.write(" is = {ss}\n".format(ss=s_new))
+            file_s = s_new
+            #log.write(" file_s = {s}\n".format(s=file_s))
             for c in cats[s]:
-                if debugUncert: log.write("This is category %s\n" %c)
+                if debugUncert:
+                    log.write("This is category %s\n" %c)
+
+                # Switch the lepton uncertainty value
+                if unc == "CMS_ttH_eff_lep" and is13TeV:                    
+                    if c in ["ge3t", "e3je2t", "ge4je2t"]:                        
+                        vals[s] = 1.028
+                    else:                        
+                        vals[s] = 1.014
+                # end if lepton uncertainty
 
                 if unc in limited_systematics and not limited_systematics[unc](c):
                     ofile.write(" -")
@@ -484,7 +642,7 @@ rate {rs}
                         ofile.write(" -")
                         # Print for everything _except_ for b-tag shape or ANN
                         # uncertainties with inappropriate category
-                        if not (not unc.startswith(c) and ("bShape" in unc or "BDTbin" in unc)):
+                        if not (not unc.startswith(c) and ("jShape" in unc or "ANNbin" in unc)):
                             log.write("Integral zero for {s}, {c}, {u}: disabling "
                                     "systematics\n".format(s=s, c=c, u=unc))
                     except:
@@ -505,7 +663,7 @@ rate {rs}
 
                         # Don't complain if we consider category-specific
                         # uncertainties and are in the wrong category
-                        if ("bShape" in unc or "BDTbin" in unc or "Prompt" in unc or "Flip" in unc) and not unc.startswith(c):
+                        if ("jShape" in unc or "ANNbin" in unc or "Prompt" in unc or "Flip" in unc) and not unc.startswith(c):
                             barf = False
 
                         if barf:
@@ -572,7 +730,7 @@ def create_datacard(ifile, ofile, disc, all_categories,
     defined in `all_categories`.
     """
     print os.path.dirname(__file__)
-    sysfile = os.path.join(os.path.dirname(__file__), "systematics_ttbb.csv")
+    sysfile = os.path.join(os.path.dirname(__file__), "systematics_hdecay.csv")
     all_category_names = map(lambda (c, j, p): c, all_categories)
 
     is_13_tev = True
@@ -610,15 +768,19 @@ def create_datacard(ifile, ofile, disc, all_categories,
     samples = filter(lambda s: s not in disabled_samples, samples)
     samples = enumerate(samples)
 
+    #for (n, s) in samples:
+    #    for c in cats[s]:
+    #        log.write("-1 Samples: {cs}\n".format(cs=s))
+
     systematics = get_systematics(sysfile, overrides=overrides, rename=rename)
     all_uncertainties = map(lambda (u, t, vs): u, systematics)
     systematics = filter(lambda (u, t, vs): u not in disabled_systematics, systematics)
     systematics += split_systematics(ifile, disc, cats, btag_mode)
-    systematics += get_ann_systematics(ifile, disc, all_categories, cats, is_13_tev=is_13_tev)
+#    systematics += get_ann_systematics(ifile, disc, all_categories, cats, is_13_tev=is_13_tev)
 
     # Filter out b-tag rate uncertainties
     if btag_mode == B_OFF:
-        systematics = filter(lambda (u, t, vs): "bRate" not in u, systematics)
+        systematics = filter(lambda (u, t, vs): "jRate" not in u, systematics)
 
     new_cats = set()
     for (s, cs) in cats.items():
@@ -627,8 +789,16 @@ def create_datacard(ifile, ofile, disc, all_categories,
     new_cats = list(new_cats)
     categories = filter(lambda (c, j, p): c in new_cats, all_categories)
 
+    #for (n, s) in samples:
+    #    for c in cats[s]:
+    #        log.write("0 Samples: {cs}\n".format(cs=s))
+
     # keep only essential samples
     samples = filter(lambda (n, s): s in cats, samples)
+
+    #for (n, s) in samples:
+    #    for c in cats[s]:
+    #        log.write("1 Samples: {cs}\n".format(cs=s))
 
     split_q2(ifile, disc, categories)
 
@@ -642,7 +812,7 @@ def create_datacard(ifile, ofile, disc, all_categories,
     #    log.write("SYST: Name is {s}\n".format(s=sysName))
  
     active_unc = write_datacard(ifile, disc, categories, cats, samples,
-            systematics, limited_systematics, ofile=ofile)
+            systematics, limited_systematics, ofile=ofile, is13TeV=is_13_tev)
 
     if not print_summary:
         return
