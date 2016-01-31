@@ -483,7 +483,7 @@ rate {rs}
                         # Print for everything _except_ for b-tag shape or ANN
                         # uncertainties with inappropriate category
                         if not (not unc.startswith(c) and ("bShape" in unc or "BDTbin" in unc)):
-                            log.write("Integral zero for {s}, {c}, {u}: disabling "
+                            log.write("Integral zero or negativ for {s}, {c}, {u}: disabling "
                                     "systematics\n".format(s=s, c=c, u=unc))
                     except:
                         ofile.write(" -")

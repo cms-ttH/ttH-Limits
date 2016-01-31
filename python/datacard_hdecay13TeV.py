@@ -643,7 +643,7 @@ rate {rs}
                         # Print for everything _except_ for b-tag shape or ANN
                         # uncertainties with inappropriate category
                         if not (not unc.startswith(c) and ("jShape" in unc or "ANNbin" in unc)):
-                            log.write("Integral zero for {s}, {c}, {u}: disabling "
+                            log.write("Integral zero or negativ for {s}, {c}, {u}: disabling "
                                     "systematics\n".format(s=s, c=c, u=unc))
                     except:
                         ofile.write(" -")
@@ -776,7 +776,7 @@ def create_datacard(ifile, ofile, disc, all_categories,
     all_uncertainties = map(lambda (u, t, vs): u, systematics)
     systematics = filter(lambda (u, t, vs): u not in disabled_systematics, systematics)
     systematics += split_systematics(ifile, disc, cats, btag_mode)
-#    systematics += get_ann_systematics(ifile, disc, all_categories, cats, is_13_tev=is_13_tev)
+    systematics += get_ann_systematics(ifile, disc, all_categories, cats, is_13_tev=is_13_tev)
 
     # Filter out b-tag rate uncertainties
     if btag_mode == B_OFF:
