@@ -1,7 +1,7 @@
 Uncertainty           , Type  , ttH , ttbarOther , ttbarPlusB , ttbarPlus2B , ttbarPlusBBbar , ttbarPlusCCbar , singlet , wjets , zjets , ttbarW , ttbarZ 
 lumi                  , lnN   , x     , x     , x          , x              , x              , x              , x       , x     , x     , x      , x      
 QCDscale_ttH          , lnN   ,1.09, -     , -          , -              , -              , -              , -       , -     , -     , -      , -      
-QCDscale_ttbar        , lnN   , -     ,1.03,1.03,1.03,1.03,1.03,1.03, -     , -     ,1.13,1.12
+QCDscale_ttbar        , lnN   , -     ,1.03,1.03,1.03,1.03,1.03,-, -     , -     ,1.13,1.12
 QCDscale_singlet        , lnN   , -     , -     , -     , -          , -          , -          ,1.04, -     , -     ,- , -
 #QCDscale_ttW          , lnN   , -     , -      , -         , -              , -              , -              , -       , -     , -     ,1.1, -      
 #QCDscale_ttZ          , lnN   , -     , -      , -         , -              , -              , -              , -       , -     , -     , -      ,1.11
