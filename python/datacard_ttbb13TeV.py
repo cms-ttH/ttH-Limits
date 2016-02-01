@@ -584,10 +584,10 @@ def create_datacard(ifile, ofile, disc, all_categories,
     overrides = {
             "lumi": "1.044" if is_13_tev else "1.022",
             "CMS_ttH_eff_lep": "1.014" if is_13_tev else "1.018",
-            "CMS_ttH_QCDscale_ttb": "1.417",
-            "CMS_ttH_QCDscale_tt2b": "1.417",
-            "CMS_ttH_QCDscale_ttbb": "1.417",
-            "CMS_ttH_QCDscale_ttcc": "1.417"}
+            "CMS_ttH_QCDscale_ttbarPlusB": "1.417",
+            "CMS_ttH_QCDscale_ttbarPlus2B": "1.417",
+            "CMS_ttH_QCDscale_ttbarPlusBBbar": "1.417",
+            "CMS_ttH_QCDscale_ttbarPlusCCbar": "1.417"}
 
     # Retrieve list of samples (ordered) from systematics file
     samples = get_systematics(sysfile, samples=True)
