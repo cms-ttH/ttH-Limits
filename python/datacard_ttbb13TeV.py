@@ -545,10 +545,11 @@ rate {rs}
                     ## old function for calculating kappa
                     #new_val = math.e ** (math.sqrt(math.log(1 + (float(vals[s]) - 1)**2)))
                     ## new function for calculating kappa to give expected correct AVERAGE uncertainty
-                    new_val= float(vals[s])
-                    if transformLnN:
-                        new_val = (float(vals[s]) - 1) + math.sqrt( 1 + (float(vals[s]) - 1)**2 )
-                    ofile.write(" {n:.3f}".format(n=new_val))
+                    # --- deactivated to parse 1.06/0.91 systematics...
+#                    new_val= float(vals[s])
+#                    if transformLnN:
+#                        new_val = (float(vals[s]) - 1) + math.sqrt( 1 + (float(vals[s]) - 1)**2 )
+                    ofile.write(" "+vals[s])
         ofile.write("\n")
 
         if active:
