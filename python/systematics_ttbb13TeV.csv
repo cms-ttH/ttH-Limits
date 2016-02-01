@@ -16,7 +16,7 @@ QCDscale_VV           , lnN   , -     , -     , -          , -          , -     
 ##Q2scale_ttH_ttbar_bb  , shape , -     , -     , -          , -          , 1              , -              , -       , -     , -     , -      , -      , -
 ##Q2scale_ttH_ttbar_cc  , shape , -     , -     , -          , -          , -              , 1              , -       , -     , -     , -      , -      , -
 ##Q2scale_ttH_V         , lnN   , -     , -     , -          , -          , -              , -              , -       , -     , -     , -      , -      , -
-CMS_ttH_Q2scale_ttH  , shape   , 1     , -     , -          , -          , -              , -              , -       , -     , -     , -      , -      , -
+#CMS_ttH_Q2scale_ttH  , shape   , 1     , -     , -          , -          , -              , -              , -       , -     , -     , -      , -      , -
 CMS_ttH_Q2scale_ttbarOther  , shape   , -     , 1     , -          , -          , -              , -              , -       , -     , -     , -      , -      , -
 CMS_ttH_Q2scale_ttbarPlusB  , shape   , -     , -     , 1          , -          , -              , -              , -       , -     , -     , -      , -      , -
 CMS_ttH_Q2scale_ttbarPlus2B , shape   , -     , -     , -          , 1          , -              , -              , -       , -     , -     , -      , -      , -
