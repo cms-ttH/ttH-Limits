@@ -52,4 +52,4 @@ CMS_ttH_QCDscale_ttbarPlusCCbar , lnN   , -     , -     , -          , -        
 #CMS_ttH_PSscale_ttbarPlus2B , shape   , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-
 #CMS_ttH_PSscale_ttbarPlusBBbar , shape   , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-
 #CMS_ttH_PSscale_ttbarPlusCCbar , shape   , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-
-,,,,,,,,,,,,,-
+,,,,,,,,,,,,,
