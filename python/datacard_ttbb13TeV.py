@@ -11,6 +11,8 @@ B_RATE = 1      # Use rate only
 B_SHAPE = 2     # Split into shape and rate
 B_CAT_SHAPE = 4 # Split into shape by category and rate
 
+transformLnN=False
+
 # Define some regular expressions to match samples and signal.  The last
 # part of the former expression is a negative look-ahead making sure that
 # systematics are not caught by the category definition.
@@ -543,7 +545,9 @@ rate {rs}
                     ## old function for calculating kappa
                     #new_val = math.e ** (math.sqrt(math.log(1 + (float(vals[s]) - 1)**2)))
                     ## new function for calculating kappa to give expected correct AVERAGE uncertainty
-                    new_val = (float(vals[s]) - 1) + math.sqrt( 1 + (float(vals[s]) - 1)**2 )
+                    new_val= float(vals[s])
+                    if transformLnN:
+                        new_val = (float(vals[s]) - 1) + math.sqrt( 1 + (float(vals[s]) - 1)**2 )
                     ofile.write(" {n:.3f}".format(n=new_val))
         ofile.write("\n")
 
