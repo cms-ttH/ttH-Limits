@@ -89,7 +89,7 @@ def get_ann_systematics(file, discriminant, categories, samples, data_sample="da
                 val_err = hist.GetBinError(b)
                 other_frac = math.sqrt(bkg_err**2 - val_err**2)
 
-                pruneBinByBin=False
+                pruneBinByBin=True
                 if pruneBinByBin:
                   #Changed from data_err/3 -> data_err/5 and sig/bkg < 0.02 -> 0.01 - KPL
                   if val < .01 or bkg_err < data_err / 5. or other_frac / bkg_err > .95 \
