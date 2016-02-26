@@ -36,7 +36,7 @@ CMS_ttH_QCDscale_ttbarPlusCCbar , lnN   , -     , -     , -          , -        
 #EleRatePromptSF       , shape , -     ,1,1,1,1,1, -       ,1, -     , -      , -      ,-
 #EleShapePromptSF      , shape , -     ,1,1,1,1,1, -       ,1, -     , -      , -      ,-
 #FlipSF                , shape , -     ,1,1,1,1,1, -       , -     , -     , -      , -      ,-
-#CMS_ttH_pu            , lnN   ,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,-
+CMS_ttH_PU         , shape ,1,1,1,1,1,1,1,1,1,1,1,1
 #CMS_res_j             , shape   ,1,1,1,1,1,1,1,1,1,1,1,1.01
 #CMS_ttH_eff_lep       , lnN   , x     , x     , x          , x              , x              , x              , x       , x     , x     , x      , x      ,1
 CMS_ttH_eff_mu       , shape   , 1     , 1     , 1          , 1              , 1              , 1              , 1       , 1     , 1     , 1      , 1      ,1
