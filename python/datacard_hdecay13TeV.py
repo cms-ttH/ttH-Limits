@@ -115,7 +115,7 @@ def get_ann_systematics(file, discriminant, categories, samples, data_sample="da
 
                 # FIXME Subtract 1 from bin name for comparability with
                 # original C macro
-                sys_name = "{s}_{c}_{e}_ANNbin{b:d}".format(
+                sys_name = "{s}_{c}_{e}_BDTbin{b:d}".format(
                         s=s, c=c, e="13TeV" if is_13_tev else "7TeV", b=b - 1)
 
                 stub = "{s}_{d}_{c}_".format(s=file_s, d=discriminant, c=c)
@@ -644,7 +644,7 @@ rate {rs}
                         ofile.write(" -")
                         # Print for everything _except_ for b-tag shape or ANN
                         # uncertainties with inappropriate category
-                        if not (not unc.startswith(c) and ("jShape" in unc or "ANNbin" in unc)):
+                        if not (not unc.startswith(c) and ("jShape" in unc or "BDTbin" in unc)):
                             log.write("Integral zero or negativ for {s}, {c}, {u}: disabling "
                                     "systematics\n".format(s=s, c=c, u=unc))
                     except:
@@ -665,7 +665,7 @@ rate {rs}
 
                         # Don't complain if we consider category-specific
                         # uncertainties and are in the wrong category
-                        if ("jShape" in unc or "ANNbin" in unc or "Prompt" in unc or "Flip" in unc) and not unc.startswith(c):
+                        if ("jShape" in unc or "BDTbin" in unc or "Prompt" in unc or "Flip" in unc) and not unc.startswith(c):
                             barf = False
 
                         if barf:
