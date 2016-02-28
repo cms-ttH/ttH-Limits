@@ -115,7 +115,7 @@ def get_ann_systematics(file, discriminant, categories, samples, data_sample="da
 
                 # FIXME Subtract 1 from bin name for comparability with
                 # original C macro
-                sys_name = "{s}_{c}_{e}_BDTbin{b:d}".format(
+                sys_name = "CMS_ttH_{s}_{c}_{e}_BDTbin{b:d}".format(
                         s=s, c=c, e="13TeV" if is_13_tev else "7TeV", b=b - 1)
 
                 stub = "{s}_{d}_{c}_".format(s=file_s, d=discriminant, c=c)
