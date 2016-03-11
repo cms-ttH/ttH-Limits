@@ -9,9 +9,9 @@ In your CMSSW (release 6.1.1 or higher) area, use
     mkdir -p ttH
     git clone https://github.com/cms-ttH/ttH-Limits.git ttH/Limits
     # using https
-    git clone https://gitlab.cern.ch/matze/ttH-Limits-data.git ttH/Limits/data
+    git clone https://gitlab.cern.ch/cms-ttH/ttH-Limits-data.git ttH/Limits/data
     # using kerberos
-    git clone https://:@gitlab.cern.ch:8443/matze/ttH-Limits-data.git ttH/Limits/data
+    git clone https://:@gitlab.cern.ch:8443/cms-ttH/ttH-Limits-data.git ttH/Limits/data
     scram b -j32
 
 The latter two git commands clone our [limit data repository](https://git.cern.ch/web/?p=ttH-Limits-data.git;a=summary),
