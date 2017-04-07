@@ -9,12 +9,12 @@ pdf_qqbar             , lnN   , -     , -     , -     , -     , -     , -     , 
 pdf_qg                , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , -              ,1.04, -     , -     , -      , -      ,-
 QCDscale_V            , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , -              , -       ,1.01,1.01, -      , -      ,-
 QCDscale_VV           , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , -              , -       , -     , -     , -      , -      ,1.02
-#CMS_ttH_Q2scale_ttbarOther  , shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-
-#CMS_ttH_Q2scale_ttbarPlusB  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-
-#CMS_ttH_Q2scale_ttbarPlus2B , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-
-#CMS_ttH_Q2scale_ttbarPlusBBbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-
-#CMS_ttH_Q2scale_ttbarPlusCCbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-
-##CMS_ttH_NNPDF         , shape , -     , -     , -     , -     , -     , -     , -     , -     ,1,1,1,1,1, -       , -     , -     , -      , -      ,-
+CMS_ttH_Q2scale_ttbarOther  , shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-
+CMS_ttH_Q2scale_ttbarPlusB  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-
+CMS_ttH_Q2scale_ttbarPlus2B , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-
+CMS_ttH_Q2scale_ttbarPlusBBbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-
+CMS_ttH_Q2scale_ttbarPlusCCbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-
+#CMS_ttH_NNPDF         , shape , -     , -     , -     , -     , -     , -     , -     , -     ,1,1,1,1,1, -       , -     , -     , -      , -      ,-
 CMS_ttH_CSVLF         , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 CMS_ttH_CSVHF         , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 CMS_ttH_CSVHFStats1   , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
@@ -28,20 +28,58 @@ CMS_ttH_QCDscale_ttbarPlusB  , lnN   , -     , -     , -     , -     , -     , -
 CMS_ttH_QCDscale_ttbarPlus2B , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , x              , -              , -              , -       , -     , -     , -      , -      ,-
 CMS_ttH_QCDscale_ttbarPlusBBbar , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , x              , -              , -       , -     , -     , -      , -      ,-
 CMS_ttH_QCDscale_ttbarPlusCCbar , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , x              , -       , -     , -     , -      , -      ,-
-#CMS_ttH_PU         , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+CMS_ttH_PU         , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 #CMS_res_j             , shape   ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-##CMS_ttH_eff_lep       , lnN   , x     , x     , x     , x     , x     , x     , x     , x     , x     , x          , x              , x              , x              , x       , x     , x     , x      , x      ,-
-##CMS_ttH_eff_lepton       , shape   , 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-##CMS_ttH_ljets_Trig       , shape   , 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+#CMS_ttH_eff_lep       , lnN   , x     , x     , x     , x     , x     , x     , x     , x     , x     , x          , x              , x              , x              , x       , x     , x     , x      , x      ,-
+#CMS_ttH_eff_lepton       , shape   , 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+#CMS_ttH_ljets_Trig       , shape   , 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 CMS_ttH_eff_mu       , shape   , 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 CMS_ttH_eff_el       , shape   , 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 CMS_ttH_ljets_Trig_mu       , shape   , 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 CMS_ttH_ljets_Trig_el       , shape   , 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 ##Q2scale_ttH_V         , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , -              , -       , -     , -     , -      , -      ,-
-##CMS_ttH_Q2scale_ttH  , shape   ,1,1,1,1,1,1,1,1, -     , -          , -              , -              , -              , -       , -     , -     , -      , -      ,-
-##CMS_ttH_topPtcorr     , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+#CMS_ttH_Q2scale_ttH  , shape   ,1,1,1,1,1,1,1,1, -     , -          , -              , -              , -              , -       , -     , -     , -      , -      ,-
+#CMS_ttH_topPtcorr     , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 #CMS_ttH_PSscale_ttbarOther  , shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-
 #CMS_ttH_PSscale_ttbarPlusB  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-
 #CMS_ttH_PSscale_ttbarPlus2B , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-
 #CMS_ttH_PSscale_ttbarPlusBBbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-
 #CMS_ttH_PSscale_ttbarPlusCCbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-
+CMS_scale_JES           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JER           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESAbsoluteStat           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESAbsoluteScale           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESAbsoluteFlavMap           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESAbsoluteMPFBias           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESFragmentation           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESSinglePionECAL           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESSinglePionHCAL           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESFlavorQCD           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESTimeEta           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESTimePt           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESRelativeJEREC1           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESRelativeJEREC2           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESRelativeJERHF           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESRelativePtBB           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESRelativePtEC1           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESRelativePtEC2           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESRelativePtHF           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESRelativeFSR           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESRelativeStatFSR           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESRelativeStatEC           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESRelativeStatHF           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESPileUpDataMC           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESPileUpPtRef           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESPileUpPtBB           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESPileUpPtEC1           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESPileUpPtEC2           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESPileUpPtHF           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESPileUpMuZero           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+#CMS_scale_JESPileUpEnvelope           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+#CMS_scale_JESSubTotalPileUp           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+#CMS_scale_JESSubTotalRelative           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+#CMS_scale_JESSubTotalPt           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+#CMS_scale_JESSubTotalScale           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+#CMS_scale_JESSubTotalMC           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+#CMS_scale_JESSubTotalAbsolute           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+

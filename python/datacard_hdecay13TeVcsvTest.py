@@ -152,6 +152,8 @@ def get_samples(file, discriminant):
 
     for k in file.GetListOfKeys():
         m = sample_re.match(k.GetName())
+        #print m
+        print k.GetName()
         m2 = sample2_re.match(k.GetName())
         r = signal1_re.match(k.GetName())
 
@@ -201,6 +203,7 @@ def get_samples(file, discriminant):
 
             if "ttH" in m.group(1) and "h" in m.group(2):
                 #log.write("here 1\n")
+                #print m2
                 sample, decay, disc, cat = m2.groups()
                 #log.write(" 0 sample = {s}, decay = {y}, disc = {d}, cat = {c}\n".format(s=sample, y=decay, d=disc, c=cat))
             else :
@@ -737,7 +740,7 @@ def create_datacard(ifile, ofile, disc, all_categories,
     defined in `all_categories`.
     """
     print os.path.dirname(__file__)
-    sysfile = os.path.join(os.path.dirname(__file__), "systematics_hdecay13TeV.csv")
+    sysfile = os.path.join(os.path.dirname(__file__), "systematics_hdecay13TeVcsvTest.csv")
     all_category_names = map(lambda (c, j, p): c, all_categories)
 
     is_13_tev = True
