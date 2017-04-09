@@ -45,11 +45,11 @@ CMS_ttH_ljets_Trig_el       , shape   , 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 #CMS_ttH_PSscale_ttbarPlus2B , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-
 #CMS_ttH_PSscale_ttbarPlusBBbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-
 #CMS_ttH_PSscale_ttbarPlusCCbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-
-CMS_scale_JES           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+#CMS_scale_JES           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
 CMS_scale_JER           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
 CMS_scale_JESAbsoluteStat           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
 CMS_scale_JESAbsoluteScale           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
-CMS_scale_JESAbsoluteFlavMap           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+#CMS_scale_JESAbsoluteFlavMap           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
 CMS_scale_JESAbsoluteMPFBias           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
 CMS_scale_JESFragmentation           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
 CMS_scale_JESSinglePionECAL           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
@@ -74,12 +74,7 @@ CMS_scale_JESPileUpPtBB           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
 CMS_scale_JESPileUpPtEC1           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
 CMS_scale_JESPileUpPtEC2           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
 CMS_scale_JESPileUpPtHF           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
-CMS_scale_JESPileUpMuZero           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
-#CMS_scale_JESPileUpEnvelope           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
-#CMS_scale_JESSubTotalPileUp           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
-#CMS_scale_JESSubTotalRelative           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
-#CMS_scale_JESSubTotalPt           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
-#CMS_scale_JESSubTotalScale           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
-#CMS_scale_JESSubTotalMC           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
-#CMS_scale_JESSubTotalAbsolute           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
-
+CMS_scale_JESFlavorPureGluon           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESFlavorPureQuark           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESFlavorPureCharm           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+CMS_scale_JESFlavorPureBottom           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
