@@ -752,12 +752,12 @@ def create_datacard(ifile, ofile, disc, all_categories,
     # This replaces "x" in the systematics csv file with the values specified
     # for certain uncertainties
     overrides = {
-            "lumi": "1.062" if is_13_tev else "1.022",
+            "lumi": "1.025" if is_13_tev else "1.025",
             "CMS_ttH_eff_lep": "1.015" if is_13_tev else "1.015",
-            "CMS_ttH_QCDscale_ttbarPlusB": "1.5",
-            "CMS_ttH_QCDscale_ttbarPlus2B": "1.5",
-            "CMS_ttH_QCDscale_ttbarPlusBBbar": "1.5",
-            "CMS_ttH_QCDscale_ttbarPlusCCbar": "1.5"}
+            "bgnorm_ttbarPlusB": "1.5",
+            "bgnorm_ttbarPlus2B": "1.5",
+            "bgnorm_ttbarPlusBBbar": "1.5",
+            "bgnorm_ttbarPlusCCbar": "1.5"}
 
     # Retrieve list of samples (ordered) from systematics file
     samples = get_systematics(sysfile, samples=True)
