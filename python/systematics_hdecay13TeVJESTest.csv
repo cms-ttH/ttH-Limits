@@ -1,78 +1,79 @@
-Uncertainty           , Type  ,ttH_hbb, ttH_hcc , ttH_hww , ttH_hzz , ttH_htt , ttH_hgg , ttH_hgluglu , ttH_hzg , ttbarOther , ttbarPlusB , ttbarPlus2B , ttbarPlusBBbar , ttbarPlusCCbar , singlet , wjets , zjets , ttbarW , ttbarZ, diboson
-lumi                  , lnN   , x     , x     , x     , x     , x     , x     , x     , x     , x     , x          , x              , x              , x              , x       , x     , x     , x      , x      ,x
-QCDscale_ttH          , lnN   ,0.908/1.058,0.908/1.058,0.908/1.058,0.908/1.058,0.908/1.058,0.908/1.058,0.908/1.058,0.908/1.058, -     , -          , -              , -              , -              , -       , -     , -     , -      , -      ,-
-QCDscale_ttbar        , lnN   , -     , -     , -     , -     , -     , -     , -     , -     ,0.96/1.02,0.96/1.02,0.96/1.02,0.96/1.02,0.96/1.02,-, -     , -     ,0.88/1.13,0.88/1.10,-
-QCDscale_singlet        , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -          , -          ,0.98/1.03, -     , -     ,- , -,-
-pdf_gg_ttH                , lnN   ,1.036,1.036,1.036,1.036,1.036,1.036,1.036,1.036,-,-,-,-,-, -       , -     , -     , -      ,-,-
-pdf_gg                , lnN   ,-,-,-,-,-,-,-,-,1.04,1.04,1.04,1.04,1.04, -       , -     , -     , -      ,1.03,-
-pdf_qqbar             , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , -              , -       ,1.04,1.04,1.02, -      ,1.02
-pdf_qg                , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , -              ,1.04, -     , -     , -      , -      ,-
-QCDscale_V            , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , -              , -       ,1.01,1.01, -      , -      ,-
-QCDscale_VV           , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , -              , -       , -     , -     , -      , -      ,1.02
-#CMS_ttH_Q2scale_ttbarOther  , shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-
-#CMS_ttH_Q2scale_ttbarPlusB  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-
-#CMS_ttH_Q2scale_ttbarPlus2B , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-
-#CMS_ttH_Q2scale_ttbarPlusBBbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-
-#CMS_ttH_Q2scale_ttbarPlusCCbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-
-CMS_ttH_CSVLF         , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_ttH_CSVHF         , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_ttH_CSVHFStats1   , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_ttH_CSVLFStats1   , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_ttH_CSVHFStats2   , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_ttH_CSVLFStats2   , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_ttH_CSVCErr1      , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_ttH_CSVCErr2      , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-#CMS_scale_j           , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-bgnorm_ttbarPlusB  , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , x          , -              , -              , -              , -       , -     , -     , -      , -      ,-
-bgnorm_ttbarPlus2B , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , x              , -              , -              , -       , -     , -     , -      , -      ,-
-bgnorm_ttbarPlusBBbar , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , x              , -              , -       , -     , -     , -      , -      ,-
-bgnorm_ttbarPlusCCbar , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , x              , -       , -     , -     , -      , -      ,-
-CMS_ttH_PU         , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-#CMS_res_j             , shape   ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-#CMS_ttH_eff_lep       , lnN   , x     , x     , x     , x     , x     , x     , x     , x     , x     , x          , x              , x              , x              , x       , x     , x     , x      , x      ,-
-#CMS_ttH_eff_lepton       , shape   , 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-#CMS_ttH_ljets_Trig       , shape   , 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_ttH_eff_mu       , shape   , 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_ttH_eff_el       , shape   , 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_ttH_ljets_Trig_mu       , shape   , 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_ttH_ljets_Trig_el       , shape   , 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-##Q2scale_ttH_V         , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , -              , -       , -     , -     , -      , -      ,-
-#CMS_ttH_Q2scale_ttH  , shape   ,1,1,1,1,1,1,1,1, -     , -          , -              , -              , -              , -       , -     , -     , -      , -      ,-
-#CMS_ttH_topPtcorr     , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-#CMS_ttH_PSscale_ttbarOther  , shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-
-#CMS_ttH_PSscale_ttbarPlusB  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-
-#CMS_ttH_PSscale_ttbarPlus2B , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-
-#CMS_ttH_PSscale_ttbarPlusBBbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-
-#CMS_ttH_PSscale_ttbarPlusCCbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-
-#CMS_scale_JES           , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_res_j           , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_AbsoluteStat_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_AbsoluteScale_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_AbsoluteMPFBias_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_Fragmentation_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_SinglePionECAL_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_SinglePionHCAL_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_FlavorQCD_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_TimePtEta_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_RelativeJEREC1_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_RelativeJEREC2_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_RelativeJERHF_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_RelativePtBB_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_RelativePtEC1_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_RelativePtEC2_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_RelativePtHF_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_RelativeBal_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_RelativeFSR_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_RelativeStatFSR_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_RelativeStatEC_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_RelativeStatHF_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_PileUpDataMC_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_PileUpPtRef_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_PileUpPtBB_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_PileUpPtEC1_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_PileUpPtEC2_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_scale_PileUpPtHF_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_ttH_FSR           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
-CMS_ttH_ISR           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
-CMS_ttH_hdamp           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
-CMS_ttH_ue           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-
+Uncertainty           , Type  ,ttH_hbb, ttH_hcc , ttH_hww , ttH_hzz , ttH_htt , ttH_hgg , ttH_hgluglu , ttH_hzg , ttbarOther , ttbarPlusB , ttbarPlus2B , ttbarPlusBBbar , ttbarPlusCCbar , singlet , wjets , zjets , ttbarW , ttbarZ, diboson,QCD
+lumi                  , lnN   , x     , x     , x     , x     , x     , x     , x     , x     , x     , x          , x              , x              , x              , x       , x     , x     , x      , x      ,x,x
+QCDscale_ttH          , lnN   ,0.908/1.058,0.908/1.058,0.908/1.058,0.908/1.058,0.908/1.058,0.908/1.058,0.908/1.058,0.908/1.058, -     , -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+QCDscale_ttbar        , lnN   , -     , -     , -     , -     , -     , -     , -     , -     ,0.96/1.02,0.96/1.02,0.96/1.02,0.96/1.02,0.96/1.02,-, -     , -     ,0.88/1.13,0.88/1.10,-,-
+QCDscale_singlet        , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -          , -          ,0.98/1.03, -     , -     ,- , -,-,-
+pdf_gg_ttH                , lnN   ,1.036,1.036,1.036,1.036,1.036,1.036,1.036,1.036,-,-,-,-,-, -       , -     , -     , -      ,-,-,-
+pdf_gg                , lnN   ,-,-,-,-,-,-,-,-,1.04,1.04,1.04,1.04,1.04, -       , -     , -     , -      ,1.03,-,-
+pdf_qqbar             , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , -              , -       ,1.04,1.04,1.02, -      ,1.02,-
+pdf_qg                , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , -              ,1.04, -     , -     , -      , -      ,-,-
+QCDscale_V            , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , -              , -       ,1.01,1.01, -      , -      ,-,-
+QCDscale_VV           , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , -              , -       , -     , -     , -      , -      ,1.02,-
+#CMS_ttH_Q2scale_ttbarOther  , shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttH_Q2scale_ttbarPlusB  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttH_Q2scale_ttbarPlus2B , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttH_Q2scale_ttbarPlusBBbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttH_Q2scale_ttbarPlusCCbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-,-
+CMS_ttH_CSVLF         , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+CMS_ttH_CSVHF         , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+CMS_ttH_CSVHFStats1   , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+CMS_ttH_CSVLFStats1   , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+CMS_ttH_CSVHFStats2   , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+CMS_ttH_CSVLFStats2   , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+CMS_ttH_CSVCErr1      , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+CMS_ttH_CSVCErr2      , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+#CMS_scale_j           , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+bgnorm_ttbarPlusB  , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , x          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+bgnorm_ttbarPlus2B , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , x              , -              , -              , -       , -     , -     , -      , -      ,-,-
+bgnorm_ttbarPlusBBbar , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , x              , -              , -       , -     , -     , -      , -      ,-,-
+bgnorm_ttbarPlusCCbar , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , x              , -       , -     , -     , -      , -      ,-,-
+CMS_ttH_PU         , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+#CMS_res_j             , shape   ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+#CMS_ttH_eff_lep       , lnN   , x     , x     , x     , x     , x     , x     , x     , x     , x     , x          , x              , x              , x              , x       , x     , x     , x      , x      ,-,-
+#CMS_ttH_eff_lepton       , shape   ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+#CMS_ttH_ljets_Trig       , shape   ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_ttH_eff_mu       , shape   ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_ttH_eff_el       , shape   ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_ttH_ljets_Trig_mu       , shape   ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_ttH_ljets_Trig_el       , shape   ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+##Q2scale_ttH_V         , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttH_Q2scale_ttH  , shape   ,1,1,1,1,1,1,1,1, -     , -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttH_topPtcorr     , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+#CMS_ttH_PSscale_ttbarOther  , shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttH_PSscale_ttbarPlusB  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttH_PSscale_ttbarPlus2B , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttH_PSscale_ttbarPlusBBbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttH_PSscale_ttbarPlusCCbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-,-
+#CMS_scale_JES           , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_res_j           , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_AbsoluteStat_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_AbsoluteScale_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_AbsoluteMPFBias_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_Fragmentation_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_SinglePionECAL_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_SinglePionHCAL_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_FlavorQCD_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_TimePtEta_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_RelativeJEREC1_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_RelativeJEREC2_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_RelativeJERHF_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_RelativePtBB_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_RelativePtEC1_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_RelativePtEC2_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_RelativePtHF_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_RelativeBal_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_RelativeFSR_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_RelativeStatFSR_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_RelativeStatEC_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_RelativeStatHF_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_PileUpDataMC_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_PileUpPtRef_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_PileUpPtBB_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_PileUpPtEC1_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_PileUpPtEC2_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_scale_PileUpPtHF_j       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
+CMS_ttH_FSR           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
+CMS_ttH_ISR           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
+CMS_ttH_hdamp           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
+CMS_ttH_ue           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
+CMS_ttH_QCDScaleFactor,shape,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,-,1
