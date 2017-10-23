@@ -149,11 +149,16 @@ def get_samples(file, discriminant):
     extract available categories per sample.
     """
     samples = {}
-
-    for k in file.GetListOfKeys():
+    keylist=file.GetListOfKeys()
+    for k in keylist:
+        keyname=k.GetName()
+        #m=False
+        #m=False
+        #r=False
+        if "Up" in keyname or "Down" in keyname:
+          continue
         m = sample_re.match(k.GetName())
-        #print m
-        print k.GetName()
+        #print k.GetName(), m
         m2 = sample2_re.match(k.GetName())
         r = signal1_re.match(k.GetName())
 
@@ -209,6 +214,7 @@ def get_samples(file, discriminant):
             else :
                 #log.write("here 2\n")
                 sample, disc, cat = m.groups()
+                #print sample, disc, cat
                 #log.write(" 0 sample = {s}, disc = {d}, cat = {c}\n".format(s=sample, d=disc, c=cat))
             #sample, disc, cat = m.groups()
 
@@ -243,7 +249,7 @@ def get_samples(file, discriminant):
             if includeSig :
                 samples[sample].add(cat)
 
-        
+    print "getting samples done"   
     return samples
 
 def get_systematics(file, overrides={}, rename=lambda u: u, samples=False):
@@ -655,6 +661,7 @@ rate {rs}
                                     "systematics\n".format(s=s, c=c, u=unc))
                     except:
                         ofile.write(" -")
+                        #print "ewhat"
 
                         barf = True
                         try:
@@ -678,8 +685,8 @@ rate {rs}
                             log.write("Integral not available for {s}, {c}, {u}: disabling "
                                     "systematics\n".format(s=s, c=c, u=unc))
 
-                            log.write("DEBUG: Failure caused by this uncertainty {s} {c} {u}\n\n".format(s=s,c=c,u=unc)) 
-                            fail = True
+                            #log.write("DEBUG: Failure caused by this uncertainty {s} {c} {u}\n\n".format(s=s,c=c,u=unc)) 
+                            #fail = True
                             listOfFailures.append((s,c,unc))
                 elif vals[s] in ["-", "1"] and not \
                         (unc == "Q2scale_ttH_V" and s in ("wjets", "zjets")):
@@ -781,16 +788,17 @@ def create_datacard(ifile, ofile, disc, all_categories,
     #for (n, s) in samples:
     #    for c in cats[s]:
     #        log.write("-1 Samples: {cs}\n".format(cs=s))
-
+    print "getting systematics"
     systematics = get_systematics(sysfile, overrides=overrides, rename=rename)
     all_uncertainties = map(lambda (u, t, vs): u, systematics)
     systematics = filter(lambda (u, t, vs): u not in disabled_systematics, systematics)
-    systematics += split_systematics(ifile, disc, cats, btag_mode)
+    #systematics += split_systematics(ifile, disc, cats, btag_mode)
+    print "adding bin by bin uncertainties"
     systematics += get_ann_systematics(ifile, disc, all_categories, cats, is_13_tev=is_13_tev)
 
-    # Filter out b-tag rate uncertainties
-    if btag_mode == B_OFF:
-        systematics = filter(lambda (u, t, vs): "jRate" not in u, systematics)
+    ## Filter out b-tag rate uncertainties
+    #if btag_mode == B_OFF:
+        #systematics = filter(lambda (u, t, vs): "jRate" not in u, systematics)
 
     new_cats = set()
     for (s, cs) in cats.items():
@@ -810,17 +818,17 @@ def create_datacard(ifile, ofile, disc, all_categories,
     #    for c in cats[s]:
     #        log.write("1 Samples: {cs}\n".format(cs=s))
 
-    split_q2(ifile, disc, categories)
+    #split_q2(ifile, disc, categories)
 
 
     # split up the non-prompt scale factor uncertainties
     # remove baseline NPSF uncertainties
-    systematics = splitNPSF_forSS (ifile, disc, categories, samples, systematics)
+    #systematics = splitNPSF_forSS (ifile, disc, categories, samples, systematics)
 
     #log.write ("\n>>>>>>>>>>>>>>>>>>>>>>AFTER SPLIT<<<<<<<<<<<<<<<<<<<\n")
     #for (sysName, sysType, sysSamples) in systematics:
     #    log.write("SYST: Name is {s}\n".format(s=sysName))
- 
+    print "starting write datacard"
     active_unc = write_datacard(ifile, disc, categories, cats, samples,
             systematics, limited_systematics, ofile=ofile, is13TeV=is_13_tev)
 
