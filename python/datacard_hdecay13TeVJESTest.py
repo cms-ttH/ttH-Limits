@@ -753,7 +753,7 @@ def create_datacard(ifile, ofile, disc, all_categories,
     is_13_tev = True
     def rename(unc):
         if unc == "lumi":
-            return unc + "_13TeV" if is_13_tev else unc + "_7TeV"
+            return unc + "_13TeV_2016" if is_13_tev else unc + "_7TeV"
         return unc
 
     # This replaces "x" in the systematics csv file with the values specified
