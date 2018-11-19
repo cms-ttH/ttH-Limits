@@ -89,49 +89,49 @@ def get_ann_systematics(file, discriminant, categories, samples, data_sample="da
             if c not in cats:
                 continue
 
-            hist = file.Get("{s}_{d}_{c}".format(s=file_s, d=discriminant, c=c))
+            #hist = file.Get("{s}_{d}_{c}".format(s=file_s, d=discriminant, c=c))
 
-            for b in range(1, hist.GetNbinsX() + 1):
-                data = data_hist.GetBinContent(b)
-                data_err = math.sqrt(data_hist.GetBinContent(b))
+            #for b in range(1, hist.GetNbinsX() + 1):
+                #data = data_hist.GetBinContent(b)
+                #data_err = math.sqrt(data_hist.GetBinContent(b))
 
-                sig = sig_hist.GetBinContent(b)
-                sig_err = sig_hist.GetBinError(b)
+                #sig = sig_hist.GetBinContent(b)
+                #sig_err = sig_hist.GetBinError(b)
 
-                bkg = bkg_hist.GetBinContent(b)
-                bkg_err = bkg_hist.GetBinError(b)
+                #bkg = bkg_hist.GetBinContent(b)
+                #bkg_err = bkg_hist.GetBinError(b)
 
-                val = hist.GetBinContent(b)
-                val_err = hist.GetBinError(b)
+                #val = hist.GetBinContent(b)
+                #val_err = hist.GetBinError(b)
 
-                other_frac = math.sqrt(bkg_err**2 - val_err**2)
+                #other_frac = math.sqrt(bkg_err**2 - val_err**2)
 
-                pruneBinByBin=True
-                if pruneBinByBin:
-                #Changed from data_err/3 -> data_err/5 and sig/bkg < 0.02 -> 0.01 - KPL
-                  if val < .01 or bkg_err < data_err / 5. or other_frac / bkg_err > .95 \
-                        or sig / bkg < .01:
-                    continue
+                #pruneBinByBin=True
+                #if pruneBinByBin:
+                ##Changed from data_err/3 -> data_err/5 and sig/bkg < 0.02 -> 0.01 - KPL
+                  #if val < .01 or bkg_err < data_err / 5. or other_frac / bkg_err > .95 \
+                        #or sig / bkg < .01:
+                    #continue
 
-                #if True:
-                #    continue
+                ##if True:
+                ##    continue
 
-                # FIXME Subtract 1 from bin name for comparability with
-                # original C macro
-                sys_name = "CMS_ttH_{s}_{c}_{e}_BDTbin{b:d}".format(
-                        s=s, c=c, e="13TeV" if is_13_tev else "7TeV", b=b - 1)
+                ## FIXME Subtract 1 from bin name for comparability with
+                ## original C macro
+                #sys_name = "CMS_ttH_{s}_{c}_{e}_BDTbin{b:d}".format(
+                        #s=s, c=c, e="13TeV" if is_13_tev else "7TeV", b=b - 1)
 
-                stub = "{s}_{d}_{c}_".format(s=file_s, d=discriminant, c=c)
-                hist_up = hist.Clone(stub + sys_name + "Up")
-                hist_up.SetBinContent(b, val + val_err)
-                hist_down = hist.Clone(stub + sys_name + "Down")
-                hist_down.SetBinContent(b, val - val_err)
+                #stub = "{s}_{d}_{c}_".format(s=file_s, d=discriminant, c=c)
+                #hist_up = hist.Clone(stub + sys_name + "Up")
+                #hist_up.SetBinContent(b, val + val_err)
+                #hist_down = hist.Clone(stub + sys_name + "Down")
+                #hist_down.SetBinContent(b, val - val_err)
 
-                bbbfile.WriteObject(hist_up, hist_up.GetName())
-                bbbfile.WriteObject(hist_down, hist_down.GetName())
+                #bbbfile.WriteObject(hist_up, hist_up.GetName())
+                #bbbfile.WriteObject(hist_down, hist_down.GetName())
 
-                new_sys.append((sys_name, "shape",
-                    dict([(sam, ("1" if sam == s else "-")) for sam in samples.keys()])))
+                #new_sys.append((sys_name, "shape",
+                    #dict([(sam, ("1" if sam == s else "-")) for sam in samples.keys()])))
         bbbfile.Close()
 
     return new_sys
@@ -157,14 +157,17 @@ def get_samples(file, discriminant):
     keylist=file.GetListOfKeys()
     for k in keylist:
         keyname=k.GetName()
+        if not discriminant in keyname:
+            continue
         #m=False
         #m=False
         #r=False
         if "Up" in keyname or "Down" in keyname:
           continue
         m = sample_re.match(k.GetName())
-        #print k.GetName(), m
+        print k.GetName(), m
         m2 = sample2_re.match(k.GetName())
+        print m2
         r = signal1_re.match(k.GetName())
 
 ##         if r:
@@ -795,6 +798,7 @@ def create_datacard(ifile, ofile, disc, all_categories,
     #        log.write("-1 Samples: {cs}\n".format(cs=s))
     print "getting systematics"
     systematics = get_systematics(sysfile, overrides=overrides, rename=rename)
+    #print systematics
     all_uncertainties = map(lambda (u, t, vs): u, systematics)
     systematics = filter(lambda (u, t, vs): u not in disabled_systematics, systematics)
     #systematics += split_systematics(ifile, disc, cats, btag_mode)
