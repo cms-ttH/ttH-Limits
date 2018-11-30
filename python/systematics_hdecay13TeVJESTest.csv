@@ -65,6 +65,8 @@ CMS_ttHbb_ttbar_NNPDF,shape,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
 #CMS_ttHbb_scaleME,shape,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
 CMS_ttHbb_scaleMuF,shape,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
 CMS_ttHbb_scaleMuR,shape,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
+CMS_ttHbb_ttbar_scaleMuF,shape,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
+CMS_ttHbb_ttbar_scaleMuR,shape,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
 CMS_ttHbb_ttbarOther_FSR, shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
 CMS_ttHbb_ttbarPlusB_FSR  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-,-
 CMS_ttHbb_ttbarPlus2B_FSR , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-,-
