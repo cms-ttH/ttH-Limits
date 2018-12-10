@@ -135,7 +135,7 @@ if opts.categories:
 else:
     categories = all_categories
 
-f = r.TFile(args[0], "UPDATE")
+f = r.TFile(args[0], "READ")
 create_datacard(f, ofile, opts.disc, categories,
         disabled_systematics=opts.nosys.split(),
         disabled_samples=opts.nosample.split(),
