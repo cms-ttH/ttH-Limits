@@ -165,9 +165,9 @@ def get_samples(file, discriminant):
         if "Up" in keyname or "Down" in keyname:
           continue
         m = sample_re.match(k.GetName())
-        print k.GetName(), m
+        #print k.GetName(), m
         m2 = sample2_re.match(k.GetName())
-        print m2
+        #print m2
         r = signal1_re.match(k.GetName())
 
 ##         if r:
