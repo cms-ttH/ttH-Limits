@@ -60,7 +60,7 @@ CMS_scalePileUpPtHF_j_2017       , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 #CMS_ttHbb_UE           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
 #CMS_ttHbb_PDF_ttbar,shape,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
 #CMS_ttHbb_PDF,shape,1,1,1,1,1,1,1,1,1,1,1,1,1,-,-,-,-,-,-,-
-CMS_ttHbb_PDF           , shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
+CMS_ttHbb_PDF_2017, shape ,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
 #CMS_ttHbb_scaleMuF,shape,1,1,1,1,1,1,1,1,1,1,1,1,1,-,-,-,-,-,-,-
 #CMS_ttHbb_scaleMuR,shape,1,1,1,1,1,1,1,1,1,1,1,1,1,-,-,-,-,-,-,-
 CMS_ttHbb_scaleMuF,shape,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
@@ -69,40 +69,40 @@ CMS_ttHbb_scaleMuR,shape,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
 #CMS_ttHbb_ISR,shape,1,1,1,1,1,1,1,1,1,1,1,1,1,-,-,-,-,-,-,-
 #CMS_ttHbb_FSR_ttbar,shape,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
 #CMS_ttHbb_ISR_ttbar,shape,-,-,-,-,-,-,-,-,1,1,1,1,1,-,-,-,-,-,-,-
-CMS_ttHbb_FSR_ttbarOther, shape   ,  -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
-CMS_ttHbb_FSR_ttbarPlusB  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-,-
-CMS_ttHbb_FSR_ttbarPlus2B , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-,-
-CMS_ttHbb_FSR_ttbarPlusBBbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-,-
-CMS_ttHbb_FSR_ttbarPlusCCbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-,-
-CMS_ttHbb_ISR_ttbarOther, shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
-CMS_ttHbb_ISR_ttbarPlusB  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-,-
-CMS_ttHbb_ISR_ttbarPlus2B , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-,-
-CMS_ttHbb_ISR_ttbarPlusBBbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-,-
-CMS_ttHbb_ISR_ttbarPlusCCbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-,-
-#CMS_ttHbb_PDF_ttbarOther, shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
-#CMS_ttHbb_PDF_ttbarPlusB  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-,-
-#CMS_ttHbb_PDF_ttbarPlus2B , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-,-
-#CMS_ttHbb_PDF_ttbarPlusBBbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-,-
-#CMS_ttHbb_PDF_ttbarPlusCCbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-,-
-#CMS_ttHbb_scaleMuF_ttbarOther, shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
-#CMS_ttHbb_scaleMuF_ttbarPlusB  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-,-
-#CMS_ttHbb_scaleMuF_ttbarPlus2B , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-,-
-#CMS_ttHbb_scaleMuF_ttbarPlusBBbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-,-
-#CMS_ttHbb_scaleMuF_ttbarPlusCCbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-,-
-#CMS_ttHbb_scaleMuR_ttbarOther, shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
-#CMS_ttHbb_scaleMuR_ttbarPlusB  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-,-
-#CMS_ttHbb_scaleMuR_ttbarPlus2B , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-,-
-#CMS_ttHbb_scaleMuR_ttbarPlusBBbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-,-
-#CMS_ttHbb_scaleMuR_ttbarPlusCCbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_FSR_ttbarOther_2017, shape   ,  -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_FSR_ttbarPlusB_2017  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_FSR_ttbarPlus2B_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_FSR_ttbarPlusBBbar_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_FSR_ttbarPlusCCbar_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_ISR_ttbarOther_2017, shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_ISR_ttbarPlusB_2017  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_ISR_ttbarPlus2B_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_ISR_ttbarPlusBBbar_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_ISR_ttbarPlusCCbar_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-,-
+#CMS_ttHbb_PDF_ttbarOther_2017, shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttHbb_PDF_ttbarPlusB_2017  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttHbb_PDF_ttbarPlus2B_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttHbb_PDF_ttbarPlusBBbar_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttHbb_PDF_ttbarPlusCCbar_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-,-
+#CMS_ttHbb_scaleMuF_ttbarOther_2017, shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttHbb_scaleMuF_ttbarPlusB_2017  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttHbb_scaleMuF_ttbarPlus2B_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttHbb_scaleMuF_ttbarPlusBBbar_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttHbb_scaleMuF_ttbarPlusCCbar_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-,-
+#CMS_ttHbb_scaleMuR_ttbarOther_2017, shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttHbb_scaleMuR_ttbarPlusB_2017  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttHbb_scaleMuR_ttbarPlus2B_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttHbb_scaleMuR_ttbarPlusBBbar_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-,-
+#CMS_ttHbb_scaleMuR_ttbarPlusCCbar_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-,-
 #CMS_ttHbb_HDAMP_ttbarOther, shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
 #CMS_ttHbb_HDAMP_ttbarPlusB  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-,-
 #CMS_ttHbb_HDAMP_ttbarPlus2B , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-,-
 #CMS_ttHbb_HDAMP_ttbarPlusBBbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-,-
 #CMS_ttHbb_HDAMP_ttbarPlusCCbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-,-
-CMS_ttHbb_UE_ttbarOther, shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
-CMS_ttHbb_UE_ttbarPlusB  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-,-
-CMS_ttHbb_UE_ttbarPlus2B , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-,-
-CMS_ttHbb_UE_ttbarPlusBBbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-,-
-CMS_ttHbb_UE_ttbarPlusCCbar , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_UE_ttbarOther_2017, shape   , -     , -     , -     , -     , -     , -     , -     , -     ,1, -          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_UE_ttbarPlusB_2017  , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     ,1, -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_UE_ttbarPlus2B_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          ,1, -              , -              , -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_UE_ttbarPlusBBbar_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              ,1, -              , -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_UE_ttbarPlusCCbar_2017 , shape   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              ,1, -       , -     , -     , -      , -      ,-,-
 
 
