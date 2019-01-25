@@ -769,10 +769,15 @@ def create_datacard(ifile, ofile, disc, all_categories,
     overrides = {
             "lumi_13TeV_2017": "1.023" if is_13_tev else "1.023",
             "CMS_ttH_eff_lep": "1.015" if is_13_tev else "1.015",
+            "CMS_ttHbb_bgnorm_ttbarPlusB_2017": "1.5",
+            "CMS_ttHbb_bgnorm_ttbarPlus2B_2017": "1.5",
+            "CMS_ttHbb_bgnorm_ttbarPlusBBbar_2017": "1.5",
+            "CMS_ttHbb_bgnorm_ttbarPlusCCbar_2017": "1.5",
             "CMS_ttHbb_bgnorm_ttbarPlusB": "1.5",
             "CMS_ttHbb_bgnorm_ttbarPlus2B": "1.5",
             "CMS_ttHbb_bgnorm_ttbarPlusBBbar": "1.5",
-            "CMS_ttHbb_bgnorm_ttbarPlusCCbar": "1.5"}
+            "CMS_ttHbb_bgnorm_ttbarPlusCCbar": "1.5",
+            }
 
     # Retrieve list of samples (ordered) from systematics file
     samples = get_systematics(sysfile, samples=True)

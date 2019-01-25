@@ -18,10 +18,10 @@ CMS_btag_lfstats2_2017   , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 CMS_btag_cferr1_2017      , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 CMS_btag_cferr2_2017      , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 #CMS_scale_j_2017           , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CMS_ttHbb_bgnorm_ttbarPlusB  , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , x          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
-CMS_ttHbb_bgnorm_ttbarPlus2B , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , x              , -              , -              , -       , -     , -     , -      , -      ,-,-
-CMS_ttHbb_bgnorm_ttbarPlusBBbar , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , x              , -              , -       , -     , -     , -      , -      ,-,-
-CMS_ttHbb_bgnorm_ttbarPlusCCbar , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , x              , -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_bgnorm_ttbarPlusB_2017  , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , x          , -              , -              , -              , -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_bgnorm_ttbarPlus2B_2017 , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , x              , -              , -              , -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_bgnorm_ttbarPlusBBbar_2017 , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , x              , -              , -       , -     , -     , -      , -      ,-,-
+CMS_ttHbb_bgnorm_ttbarPlusCCbar_2017 , lnN   , -     , -     , -     , -     , -     , -     , -     , -     , -     , -          , -              , -              , x              , -       , -     , -     , -      , -      ,-,-
 CMS_ttHbb_PU         , shape ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 #CMS_ttHbb_eff_lepton       , shape   ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
 #CMS_ttHbb_ljets_Trig       , shape   ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-
